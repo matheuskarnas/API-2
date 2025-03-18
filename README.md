@@ -6,6 +6,7 @@
 
 <!-- - [Objetivo do Projeto](#objeto-do-produto) -->
 <!-- - [Vídeos e Apresentações](#vídeos-e-apresentações) -->
+
 - [Backlog do Produto](#backlog-do-produto)
 <!-- - [Backlog da Sprint](#backlog-da-sprint) -->
 - [Autores](#autores)
@@ -60,55 +61,47 @@ que se aproximam. A plataforma permitirá que os cidadãos visualizem a atuaçã
     </thead>
     <tbody>
         <tr>
-            <td style="border: 1px solid #ddd;">Um dashboard para ter dados sobre o patrocínio</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora quero ter um dashboard que me permita
-acompanhar o crescimento do projeto e me forneça dados relevantes de uma forma clara.</td>
+            <td style="border: 1px solid #ddd;">Link das redes da empresa patrocinadora.</td>
+            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria que o visitante da pagina tivesse acesso as minhas redes sócias.</td>
+            <td style="border: 1px solid #ddd;">Média</td>
+            <td style="border: 1px solid #ddd;">8</td>
+            <td style="border: 1px solid #ddd;">1</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd;">Ser responsivo.</td>
+            <td style="border: 1px solid #ddd;">Eu como usuário comum gostaria que a pagina fosse responsiva para todas as telas.</td>
+            <td style="border: 1px solid #ddd;">Média</td>
+            <td style="border: 1px solid #ddd;">8</td>
+            <td style="border: 1px solid #ddd;">1</td>
+        </tr> 
+        <tr>
+            <td style="border: 1px solid #ddd;">Visualizar o número de lojas impactadas.</td>
+            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver o número de lojas criadas com o meu patrocínio.</td>
+            <td style="border: 1px solid #ddd;">Alta</td>
+            <td style="border: 1px solid #ddd;">8</td>
+            <td style="border: 1px solid #ddd;">2</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd;">Visualizar número de usuários impactados.</td>
+            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver o número de usuários impactados.</td>
+            <td style="border: 1px solid #ddd;">Alta</td>
+            <td style="border: 1px solid #ddd;">8</td>
+            <td style="border: 1px solid #ddd;">2</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd;">Visualizar as cidades impactadas.</td>
+            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver a distribuição geográfica do meu impacto.</td>
+            <td style="border: 1px solid #ddd;">Alta</td>
+            <td style="border: 1px solid #ddd;">21</td>
+            <td style="border: 1px solid #ddd;">2</td>
+        </tr>
+         <tr>
+            <td style="border: 1px solid #ddd;">Um dashboard para ter dados sobre o patrocínio.</td>
+            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora quero ter um dashboard que me permita acompanhar o crescimento do projeto e me forneça dados relevantes de uma forma clara.</td>
             <td style="border: 1px solid #ddd;">Alta</td>
             <td style="border: 1px solid #ddd;">13</td>
             <td style="border: 1px solid #ddd;">3</td>
         </tr>
-        <tr>
-            <td style="border: 1px solid #ddd;">Visualizar o engajamento</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver engajamento e uso da plataforma</td>
-            <td style="border: 1px solid #ddd;">Média</td>
-            <td style="border: 1px solid #ddd;">8</td>
-            <td style="border: 1px solid #ddd;">3</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ddd;">Visualizar as cidades impactadas</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver a distribuição geográfica do meu impacto</td>
-            <td style="border: 1px solid #ddd;">Média</td>
-            <td style="border: 1px solid #ddd;">13</td>
-            <td style="border: 1px solid #ddd;">2</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ddd;">Visualizar o montante movimentado no circulo de influencia</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver o volume de transações no meu circulo de influencia.</td>
-            <td style="border: 1px solid #ddd;">Média</td>
-            <td style="border: 1px solid #ddd;">8</td>
-            <td style="border: 1px solid #ddd;">2</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ddd;">Visualizar número de usuários impactados</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver o número de usuários impactados</td>
-            <td style="border: 1px solid #ddd;">Média</td>
-            <td style="border: 1px solid #ddd;">8</td>
-            <td style="border: 1px solid #ddd;">2</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid #ddd;">Visualizar o número de lojas impactadas</td>
-            <td style="border: 1px solid #ddd;">Eu como empresa patrocinadora gostaria de ver o número de lojas criadas com o meu investimento.</td>
-            <td style="border: 1px solid #ddd;">Média</td>
-            <td style="border: 1px solid #ddd;">8</td>
-            <td style="border: 1px solid #ddd;">1</td>
-        </tr>      
-        <tr>
-            <td style="border: 1px solid #ddd;">Ser responsivo</td>
-            <td style="border: 1px solid #ddd;">Eu como usuário gostaria que a pagina fosse responsiva para todas as telas</td>
-            <td style="border: 1px solid #ddd;">Alta</td>
-            <td style="border: 1px solid #ddd;">8</td>
-            <td style="border: 1px solid #ddd;">1</td>
-        </tr>      
     </tbody>
 </table>
 
