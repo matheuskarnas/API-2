@@ -12,7 +12,7 @@ const positions = [
 const Maps = () => {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: 'AIzaSyDQcoUwW7kMqU8Hx4W3jGUh68AIPI3UbDc',
+        googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY ,
     });
 
     const mapRef = useRef<google.maps.Map | null>(null);
