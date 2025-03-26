@@ -1,17 +1,15 @@
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import './App.css'
-import { EmpresaInfos } from './components/EmpresaInfos.tsx'
-import Header from './components/Header.tsx'
-import Maps from './components/Maps.tsx'
-import { Stats } from './components/Stats.tsx'
+import { EmpresaPage } from './pages/EmpresaPage.tsx'
 
 function App() {
   return (
-    <>
-      <Header/>
-      <EmpresaInfos/>
-      <Stats/>
-      <Maps/>
-    </>
+    <Router>
+      <Routes>
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/empresa/:empresaId" element={<EmpresaPage />} />
+      </Routes>
+    </Router>
   )
 }
 
