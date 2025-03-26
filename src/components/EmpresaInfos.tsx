@@ -9,9 +9,7 @@ interface Empresa {
 
 export function EmpresaInfos() {
   const [empresa, setEmpresa] = useState<Empresa>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,7 +34,7 @@ export function EmpresaInfos() {
       setLoading(false);
     }
   }
-// console.log('Dados', empresa.descricao)
+  console.log(loading, error);
   return (
     <div className="w-full xl:w-[70%] mx-auto bg-white rounded-lg  flex flex-col xl:flex-row items-center text-center xl:text-left p-4">
       <img
