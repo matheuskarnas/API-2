@@ -1,8 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 
-
-
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 interface Empresa {
   descricao: string;
@@ -11,7 +9,9 @@ interface Empresa {
 
 export function EmpresaInfos() {
   const [empresa, setEmpresa] = useState<Empresa>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

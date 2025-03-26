@@ -9,7 +9,9 @@ export function Stats(){
   const [totalLojas, setTotalLojas] = useState<number>(0);
   const [totalInteracoes, setTotalInteracoes] = useState<number>(0);
   const [totalComunidades, setTotalComunidades] = useState<number>(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState<boolean>(true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
