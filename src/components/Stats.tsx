@@ -1,15 +1,19 @@
 import { createClient } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
-
-export function Stats(){
-  const [patrocinadorId] = useState<number>(1);
-  const [totalLojas, setTotalLojas] = useState<number>(0);
-  const [totalInteracoes, setTotalInteracoes] = useState<number>(0);
-  const [totalComunidades, setTotalComunidades] = useState<number>(0)
-  const [loading, setLoading] = useState<boolean>(true)
+export function Stats() {
+  const { empresaId } = useParams();
+  const [patrocinadorId] = useState<number>(Number(empresaId));
+  const [totalLojas, setTotalLojas] = useState<number>(99);
+  const [totalInteracoes, setTotalInteracoes] = useState<number>(99);
+  const [totalComunidades, setTotalComunidades] = useState<number>(99);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,9 +26,18 @@ export function Stats(){
       setError(null);
 
       const [lojasRes, amizadesRes, comunidadesRes] = await Promise.all([
-        supabase.from("lojas").select("*", { count: "exact" }).eq("usuario_id", patrocinadorId),
-        supabase.from("amizades").select("*", { count: "exact" }).eq("usuario_id", patrocinadorId),
-        supabase.from("usuarios_comunidades").select("*", { count: "exact" }).eq("usuario_id", patrocinadorId),
+        supabase
+          .from("lojas")
+          .select("*", { count: "exact" })
+          .eq("usuario_id", patrocinadorId),
+        supabase
+          .from("amizades")
+          .select("*", { count: "exact" })
+          .eq("usuario_id", patrocinadorId),
+        supabase
+          .from("usuarios_comunidades")
+          .select("*", { count: "exact" })
+          .eq("usuario_id", patrocinadorId),
       ]);
 
       if (lojasRes.error) throw lojasRes.error;
@@ -42,24 +55,34 @@ export function Stats(){
     }
     console.log(loading, error);
   }
-    return(
-        <div className="grid grid-cols-2 gap-4  w-full max-w">
-        <div className="bg-gray-200 p-4 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-25 ">
-          <p className="text-xs text-black">Número de lojas criadas</p>
-          <p className="text-2xl text-black font-bold">{totalLojas}</p>
-        </div>
-        <div className="bg-gray-200 p-4 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-25  ">
-          <p className="text-xs text-black">Famílias impactadas:</p>
-          <p className="text-2xl text-black font-bold">{totalInteracoes}</p>
-        </div>
-        <div className="bg-gray-200 p-4 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-25">
-          <p className="text-xs text-black">Cidades impactadas:</p>
-          <p className="text-2xl text-black font-bold">5</p>
-        </div>
-        <div className="bg-gray-200 p-4 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-25">
-          <p className="text-xs text-black">Comunidades impactadas:</p>
-          <p className="text-2xl text-black font-bold">{totalComunidades}</p>
-        </div>
+
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2">
+        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
       </div>
-    )
+    );
+  }
+  return (
+    <div className="grid grid-cols-2 gap-4  w-full max-w">
+      <div className="bg-gray-200 p-4 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-25 ">
+        <p className="text-xs text-black">Número de lojas criadas</p>
+        <p className="text-2xl text-black font-bold">{totalLojas}</p>
+      </div>
+      <div className="bg-gray-200 p-4 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-25  ">
+        <p className="text-xs text-black">Famílias impactadas:</p>
+        <p className="text-2xl text-black font-bold">{totalInteracoes}</p>
+      </div>
+      <div className="bg-gray-200 p-4 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-25">
+        <p className="text-xs text-black">Cidades impactadas:</p>
+        <p className="text-2xl text-black font-bold">5</p>
+      </div>
+      <div className="bg-gray-200 p-4 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-25">
+        <p className="text-xs text-black">Comunidades impactadas:</p>
+        <p className="text-2xl text-black font-bold">{totalComunidades}</p>
+      </div>
+    </div>
+  );
 }
