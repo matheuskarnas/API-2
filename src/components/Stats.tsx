@@ -1,11 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { supabase } from "../services/supabaseClient";
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+
 
 export function Stats() {
   const { empresaId } = useParams();
