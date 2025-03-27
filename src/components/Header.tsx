@@ -4,9 +4,9 @@ import { SocialIcon } from './SocialIcon.tsx';
 
 function Header() {
   return (
-    <nav className="w-full bg-blue-900 p-4 flex justify-between items-center">
+    <nav className="w-full bg-blue-900 p-3 flex justify-between items-center">
       <h1 className="text-white text-lg font-bold ml-4">SHIP</h1>
-      <div className="flex gap-3 mr-4">
+      <div className="flex gap-2 mr-3">
         {empresa.facebook && (
           <SocialIcon alt='facebook' img='facebook.png' ref={empresa.facebook}/>
         )}

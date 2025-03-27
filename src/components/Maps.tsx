@@ -32,10 +32,10 @@ const Maps = () => {
     }, [isLoaded]);
 
     return (
-        <section className="flex justify-center items-center h-88 max-sm:h-76">
+        <section className="flex justify-center items-center h-55 max-sm:h-50">
             {isLoaded ? (
                 <GoogleMap
-                    mapContainerStyle={{ width: '90%', height: '80%' }}
+                    mapContainerStyle={{ width: '89%', height: '75%' }}
                     onLoad={(map) => { 
                         mapRef.current = map; 
                         const bounds = new window.google.maps.LatLngBounds();
