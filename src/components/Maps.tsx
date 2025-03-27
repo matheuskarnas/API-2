@@ -32,7 +32,7 @@ const Maps = () => {
     }, [isLoaded]);
 
     return (
-        <section className="flex justify-center items-center h-55 max-sm:h-50">
+        <section className="flex justify-center items-center h-57 max-sm:h-55">
             {isLoaded ? (
                 <GoogleMap
                     mapContainerStyle={{ width: '89%', height: '75%' }}
