@@ -3,13 +3,12 @@ import { EmpresaInfos } from "../components/EmpresaInfos";
 import Header from "../components/Header";
 import Maps from "../components/Maps";
 import { Stats } from "../components/Stats";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 
 export function EmpresaPage() {
   const { empresaUrl } = useParams(); // Corrigido para usar empresaUrl
   const navigate = useNavigate();
-  const [empresaExiste, setEmpresaExiste] = useState(true);
 
   useEffect(() => {
     const verificarEmpresa = async () => {
@@ -33,7 +32,6 @@ export function EmpresaPage() {
     verificarEmpresa();
   }, [empresaUrl, navigate]);
 
-  if (!empresaExiste) return null;
 
   return (
     <>
