@@ -4,25 +4,36 @@ import Header from "../components/Header";
 import Maps from "../components/Maps";
 import { Stats } from "../components/Stats";
 import { useEffect, useState } from "react";
+import { supabase } from "../services/supabaseClient";
 
 export function EmpresaPage() {
-  const { empresaId } = useParams();
-  const navegarError = useNavigate();
-  const [empresaExiste, setEmpresaExiste] = useState<boolean>(true);
+  const { empresaUrl } = useParams(); // Corrigido para usar empresaUrl
+  const navigate = useNavigate();
+  const [empresaExiste, setEmpresaExiste] = useState(true);
 
   useEffect(() => {
-    const empresaIdValido = [1, 2, 3, 4, 5]; //Eventualmente será substituído por uma chamada do banco de dados
-    if (!empresaIdValido.includes(Number(empresaId))) {
-      setEmpresaExiste(false);
-      navegarError("/error");
-    }
-  }, [empresaId, navegarError]);
+    const verificarEmpresa = async () => {
+      if (!empresaUrl) {
+        navigate("/error");
+        return;
+      }
 
-  if (!empresaExiste) {
-    return null;
-  }
+      // Verifica no Supabase se a empresa existe
+      const { data, error } = await supabase
+        .from("patrocinadores")
+        .select("id")
+        .eq("url_exclusiva", empresaUrl)
+        .single();
 
-  console.log('empresaId', empresaId);
+      if (error || !data) {
+        navigate("/error");
+      }
+    };
+
+    verificarEmpresa();
+  }, [empresaUrl, navigate]);
+
+  if (!empresaExiste) return null;
 
   return (
     <>

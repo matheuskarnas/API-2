@@ -2,56 +2,127 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 
-
-
 export function Stats() {
-  const { empresaId } = useParams();
-  const [patrocinadorId] = useState<number>(Number(empresaId));
-  const [totalLojas, setTotalLojas] = useState<number>(99);
-  const [totalInteracoes, setTotalInteracoes] = useState<number>(99);
-  const [totalComunidades, setTotalComunidades] = useState<number>(99);
+  const { empresaUrl } = useParams();
+  const [totalLojas, setTotalLojas] = useState<number>(0);
+  const [familiasImpactadas, setFamiliasImpactadas] = useState<number>(0);
+  const [totalComunidades, setTotalComunidades] = useState<number>(0);
+  const [cidadesImpactadas, setCidadesImpactadas] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    buscarDados();
-  }, [patrocinadorId]);
+    const buscarDados = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  async function buscarDados() {
-    try {
-      setLoading(true);
-      setError(null);
+        // 1. Buscar ID do patrocinador
+        const { data: patrocinador, error: patrocinadorError } = await supabase
+          .from("patrocinadores")
+          .select("id")
+          .eq("url_exclusiva", empresaUrl)
+          .single();
 
-      const [lojasRes, amizadesRes, comunidadesRes] = await Promise.all([
-        supabase
+        if (patrocinadorError || !patrocinador) {
+          throw new Error("Patrocinador não encontrado");
+        }
+
+        // 2. Buscar usuários patrocinados
+        const { data: usuariosPatrocinados, error: usuariosError } = await supabase
+          .from("patrocinadores_usuarios")
+          .select("usuario_id")
+          .eq("patrocinador_id", patrocinador.id);
+
+        if (usuariosError) throw usuariosError;
+        const usuariosIds = usuariosPatrocinados?.map(u => u.usuario_id) || [];
+
+        if (usuariosIds.length === 0) {
+          setTotalLojas(0);
+          setFamiliasImpactadas(0);
+          setTotalComunidades(0);
+          setCidadesImpactadas(0);
+          return;
+        }
+
+        // 3. Contar lojas dos usuários
+        const { count: lojasCount } = await supabase
           .from("lojas")
-          .select("*", { count: "exact" })
-          .eq("usuario_id", patrocinadorId),
-        supabase
-          .from("amizades")
-          .select("*", { count: "exact" })
-          .eq("usuario_id", patrocinadorId),
-        supabase
+          .select("*", { count: "exact", head: true })
+          .in("usuario_id", usuariosIds);
+
+        // 4. Buscar comunidades dos usuários (contando repetições)
+        const { data: comunidadesUsuarios, error: comunidadesError } = await supabase
           .from("usuarios_comunidades")
-          .select("*", { count: "exact" })
-          .eq("usuario_id", patrocinadorId),
-      ]);
+          .select("comunidade_id")
+          .in("usuario_id", usuariosIds);
 
-      if (lojasRes.error) throw lojasRes.error;
-      if (amizadesRes.error) throw amizadesRes.error;
-      if (comunidadesRes.error) throw comunidadesRes.error;
+        if (comunidadesError) throw comunidadesError;
+        setTotalComunidades(comunidadesUsuarios?.length || 0);
 
-      setTotalLojas(lojasRes.data.length);
-      setTotalComunidades(comunidadesRes.data.length);
-      setTotalInteracoes(amizadesRes.data.length + comunidadesRes.data.length);
-    } catch (err) {
-      setError((err as Error).message);
-      console.error("Erro ao buscar dados:", err);
-    } finally {
-      setLoading(false);
-    }
-    console.log(loading, error);
-  }
+        // 5. Calcular famílias impactadas (pessoas em comunidades + amizades)
+        let totalPessoasComunidades = 0;
+        const comunidadesUnicas = [...new Set(
+          comunidadesUsuarios?.map(c => c.comunidade_id) || []
+        )];
+
+        for (const comunidadeId of comunidadesUnicas) {
+          const { count: totalMembros } = await supabase
+            .from("usuarios_comunidades")
+            .select("*", { count: "exact", head: true })
+            .eq("comunidade_id", comunidadeId);
+
+          const { count: usuariosNestaComunidade } = await supabase
+            .from("usuarios_comunidades")
+            .select("*", { count: "exact", head: true })
+            .eq("comunidade_id", comunidadeId)
+            .in("usuario_id", usuariosIds);
+
+          totalPessoasComunidades += (totalMembros || 0) * (usuariosNestaComunidade || 0);
+        }
+
+        const { count: totalAmizades } = await supabase
+          .from("amizades")
+          .select("*", { count: "exact", head: true })
+          .in("usuario_id", usuariosIds);
+
+        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0));
+        setTotalLojas(lojasCount || 0);
+
+        // 6. CALCULAR CIDADES IMPACTADAS (LOCALIZAÇÕES DISTINTAS)
+        // Buscar localizações das lojas dos usuários
+        const { data: lojasData } = await supabase
+          .from("lojas")
+          .select("localizacao_id")
+          .in("usuario_id", usuariosIds);
+
+        // Buscar localizações das comunidades dos usuários
+        const { data: comunidadesData } = await supabase
+          .from("comunidades")
+          .select("localizacao_id")
+          .in("id", comunidadesUnicas);
+
+        // Juntar todas as localizações únicas
+        const localizacoesLojas = lojasData?.map(l => l.localizacao_id) || [];
+        const localizacoesComunidades = comunidadesData?.map(c => c.localizacao_id) || [];
+        
+        const localizacoesUnicas = [...new Set([
+          ...localizacoesLojas,
+          ...localizacoesComunidades
+        ])];
+
+        setCidadesImpactadas(localizacoesUnicas.length);
+
+      } catch (err) {
+        setError((err as Error).message);
+        console.error("Erro ao buscar estatísticas:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    buscarDados();
+  }, [empresaUrl]);
 
   if (loading) {
     return (
@@ -62,23 +133,28 @@ export function Stats() {
       </div>
     );
   }
+
+  if (error) {
+    return <div className="text-red-500 p-4">{error}</div>;
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-2  w-full max-w">
-      <div className="bg-gray-200 p-2.5 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-17 ">
-        <p className="text-xs text-black text-center">Número de lojas criadas</p>
-        <p className="text-2xl text-black font-bold text-center">{totalLojas}</p>
+    <div className="grid grid-cols-2 gap-4 w-full max-w-4xl mx-auto p-4">
+      <div className="bg-gray-100 p-4 rounded-lg shadow">
+        <p className="text-sm text-gray-600">Lojas criadas</p>
+        <p className="text-2xl font-bold text-black">{totalLojas}</p>
       </div>
-      <div className="bg-gray-200 p-2.5 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-17  ">
-        <p className="text-xs text-black text-center">Famílias impactadas:</p>
-        <p className="text-2xl text-black font-bold text-center">{totalInteracoes}</p>
+      <div className="bg-gray-100 p-4 rounded-lg shadow">
+        <p className="text-sm text-gray-600">Famílias impactadas</p>
+        <p className="text-2xl font-bold text-black">{familiasImpactadas}</p>
       </div>
-      <div className="bg-gray-200 p-2.5 ml-5  rounded-xl shadow-md lg:ml-14 md:ml-10 xl:ml-17">
-        <p className="text-xs text-black text-center">Cidades impactadas:</p>
-        <p className="text-2xl text-black font-bold text-center">5</p>
+      <div className="bg-gray-100 p-4 rounded-lg shadow">
+        <p className="text-sm text-gray-600">Cidades impactadas</p>
+        <p className="text-2xl font-bold text-black">{cidadesImpactadas}</p>
       </div>
-      <div className="bg-gray-200 p-2.5 mr-5  rounded-xl shadow-md lg:mr-14 md:mr-10 xl:mr-17">
-        <p className="text-xs text-black text-center">Comunidades impactadas:</p>
-        <p className="text-2xl text-black font-bold text-center">{totalComunidades}</p>
+      <div className="bg-gray-100 p-4 rounded-lg shadow">
+        <p className="text-sm text-gray-600">Comunidades</p>
+        <p className="text-2xl font-bold text-black">{totalComunidades}</p>
       </div>
     </div>
   );
