@@ -73,6 +73,14 @@ export function Header() {
     );
   }
 
+  if (!empresa) {
+    return (
+      <nav className="w-full bg-blue-900 p-3 flex justify-between items-center">
+        <h1 className="text-white text-4xl font-bold ml-4">Helpnei</h1>
+      </nav>
+    );
+  }
+
   return (
     <nav className="w-full bg-blue-900 p-3 flex justify-between items-center">
       <h1 className="text-white text-4xl font-bold ml-4">{empresa.nome}</h1>
