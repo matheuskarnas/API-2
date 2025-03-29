@@ -11,7 +11,7 @@ export const empresa = {
     lowSponsorLogo: "agenciaship_logo_1.webp",
     nameSponsor: "Helpnei",
     site_web: "https://agenciaship.com.br/",
-    tiktok: "",
+    tiktok: "https://www.tiktok.com/upload?lang=pt-BR",
     urlSponsor: "https://unidos-helpnei.web.app/?s=agenciaship",
     whatsapp: "https://api.whatsapp.com/send?phone=5512991235705",
     x: "",
