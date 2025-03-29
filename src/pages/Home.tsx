@@ -39,33 +39,21 @@ export function Home() {
     return (
       <>
         <Header />
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "center", 
-          alignItems: "center", 
-          height: "200px" 
-        }}>
-          <div style={{ display: "flex", gap: "10px" }}>
-            {[...Array(3)].map((_, i) => (
+        <main className="p-5 font-sans">
+          <h1 className="text-2xl font-bold mb-5 text-center">Nossos Patrocinadores</h1>
+          <div className="flex flex-wrap gap-5 justify-center">
+            {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  backgroundColor: "#007BFF",
-                  animation: `bounce 1s infinite ${i * 0.1}s`
-                }}
-              />
+                className="border border-gray-300 rounded-lg p-5 w-52 text-center shadow-sm flex flex-col items-center bg-white"
+              >
+                <div className="w-20 h-20 bg-gray-200 mb-4 rounded-lg animate-pulse" />
+                <div className="w-3/5 h-5 bg-gray-200 mb-3 rounded animate-pulse" />
+                <div className="w-full h-10 bg-gray-200 mt-auto rounded animate-pulse" />
+              </div>
             ))}
           </div>
-        </div>
-        <style>{`
-          @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-          }
-        `}</style>
+        </main>
       </>
     );
   }

@@ -41,10 +41,13 @@ export function EmpresaInfos() {
 
   if (loading) {
     return (
-      <div className="flex flex-row gap-2">
-        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
-        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
-        <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+      <div className="grid grid-cols-2 gap-4 w-full max-w-4xl mx-auto p-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-gray-100 p-4 rounded-lg shadow">
+            <div className="h-4 bg-gray-300 w-1/3 mb-2 animate-pulse"></div>
+            <div className="h-8 bg-gray-300 w-1/2 animate-pulse"></div>
+          </div>
+        ))}
       </div>
     );
   }
