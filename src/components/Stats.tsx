@@ -17,7 +17,6 @@ export function Stats() {
         setLoading(true);
         setError(null);
 
-        // 1. Buscar ID do patrocinador
         const { data: patrocinador, error: patrocinadorError } = await supabase
           .from("patrocinadores")
           .select("id")
@@ -28,7 +27,6 @@ export function Stats() {
           throw new Error("Patrocinador não encontrado");
         }
 
-        // 2. Buscar usuários patrocinados
         const { data: usuariosPatrocinados, error: usuariosError } = await supabase
           .from("patrocinadores_usuarios")
           .select("usuario_id")
@@ -45,13 +43,11 @@ export function Stats() {
           return;
         }
 
-        // 3. Contar lojas dos usuários
         const { count: lojasCount } = await supabase
           .from("lojas")
           .select("*", { count: "exact", head: true })
           .in("usuario_id", usuariosIds);
 
-        // 4. Buscar comunidades dos usuários (contando repetições)
         const { data: comunidadesUsuarios, error: comunidadesError } = await supabase
           .from("usuarios_comunidades")
           .select("comunidade_id")
@@ -60,7 +56,6 @@ export function Stats() {
         if (comunidadesError) throw comunidadesError;
         setTotalComunidades(comunidadesUsuarios?.length || 0);
 
-        // 5. Calcular famílias impactadas (pessoas em comunidades + amizades)
         let totalPessoasComunidades = 0;
         const comunidadesUnicas = [...new Set(
           comunidadesUsuarios?.map(c => c.comunidade_id) || []
@@ -89,20 +84,16 @@ export function Stats() {
         setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0));
         setTotalLojas(lojasCount || 0);
 
-        // 6. CALCULAR CIDADES IMPACTADAS (LOCALIZAÇÕES DISTINTAS)
-        // Buscar localizações das lojas dos usuários
         const { data: lojasData } = await supabase
           .from("lojas")
           .select("localizacao_id")
           .in("usuario_id", usuariosIds);
 
-        // Buscar localizações das comunidades dos usuários
         const { data: comunidadesData } = await supabase
           .from("comunidades")
           .select("localizacao_id")
           .in("id", comunidadesUnicas);
 
-        // Juntar todas as localizações únicas
         const localizacoesLojas = lojasData?.map(l => l.localizacao_id) || [];
         const localizacoesComunidades = comunidadesData?.map(c => c.localizacao_id) || [];
         

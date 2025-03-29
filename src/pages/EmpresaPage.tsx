@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 
 export function EmpresaPage() {
-  const { empresaUrl } = useParams(); // Corrigido para usar empresaUrl
+  const { empresaUrl } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +17,6 @@ export function EmpresaPage() {
         return;
       }
 
-      // Verifica no Supabase se a empresa existe
       const { data, error } = await supabase
         .from("patrocinadores")
         .select("id")

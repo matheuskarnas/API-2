@@ -20,7 +20,6 @@ export function Header() {
   const [empresa, setEmpresa] = useState<EmpresaData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Dados de fallback visual
   const fallbackData: EmpresaData = {
     nome: 'SHIP',
     facebook: '#',

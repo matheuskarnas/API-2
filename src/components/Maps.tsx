@@ -48,7 +48,6 @@ const Maps = () => {
         setLoading(true);
         setError(null);
 
-        // 1. Buscar o patrocinador pela URL
         const { data: patrocinador, error: patError } = await supabase
           .from("patrocinadores")
           .select("id")
@@ -59,7 +58,6 @@ const Maps = () => {
           throw new Error(patError?.message || "Patrocinador não encontrado");
         }
 
-        // 2. Buscar usuários associados ao patrocinador via tabela intermediária
         const { data: patrocinadorUsuarios, error: puError } = await supabase
           .from("patrocinadores_usuarios")
           .select("usuario_id")
@@ -72,7 +70,6 @@ const Maps = () => {
 
         const usuarioIds = patrocinadorUsuarios.map((pu) => pu.usuario_id);
 
-        // 3. Buscar lojas dos usuários
         const { data: lojas, error: lojasError } = await supabase
           .from("lojas")
           .select("localizacao_id")
@@ -80,7 +77,6 @@ const Maps = () => {
 
         if (lojasError) throw lojasError;
 
-        // 4. Buscar comunidades dos usuários (via tabela intermediária)
         const { data: usuariosComunidades, error: ucError } = await supabase
           .from("usuarios_comunidades")
           .select("comunidade_id, usuario_id")
@@ -88,7 +84,6 @@ const Maps = () => {
 
         if (ucError) throw ucError;
 
-        // Objeto para agrupar dados por localização
         const locationsMap: Record<
           number,
           {
@@ -98,17 +93,14 @@ const Maps = () => {
           }
         > = {};
 
-        // 5. Buscar todas as localizações relevantes
         const localizacaoIds = new Set<number>();
 
-        // Adicionar localizações das lojas
         lojas?.forEach((loja) => {
           if (loja.localizacao_id) {
             localizacaoIds.add(loja.localizacao_id);
           }
         });
 
-        // Buscar comunidades para obter suas localizações
         if (usuariosComunidades && usuariosComunidades.length > 0) {
           const comunidadeIds = [
             ...new Set(usuariosComunidades.map((uc) => uc.comunidade_id)),
@@ -128,7 +120,6 @@ const Maps = () => {
           });
         }
 
-        // Buscar coordenadas das localizações
         const { data: localizacoes, error: locError } = await supabase
           .from("localizacoes")
           .select("id, coordenadas")
@@ -136,7 +127,6 @@ const Maps = () => {
 
         if (locError) throw locError;
 
-        // Inicializar o mapa de localizações
         localizacoes?.forEach((loc) => {
           locationsMap[loc.id] = {
             coordenadas: loc.coordenadas,
@@ -145,14 +135,12 @@ const Maps = () => {
           };
         });
 
-        // Contar lojas por localização
         lojas?.forEach((loja) => {
           if (loja.localizacao_id && locationsMap[loja.localizacao_id]) {
             locationsMap[loja.localizacao_id].lojasCount += 1;
           }
         });
 
-        // Contar comunidades por localização (considerando usuários repetidos)
         if (usuariosComunidades && usuariosComunidades.length > 0) {
           const comunidadeIds = usuariosComunidades.map(
             (uc) => uc.comunidade_id
@@ -167,7 +155,6 @@ const Maps = () => {
 
           comunidades?.forEach((com) => {
             if (com.localizacao_id && locationsMap[com.localizacao_id]) {
-              // Contar quantos usuários estão nesta comunidade
               const userCount = usuariosComunidades.filter(
                 (uc) => uc.comunidade_id === com.id
               ).length;
@@ -176,7 +163,6 @@ const Maps = () => {
           });
         }
 
-        // Converter para array
         const locationsData = Object.entries(locationsMap).map(
           ([id, data]) => ({
             ...data,
