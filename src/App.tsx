@@ -3,6 +3,7 @@ import './App.css';
 import { Home } from './pages/Home';
 import { EmpresaPage } from './pages/EmpresaPage';
 import { ErrorPage } from './pages/ErrorPage';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/empresa/:empresaUrl" element={<EmpresaPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }
