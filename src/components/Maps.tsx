@@ -215,7 +215,7 @@ const Maps = () => {
 
   return (
     <div className="
-  w-full xl:max-w-[80%] mx-auto rounded-lg shadow-lg relative
+  w-full xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
   h-[calc(100vh-550px)]
   xl:h-[calc(100vh-500px)]
 ">

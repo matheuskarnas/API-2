@@ -134,31 +134,51 @@ export function Stats() {
 
   return (
     <div className="
-      grid grid-cols-2 gap-2 md:gap-4 
-      w-full min-[500px]:max-w-[90%] xl:max-w-[80%]  {/* Largura máxima de 90% */}
-      mx-auto  {/* Centraliza horizontalmente */}
+      grid grid-cols-2  {/* Sempre 2 colunas */}
+      gap-2 md:gap-4 xl:gap-6
+      w-full 
+      min-[500px]:max-w-[90%] 
+      xl:max-w-[75%]
+      mx-auto
       text-gray-600
+      xl:flex xl:flex-wrap xl:justify-between  
     ">
       {/* Card 1 */}
-      <div className="bg-gray-100 p-3 rounded-lg shadow flex flex-col items-center">
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Lojas criadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalLojas}</p>
       </div>
   
       {/* Card 2 */}
-      <div className="bg-gray-100 p-3 rounded-lg shadow flex flex-col items-center">
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Famílias impactadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{familiasImpactadas}</p>
       </div>
   
       {/* Card 3 */}
-      <div className="bg-gray-100 p-3 rounded-lg shadow flex flex-col items-center">
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Cidades impactadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{cidadesImpactadas}</p>
       </div>
   
       {/* Card 4 */}
-      <div className="bg-gray-100 p-3 rounded-lg shadow flex flex-col items-center">
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Comunidades</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalComunidades}</p>
       </div>

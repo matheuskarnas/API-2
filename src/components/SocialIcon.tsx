@@ -12,10 +12,9 @@ export function SocialIcon({ alt, img, ref, className }: SocialIconProps) {
         src={`/assets/${img}`}
         alt={alt}
         className={`
-          w-6 h-6 
-          md:w-8 md:h-8  
-          lg:w-10 lg:h-10 
-          xl:w-12 xl:h-12  
+          w-4 h-4 
+          min-[500px]:w-6 min-[500px]:h-6
+          xl:w-8 xl:h-8  
           ${className || ""}
         `}
       />
