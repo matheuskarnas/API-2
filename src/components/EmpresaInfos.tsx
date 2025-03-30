@@ -53,22 +53,59 @@ export function EmpresaInfos() {
   }
 
   return (
-    <div className="w-full xl:w-[80%] mx-auto bg-white rounded-lg flex flex-col xl:flex-row items-center text-center xl:text-left p-8 gap-8">
-      {empresa?.url_logo_baixa_resolucao ? (
-        <img
-          src={empresa.url_logo_baixa_resolucao}
-          alt={`Logo da ${empresa.nome}`}
-          className="w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 rounded-md object-contain"
-        />
-      ) : (
-        <div className="w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gray-200 rounded-md flex items-center justify-center">
-          <span className="text-gray-500">Sem logo</span>
+    <div className="w-full bg-white rounded-lg px-4 mx-auto">
+      {/* Layout para telas menores (mobile/tablet) */}
+      <div className="xl:hidden">
+        <div className="relative">
+          {/* Imagem - Centralizada apenas em mobile */}
+          <div className="flex justify-center min-[500px]:block min-[500px]:float-left min-[500px]:mr-6 mb-4 min-[500px]:mb-0">
+            {empresa?.url_logo_baixa_resolucao ? (
+              <img
+                src={empresa.url_logo_baixa_resolucao}
+                alt={`Logo da ${empresa.nome}`}
+                className="w-[150px] min-[500px]:w-40 md:w-48 lg:w-56 object-contain rounded-md"
+              />
+            ) : (
+              <div className="w-[150px] h-[150px] min-[500px]:w-40 min-[500px]:h-40 md:w-48 md:h-48 bg-gray-200 rounded-md flex items-center justify-center">
+                <span className="text-gray-500">Sem logo</span>
+              </div>
+            )}
+          </div>
+  
+          {/* Texto - Comportamento original */}
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl [hyphens:auto]">
+            {empresa?.descricao}
+          </p>
+          <div className="clear-both"></div>
         </div>
-      )}
-      <div className="flex-1">
-        <h2 className="text-3xl font-bold mb-4">{empresa?.nome}</h2>
-        <p className="text-gray-600">{empresa?.descricao}</p>
+      </div>
+  
+      {/* Layout específico para XL (1280px+) - Versão corrigida */}
+      <div className="hidden xl:block">
+        <div className="flex justify-center">
+          <div className="flex items-center gap-8 max-w-6xl">
+            {/* Imagem XL */}
+            <div className="flex-shrink-0 w-64">
+              {empresa?.url_logo_baixa_resolucao ? (
+                <img
+                  src={empresa.url_logo_baixa_resolucao}
+                  alt={`Logo da ${empresa.nome}`}
+                  className="object-contain rounded-md"
+                />
+              ) : (
+                <div className="w-64 h-64 bg-gray-200 rounded-md flex items-center justify-center">
+                  <span className="text-gray-500">Sem logo</span>
+                </div>
+              )}
+            </div>
+  
+            {/* Texto XL */}
+            <p className="text-gray-600 text-xl [hyphens:auto] max-w-[600px]">
+              {empresa?.descricao}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-  );
+  )
 }

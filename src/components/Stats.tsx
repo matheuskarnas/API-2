@@ -133,23 +133,55 @@ export function Stats() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 w-full max-w-4xl mx-auto p-4">
-      <div className="bg-gray-100 p-4 rounded-lg shadow">
-        <p className="text-sm text-gray-600">Lojas criadas</p>
-        <p className="text-2xl font-bold text-black">{totalLojas}</p>
+    <div className="
+      grid grid-cols-2  {/* Sempre 2 colunas */}
+      gap-2 md:gap-4 xl:gap-6
+      w-full 
+      min-[500px]:max-w-[90%] 
+      xl:max-w-[75%]
+      mx-auto
+      text-gray-600
+      xl:flex xl:flex-wrap xl:justify-between  
+    ">
+      {/* Card 1 */}
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
+        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Lojas criadas</p>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalLojas}</p>
       </div>
-      <div className="bg-gray-100 p-4 rounded-lg shadow">
-        <p className="text-sm text-gray-600">Famílias impactadas</p>
-        <p className="text-2xl font-bold text-black">{familiasImpactadas}</p>
+  
+      {/* Card 2 */}
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
+        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Famílias impactadas</p>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{familiasImpactadas}</p>
       </div>
-      <div className="bg-gray-100 p-4 rounded-lg shadow">
-        <p className="text-sm text-gray-600">Cidades impactadas</p>
-        <p className="text-2xl font-bold text-black">{cidadesImpactadas}</p>
+  
+      {/* Card 3 */}
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
+        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Cidades impactadas</p>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{cidadesImpactadas}</p>
       </div>
-      <div className="bg-gray-100 p-4 rounded-lg shadow">
-        <p className="text-sm text-gray-600">Comunidades</p>
-        <p className="text-2xl font-bold text-black">{totalComunidades}</p>
+  
+      {/* Card 4 */}
+      <div className="
+        bg-gray-100 p-3 rounded-lg shadow 
+        flex flex-col items-center
+        xl:w-[48%]
+      ">
+        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Comunidades</p>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalComunidades}</p>
       </div>
     </div>
-  );
+  )
 }

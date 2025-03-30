@@ -36,11 +36,6 @@ const Maps = () => {
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  const mapOptions = {
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-  };
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -199,7 +194,7 @@ const Maps = () => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-57 max-sm:h-55 text-red-500 p-4">
+      <div className="w-full sm:w-[95%] md:w-[90%] xl:w-[80%] flex justify-center items-center h-57 max-sm:h-55 text-red-500 p-4">
         {error}
       </div>
     );
@@ -214,17 +209,31 @@ const Maps = () => {
   }
 
   return (
-    <section className="flex justify-center items-center h-57 max-sm:h-55">
+    <div className="
+  w-full xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
+  h-[calc(100vh-550px)]
+  xl:h-[calc(100vh-500px)]
+">
       {isLoaded ? (
         <GoogleMap
-          mapContainerStyle={{ width: "89%", height: "75%" }}
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          options={{
+            disableDefaultUI: true,
+            gestureHandling: 'cooperative',
+            styles: [
+              {
+                featureType: "all",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+              }
+            ]
+          }}
           onLoad={(map) => {
             mapRef.current = map;
             const bounds = new window.google.maps.LatLngBounds();
-            locations.forEach((loc) => bounds.extend(loc.coordenadas));
-            map.fitBounds(bounds);
+            locations.forEach(loc => bounds.extend(loc.coordenadas));
+            map.fitBounds(bounds, 50);
           }}
-          options={mapOptions}
         >
           {locations.map((loc, index) => (
             <Marker
@@ -244,17 +253,20 @@ const Maps = () => {
               onCloseClick={() => setSelectedLocation(null)}
             >
               <div className="p-2 text-gray-500">
-                <h3 className="font-bold">Localização</h3>
-                <p>Lojas: {selectedLocation.lojasCount}</p>
-                <p>Comunidades: {selectedLocation.comunidadesCount}</p>
+                <p className="font-bold">Lojas: {selectedLocation.lojasCount}</p>
+                <p className="font-bold">Comunidades: {selectedLocation.comunidadesCount}</p>
               </div>
             </InfoWindow>
           )}
         </GoogleMap>
       ) : (
-        <p>Carregando mapa...</p>
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="w-10 h-10 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"/>
+          </div>
+        </div>
       )}
-    </section>
+    </div>
   );
 };
 
