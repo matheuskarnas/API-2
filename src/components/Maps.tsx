@@ -36,11 +36,6 @@ const Maps = () => {
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  const mapOptions = {
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-  };
 
   useEffect(() => {
     const fetchLocations = async () => {
