@@ -3,7 +3,7 @@ import './App.css';
 import { Home } from './pages/Home';
 import { EmpresaPage } from './pages/EmpresaPage';
 import { ErrorPage } from './pages/ErrorPage';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
