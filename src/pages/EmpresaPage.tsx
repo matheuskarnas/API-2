@@ -34,7 +34,7 @@ export function EmpresaPage() {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       {/* Header - altura adaptável */}
-      <div className="flex-none bg-blue-900 px-2">
+      <div className="flex-none bg-blue-900 min-[500px]:px-2">
         <Header />
       </div>
 

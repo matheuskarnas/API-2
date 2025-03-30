@@ -214,7 +214,11 @@ const Maps = () => {
   }
 
   return (
-    <div className="w-full h-full rounded-lg overflow-hidden shadow-lg relative">
+    <div className="
+  w-full xl:max-w-[80%] mx-auto rounded-lg shadow-lg relative
+  h-[calc(100vh-550px)]
+  xl:h-[calc(100vh-500px)]
+">
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
