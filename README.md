@@ -12,7 +12,7 @@ Além de promover transparência e valorização dos patrocinadores, o projeto t
 
 | Sprint |          Data           | Status       |                                               Histórico                                               |
 | :----: | :---------------------: | :----------- | :---------------------------------------------------------------------------------------------------: |
-|   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2-documentation/blob/main/README.md) |
+|   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](documentation\sprints-reports\sprint-1\sprint-1.md) |
 |   02   | 07/04/2025 a 27/04/2025 | Em breve     |                                                                                                       |
 |   03   | 05/05/2025 a 25/05/2025 | Em breve     |                                                                                                       |
 
