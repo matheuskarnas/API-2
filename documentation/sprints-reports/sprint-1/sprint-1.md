@@ -89,7 +89,7 @@ Em prol de um melhor aproveitamento das habilidades de cada integrante, o time f
     
 <div align="center">
     
-![Burndown Chart](/documentation\sprints-reports\sprint-1\borndown-sprint-1.jpeg)
+![Burndown Chart](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md)
 </div>
     
 <span id="links">
