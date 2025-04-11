@@ -5,7 +5,7 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({ title, value }) => {
     return (
         <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
+        bg-wite p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
         border-3 
