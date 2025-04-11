@@ -1,4 +1,8 @@
-export const Card = () => {
+interface CardProps {
+    title: string;
+    value: number;
+}
+export const Card: React.FC<CardProps> = ({ title, value }) => {
     return (
         <div className="
         bg-gray-100 p-3 rounded-lg shadow 
@@ -9,8 +13,8 @@ export const Card = () => {
         shadow-md
         shadow-black
       ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Dados</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{10}</p>
+        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">{title}</p>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{value}</p>
       </div>
     )
 }
