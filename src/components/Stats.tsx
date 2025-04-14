@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 
-export function Stats() {
+export function Stats({onCardClick}: any) {
   const { empresaUrl } = useParams();
   const [totalLojas, setTotalLojas] = useState<number>(0);
   const [familiasImpactadas, setFamiliasImpactadas] = useState<number>(0);
@@ -148,7 +148,10 @@ export function Stats() {
         bg-gray-100 p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
-      ">
+        cursor-pointer
+        "
+        onClick={() => onCardClick?.("Lojas criadas", totalLojas)}
+        >
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Lojas criadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalLojas}</p>
       </div>
@@ -158,7 +161,10 @@ export function Stats() {
         bg-gray-100 p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
-      ">
+        cursor-pointer
+      "
+      onClick={() => onCardClick?.("Familias impactadas", familiasImpactadas)}
+      >
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Famílias impactadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{familiasImpactadas}</p>
       </div>
@@ -168,7 +174,10 @@ export function Stats() {
         bg-gray-100 p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
-      ">
+        cursor-pointer
+      "
+      onClick={() => onCardClick?.("Cidades impactadas", cidadesImpactadas)}
+      >
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Cidades impactadas</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{cidadesImpactadas}</p>
       </div>
@@ -178,7 +187,10 @@ export function Stats() {
         bg-gray-100 p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
-      ">
+        cursor-pointer
+      "
+      onClick={() => onCardClick?.("Comunidades", totalComunidades)}
+      >
         <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Comunidades</p>
         <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalComunidades}</p>
       </div>
