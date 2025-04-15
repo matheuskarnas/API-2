@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { Card } from "./Card";
 
-export function Stats() {
+export function Stats({onCardClick}: any) {
   const { empresaUrl } = useParams();
   const [totalLojas, setTotalLojas] = useState<number>(0);
   const [familiasImpactadas, setFamiliasImpactadas] = useState<number>(0);
@@ -144,12 +144,10 @@ export function Stats() {
       text-gray-600
       xl:flex xl:flex-wrap xl:justify-between  
     ">
-   
-    <Card title='Lojas Criadas' value={totalLojas}/>
-    <Card title="Famílias impactadas" value={familiasImpactadas}/>
-    <Card title="Cidades impactadas" value={cidadesImpactadas}/>
-    <Card title="Comunidades" value={totalComunidades}/>
- 
+      <Card title='Lojas Criadas' value={totalLojas} onClick={() => onCardClick?.("Lojas criadas", totalLojas)} />
+      <Card title="Famílias impactadas" value={familiasImpactadas} onClick={() => onCardClick?.("Familias impactadas", familiasImpactadas)} />
+      <Card title="Cidades impactadas" value={cidadesImpactadas} onClick={() => onCardClick?.("Cidades impactadas", cidadesImpactadas)} />
+      <Card title="Comunidades" value={totalComunidades} onClick={() => onCardClick?.("Comunidades", totalComunidades)} />
     </div>
   )
 }
