@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
+import { Card } from "./Card";
 
 export function Stats({onCardClick}: any) {
   const { empresaUrl } = useParams();
@@ -143,57 +144,10 @@ export function Stats({onCardClick}: any) {
       text-gray-600
       xl:flex xl:flex-wrap xl:justify-between  
     ">
-      {/* Card 1 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-        cursor-pointer
-        "
-        onClick={() => onCardClick?.("Lojas criadas", totalLojas)}
-        >
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Lojas criadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalLojas}</p>
-      </div>
-  
-      {/* Card 2 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-        cursor-pointer
-      "
-      onClick={() => onCardClick?.("Familias impactadas", familiasImpactadas)}
-      >
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Famílias impactadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{familiasImpactadas}</p>
-      </div>
-  
-      {/* Card 3 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-        cursor-pointer
-      "
-      onClick={() => onCardClick?.("Cidades impactadas", cidadesImpactadas)}
-      >
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Cidades impactadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{cidadesImpactadas}</p>
-      </div>
-  
-      {/* Card 4 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-        cursor-pointer
-      "
-      onClick={() => onCardClick?.("Comunidades", totalComunidades)}
-      >
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Comunidades</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalComunidades}</p>
-      </div>
+      <Card title='Lojas Criadas' value={totalLojas} onClick={() => onCardClick?.("Lojas criadas", totalLojas)} />
+      <Card title="Famílias impactadas" value={familiasImpactadas} onClick={() => onCardClick?.("Familias impactadas", familiasImpactadas)} />
+      <Card title="Cidades impactadas" value={cidadesImpactadas} onClick={() => onCardClick?.("Cidades impactadas", cidadesImpactadas)} />
+      <Card title="Comunidades" value={totalComunidades} onClick={() => onCardClick?.("Comunidades", totalComunidades)} />
     </div>
   )
 }
