@@ -241,22 +241,58 @@ const Maps = () => {
               position={loc.coordenadas}
               onClick={() => setSelectedLocation(loc)}
               icon={{
-                url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                url: "https://icons.iconarchive.com/icons/icons8/windows-8/256/Maps-Marker-icon.png",
                 scaledSize: new window.google.maps.Size(32, 32),
               }}
             />
           ))}
-
           {selectedLocation && (
             <InfoWindow
-              position={selectedLocation.coordenadas}
-              onCloseClick={() => setSelectedLocation(null)}
-            >
-              <div className="p-2 text-gray-500">
-                <p className="font-bold">Lojas: {selectedLocation.lojasCount}</p>
-                <p className="font-bold">Comunidades: {selectedLocation.comunidadesCount}</p>
+            position={selectedLocation.coordenadas}
+            onCloseClick={() => setSelectedLocation(null)}
+          >
+            <div className="text-center p-4 rounded-lg min-w-[200px]">
+                <button
+                  aria-label="Fechar"
+                  className="absolute top-0 right-0 w-8 h-8 bg-gray-400 text-black rounded flex items-center justify-center hover:bg-red-500 transition-colors cursor-pointer"
+                  onClick={() => setSelectedLocation(null)}
+                >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-5 w-5" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M6 18L18 6M6 6l12 12" 
+                />
+                </svg>
+              </button>
+              {/* placeholder para quando der para puxar o nome da localização do banco */}
+              <h3 className="text-center text-2xl font-[Helvetica] font-bold text-blue-900 mb-2">"Estado"
+                {/* {selectedLocation.localizacaoId} */}
+              </h3>
+              <div className="space-y-2">
+                <p className="flex items-center gap-5 text-blue-600">
+                  <svg className="w-6 h-6 " fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a4 4 0 00-4 4v1h8V6a4 4 0 00-4-4zM8 6a2 2 0 114 0v1H8V6z"/>
+                    <path d="M2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/>
+                  </svg>
+                  <span className="font-[Helvetica] font-bold text-black text-base">{selectedLocation.lojasCount} Lojas</span>
+                </p>
+                <p className="flex items-center gap-5 text-blue-600">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+                  </svg>
+                  <span className="font-[Helvetica] font-bold text-black text-base">{selectedLocation.comunidadesCount} Comunidades</span>
+                </p>
               </div>
-            </InfoWindow>
+            </div>
+          </InfoWindow>
           )}
         </GoogleMap>
       ) : (
