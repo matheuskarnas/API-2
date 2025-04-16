@@ -18,7 +18,7 @@ const schema = yup.object({
   escolaridade: yup.string().required("Campo obrigatório"),
 }).required()
 
-export function CadastroPage() {
+export function CadastroUsuario() {
   const {
     register,
     handleSubmit,
