@@ -2,10 +2,12 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import Header from "../components/Header"
 import * as yup from "yup"
+import { supabase } from "../services/supabaseClient"
+import React, { useEffect } from 'react';
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
-  dataNascimento: yup.string().required("Campo obrigatório"),
+  data_nascimento: yup.string().required("Campo obrigatório"),
   sexo: yup.string().required("Campo obrigatório"),
   cpf: yup.string().required("Campo obrigatório"),
   estado: yup.string().required("Campo obrigatório"),
@@ -14,7 +16,7 @@ const schema = yup.object({
   numero: yup.string().required("Campo obrigatório"),
   complemento: yup.string(),
   celular: yup.string().required("Campo obrigatório"),
-  rendaFamiliar: yup.string().required("Campo obrigatório"),
+  renda_familiar: yup.string().required("Campo obrigatório"),
   escolaridade: yup.string().required("Campo obrigatório"),
 }).required()
 
@@ -27,8 +29,35 @@ export function CadastroUsuario() {
     resolver: yupResolver(schema),
   })
 
-  const onSubmit = (data: any) => {
-    console.log(data)
+     useEffect(() => {
+    console.log("Erros de validação:", errors);
+  }, [errors]);
+
+  const onSubmit = async (data: any) => {
+    console.log("Dados recebidos no submit:", data)
+    const sexo = data.sexo === "masculino" ? "M" : "F";
+    const {error } = await supabase
+    .from('usuarios')
+    .insert([{
+      nome: data.nome,
+      data_nascimento: data.data_nascimento,
+      sexo: data.sexo,
+      cpf: data.cpf,
+      estado: data.estado,
+      cidade: data.cidade,
+      rua: data.rua,
+      numero: data.numero,
+      complemento: data.complemento,
+      celular: data.celular,
+      renda_familiar: data.renda_familiar,
+      escolaridade: data.escolaridade,
+    }])
+    if (error) {
+      console.error('Erro ao inserir:', error)
+      alert('Erro ao enviar o formulário. Tente novamente.')
+    } else {
+      alert('Formulário enviado com sucesso!')
+    }
   }
 
   const inputStyle = {
@@ -86,8 +115,8 @@ export function CadastroUsuario() {
           <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Data Nascimento:*</label>
-              <input type="date" style={inputStyle} {...register("dataNascimento")} />
-              <p style={errorStyle}>{errors.dataNascimento?.message}</p>
+              <input type="date" style={inputStyle} {...register("data_nascimento")} />
+              <p style={errorStyle}>{errors.data_nascimento?.message}</p>
             </div>
             <div style={{ width: '100px' }}>
               <label style={labelStyle}>Sexo:*</label>
@@ -162,13 +191,13 @@ export function CadastroUsuario() {
           <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Renda Familiar:*</label>
-              <select style={inputStyle} {...register("rendaFamiliar")}>
+              <select style={inputStyle} {...register("renda_familiar")}>
                 <option value="">-</option>
                 <option value="1">Até 1 salário</option>
                 <option value="2">1-3 salários</option>
                 <option value="3">Mais de 3</option>
               </select>
-              <p style={errorStyle}>{errors.rendaFamiliar?.message}</p>
+              <p style={errorStyle}>{errors.renda_familiar?.message}</p>
             </div>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Escolaridade:*</label>
