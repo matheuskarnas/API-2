@@ -100,13 +100,27 @@ export function CadastroUsuario() {
       console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
     } else {
       console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
+    
+
+     
+      const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
+       
+        const estadoCompatível = perfil.estados.includes(data.estado);
+        
+        const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
+        
+        const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
+        
+        const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
+
+        return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
+      });
+
+      console.log('Empresas compatíveis:', empresasCompatíveis);
     }
 
-    // 5. Alerta de sucesso
-    alert('Cadastro realizado com sucesso!');
-
   } catch (err) {
-    // 6. Tratamento de erro geral
+
     console.error('Erro no cadastro:', err);
     if (err instanceof Error) {
       setError(err.message || 'Erro ao cadastrar. Tente novamente.');
@@ -114,7 +128,6 @@ export function CadastroUsuario() {
       setError('Erro ao cadastrar. Tente novamente.');
     }
   } finally {
-    // 7. Sempre desativa o loading
     setLoading(false);
   }
 };
