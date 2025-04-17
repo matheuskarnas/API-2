@@ -56,30 +56,71 @@ export function CadastroUsuario() {
           escolaridade: data.escolaridade,
         }])
 
-      if (supabaseError) {
-        if (supabaseError.code === '23505') {
-          if (supabaseError.message.includes('cpf')) {
-            throw new Error('CPF já cadastrado no sistema');
-          } else if (supabaseError.message.includes('celular')) {
-            throw new Error('Celular já cadastrado no sistema');
+        if (supabaseError) {
+          if (supabaseError.code === '23505') {
+            if (supabaseError.message.includes('cpf')) {
+              throw new Error('CPF já cadastrado no sistema');
+            } else if (supabaseError.message.includes('celular')) {
+              throw new Error('Celular já cadastrado no sistema');
+            }
           }
+          throw supabaseError;
         }
-        throw supabaseError;
-      }
 
       alert('Cadastro realizado com sucesso!');
-      
-    } catch (err) {
-      console.error('Erro no cadastro:', err);
-      if (err instanceof Error) {
-        setError(err.message || 'Erro ao cadastrar. Tente novamente.');
-      } else {
-        setError('Erro ao cadastrar. Tente novamente.');
+
+      const nascimento = new Date(data.data_nascimento); 
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const mes = hoje.getMonth() - nascimento.getMonth();
+      if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
       }
-    } finally {
-      setLoading(false);
+
+      function obterFaixaEtaria(idade: number): string | null {
+        if (idade >= 18 && idade < 25) return '18-24';
+        if (idade >= 25 && idade < 35) return '25-34';
+        if (idade >= 36 && idade < 45) return '35-44';
+        if (idade >= 46 && idade < 55) return '45-54';
+        if (idade >= 55 && idade <= 64) return '55-64';
+        if (idade > 64) return '65+';
+        return null;
+      }
+
+      const faixaEtaria = obterFaixaEtaria(idade);
+      console.log('Faixa etária:', faixaEtaria);
+
+
+
+      const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
+      .from('perfis_patrocinio')
+      .select('*');
+
+    if (perfis_patrocinioError) {
+      console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
+    } else {
+      console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
     }
+
+    // 5. Alerta de sucesso
+    alert('Cadastro realizado com sucesso!');
+
+  } catch (err) {
+    // 6. Tratamento de erro geral
+    console.error('Erro no cadastro:', err);
+    if (err instanceof Error) {
+      setError(err.message || 'Erro ao cadastrar. Tente novamente.');
+    } else {
+      setError('Erro ao cadastrar. Tente novamente.');
+    }
+  } finally {
+    // 7. Sempre desativa o loading
+    setLoading(false);
   }
+};
+      
+    
+
 
   const inputStyle = {
     backgroundColor: 'white',
