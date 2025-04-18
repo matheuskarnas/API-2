@@ -5,7 +5,6 @@ import Maps from "../components/Maps";
 import { Stats } from "../components/Stats";
 import { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
-import Modal from "../components/Modal";
 
 export function EmpresaPage() {
   const { empresaUrl } = useParams();
@@ -33,10 +32,6 @@ export function EmpresaPage() {
     verificarEmpresa();
   }, [empresaUrl, navigate]);
 
-  const handleCardClick = (title: string, value: number) => {
-    setModalInfo({ title, value });
-  };
-
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       {/* Header - altura adaptável */}
@@ -53,7 +48,7 @@ export function EmpresaPage() {
 
         {/* Stats - altura fixa proporcional */}
         <div className="flex-none p-4">
-          <Stats onCardClick={handleCardClick}/>
+          <Stats/>
         </div>
 
         {/* Maps - ocupa o restante do espaço */}
@@ -61,15 +56,6 @@ export function EmpresaPage() {
           <Maps />
         </div>
       </div>
-      {/* Modal */}
-      {modalInfo && (
-        <Modal
-          title={modalInfo.title}
-          onClose={() => setModalInfo(null)}
-        >
-          <p className="text-lg font-semibold">{modalInfo.value}</p>
-        </Modal>
-      )}
     </div>
   );
 }
