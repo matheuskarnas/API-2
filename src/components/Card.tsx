@@ -43,8 +43,8 @@ export const Card: React.FC<CardProps> = ({ title, value}) => {
         shadow-black
         cursor-pointer
       ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">{title}</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{value}</p>
+        <p className="text-black text-lg sm:text-sm md:text-base whitespace-nowrap relative -top-3">{title}</p>  
+        <p className="text-black text-xl sm:text-2xl md:text-lg font-bold">{value}</p>
       </div>
       
       {isModalOpen && (

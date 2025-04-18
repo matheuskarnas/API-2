@@ -73,7 +73,7 @@ export function EmpresaInfos() {
           </div>
   
           {/* Texto - Comportamento original */}
-          <p className="text-gray-600 text-base sm:text-lg md:text-xl [hyphens:auto]">
+          <p className="text-black text-base sm:text-lg md:text-xl [hyphens:auto]">
             {empresa?.descricao}
           </p>
           <div className="clear-both"></div>
@@ -94,13 +94,13 @@ export function EmpresaInfos() {
                 />
               ) : (
                 <div className="w-64 h-64 bg-gray-200 rounded-md flex items-center justify-center">
-                  <span className="text-gray-500">Sem logo</span>
+                  <span className="text-black">Sem logo</span>
                 </div>
               )}
             </div>
   
             {/* Texto XL */}
-            <p className="text-gray-600 text-xl [hyphens:auto] max-w-[600px]">
+            <p className="text-black text-xl [hyphens:auto] max-w-[600px]">
               {empresa?.descricao}
             </p>
           </div>

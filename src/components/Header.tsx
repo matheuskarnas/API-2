@@ -60,11 +60,11 @@ export function Header() {
   }, [empresaUrl]);
 
   return (
-    <nav className="w-full bg-blue-900 p-2 flex justify-between items-center min-h-[72px]">
+    <nav className="w-full bg-[#16254D] p-2 flex justify-between items-center min-h-[72px]">
       {/* Nome da Empresa */}
       <h1 className="text-white text-2xl min-[500px]:text-4xl lg:text-5xl font-bold whitespace-nowrap">
         {loading ? (
-          <div className="animate-pulse bg-blue-800 rounded h-8 w-32"></div>
+          <div className="animate-pulse bg-[#16254D] rounded h-8 w-32"></div>
         ) : empresa?.nome || 'Helpnei'}
       </h1>
 
