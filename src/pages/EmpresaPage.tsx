@@ -3,13 +3,12 @@ import { EmpresaInfos } from "../components/EmpresaInfos";
 import Header from "../components/Header";
 import Maps from "../components/Maps";
 import { Stats } from "../components/Stats";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { supabase } from "../services/supabaseClient";
 
 export function EmpresaPage() {
   const { empresaUrl } = useParams();
   const navigate = useNavigate();
-  const [modalInfo, setModalInfo] = useState<{title: string; value: number} | null>(null);
 
   useEffect(() => {
     const verificarEmpresa = async () => {

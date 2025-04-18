@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Header from "../components/Header";
 import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),

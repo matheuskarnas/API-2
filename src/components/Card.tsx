@@ -6,7 +6,7 @@ interface CardProps {
     value: number;
     onClick?: () => void;
 }
-export const Card: React.FC<CardProps> = ({ title, value, onClick }) => {
+export const Card: React.FC<CardProps> = ({ title, value}) => {
   const [isModalOpen, setIsmodalOpen] = useState(false);
 
   const handleOpenModal = () => setIsmodalOpen(true);
