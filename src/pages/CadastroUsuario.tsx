@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import Header from "../components/Header"
-import * as yup from "yup"
-import { supabase } from "../services/supabaseClient"
-import React, { useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Header from "../components/Header";
+import * as yup from "yup";
+import { supabase } from "../services/supabaseClient";
+import React, { useState } from 'react';
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
@@ -21,6 +21,9 @@ const schema = yup.object({
 }).required()
 
 export function CadastroUsuario() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const {
     register,
     handleSubmit,
@@ -29,36 +32,108 @@ export function CadastroUsuario() {
     resolver: yupResolver(schema),
   })
 
-     useEffect(() => {
-    console.log("Erros de validação:", errors);
-  }, [errors]);
-
   const onSubmit = async (data: any) => {
-    console.log("Dados recebidos no submit:", data)
-    const sexo = data.sexo === "masculino" ? "M" : "F";
-    const {error } = await supabase
-    .from('usuarios')
-    .insert([{
-      nome: data.nome,
-      data_nascimento: data.data_nascimento,
-      sexo: data.sexo,
-      cpf: data.cpf,
-      estado: data.estado,
-      cidade: data.cidade,
-      rua: data.rua,
-      numero: data.numero,
-      complemento: data.complemento,
-      celular: data.celular,
-      renda_familiar: data.renda_familiar,
-      escolaridade: data.escolaridade,
-    }])
-    if (error) {
-      console.error('Erro ao inserir:', error)
-      alert('Erro ao enviar o formulário. Tente novamente.')
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const dataNascimento = new Date(data.data_nascimento).toISOString();
+      
+      const { error: supabaseError } = await supabase
+        .from('usuarios')
+        .insert([{
+          nome: data.nome,
+          data_nascimento: dataNascimento,
+          sexo: data.sexo,
+          cpf: data.cpf.replace(/\D/g, ''),
+          celular: data.celular.replace(/\D/g, ''),
+          estado: data.estado,
+          cidade: data.cidade,
+          rua: data.rua,
+          numero: data.numero,
+          complemento: data.complemento,
+          renda_familiar: data.renda_familiar,
+          escolaridade: data.escolaridade,
+        }])
+
+        if (supabaseError) {
+          if (supabaseError.code === '23505') {
+            if (supabaseError.message.includes('cpf')) {
+              throw new Error('CPF já cadastrado no sistema');
+            } else if (supabaseError.message.includes('celular')) {
+              throw new Error('Celular já cadastrado no sistema');
+            }
+          }
+          throw supabaseError;
+        }
+
+      alert('Cadastro realizado com sucesso!');
+
+      const nascimento = new Date(data.data_nascimento); 
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const mes = hoje.getMonth() - nascimento.getMonth();
+      if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+      }
+
+      function obterFaixaEtaria(idade: number): string | null {
+        if (idade >= 18 && idade < 25) return '18-24';
+        if (idade >= 25 && idade < 35) return '25-34';
+        if (idade >= 36 && idade < 45) return '35-44';
+        if (idade >= 46 && idade < 55) return '45-54';
+        if (idade >= 55 && idade <= 64) return '55-64';
+        if (idade > 64) return '65+';
+        return null;
+      }
+
+      const faixaEtaria = obterFaixaEtaria(idade);
+      console.log('Faixa etária:', faixaEtaria);
+
+
+
+      const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
+      .from('perfis_patrocinio')
+      .select('*');
+
+    if (perfis_patrocinioError) {
+      console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
     } else {
-      alert('Formulário enviado com sucesso!')
+      console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
+    
+
+     
+      const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
+       
+        const estadoCompatível = perfil.estados.includes(data.estado);
+        
+        const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
+        
+        const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
+        
+        const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
+
+        return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
+      });
+
+      console.log('Empresas compatíveis:', empresasCompatíveis);
     }
+
+  } catch (err) {
+
+    console.error('Erro no cadastro:', err);
+    if (err instanceof Error) {
+      setError(err.message || 'Erro ao cadastrar. Tente novamente.');
+    } else {
+      setError('Erro ao cadastrar. Tente novamente.');
+    }
+  } finally {
+    setLoading(false);
   }
+};
+      
+    
+
 
   const inputStyle = {
     backgroundColor: 'white',
@@ -106,6 +181,19 @@ export function CadastroUsuario() {
         >
           <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Cadastro</h3>
 
+          {error && (
+            <div style={{ 
+              color: 'red', 
+              textAlign: 'center', 
+              marginBottom: '20px',
+              backgroundColor: '#ffeeee',
+              padding: '10px',
+              borderRadius: '5px'
+            }}>
+              {error}
+            </div>
+          )}
+
           <div style={{ marginBottom: '15px' }}>
             <label style={labelStyle}>Nome:*</label>
             <input style={inputStyle} {...register("nome")} />
@@ -122,14 +210,18 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Sexo:*</label>
               <select style={inputStyle} {...register("sexo")}>
                 <option value="">-</option>
-                <option value="masculino">M</option>
-                <option value="feminino">F</option>
+                <option value="M">M</option>
+                <option value="F">F</option>
               </select>
               <p style={errorStyle}>{errors.sexo?.message}</p>
             </div>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>CPF:*</label>
-              <input style={inputStyle} {...register("cpf")} />
+              <input 
+                style={inputStyle} 
+                {...register("cpf")} 
+                placeholder="Somente números"
+              />
               <p style={errorStyle}>{errors.cpf?.message}</p>
             </div>
           </div>
@@ -193,9 +285,9 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Renda Familiar:*</label>
               <select style={inputStyle} {...register("renda_familiar")}>
                 <option value="">-</option>
-                <option value="1">Até 1 salário</option>
-                <option value="2">1-3 salários</option>
-                <option value="3">Mais de 3</option>
+                <option value="E">Até 1 salário</option>
+                <option value="D">1-3 salários</option>
+                <option value="C">Mais de 3</option>
               </select>
               <p style={errorStyle}>{errors.renda_familiar?.message}</p>
             </div>
@@ -203,9 +295,9 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Escolaridade:*</label>
               <select style={inputStyle} {...register("escolaridade")}>
                 <option value="">-</option>
-                <option value="fundamental">Fundamental</option>
-                <option value="medio">Médio</option>
-                <option value="superior">Superior</option>
+                <option value="EFI">Ensino Fundamental Incompleto</option>
+                <option value="EFC">Ensino Fundamental Completo</option>
+                <option value="EMI">Ensino Medio Incompleto</option>
               </select>
               <p style={errorStyle}>{errors.escolaridade?.message}</p>
             </div>
@@ -222,9 +314,11 @@ export function CadastroUsuario() {
                 borderRadius: '8px',
                 fontSize: '16px',
                 cursor: 'pointer',
+                opacity: loading ? 0.7 : 1,
               }}
+              disabled={loading}
             >
-              Cadastrar
+              {loading ? 'Cadastrando...' : 'Cadastrar'}
             </button>
           </div>
         </form>
