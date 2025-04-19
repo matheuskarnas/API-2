@@ -16,7 +16,7 @@
 
 /* estilização infowindow */
 .gm-style .gm-style-iw {
-  background: #ddeaff !important;
+  background: #ffffff !important;
   padding: 0 !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.8) !important;
 }
@@ -27,15 +27,13 @@
 
 /* setinha infowindow */
 .gm-style .gm-style-iw-t::after {
-  display: none !important;
-}
-.gm-style .gm-style-iw-t::before {
-  display: none !important;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.8)) !important;
+  border: 2px solid #07006b !important;
 }
 
 /* Borda InfoWindow */
 .gm-style .gm-style-iw-c {
   overflow: hidden !important;
   border-radius: 1rem !important;
-  border: 2px solid #171717 !important;
+  border: 2px solid #07006b !important;
 }
