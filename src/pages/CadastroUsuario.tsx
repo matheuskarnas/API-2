@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
@@ -24,6 +25,7 @@ export function CadastroUsuario() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [empresasCompatíveis, setEmpresasCompatíveis] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   
   const {
@@ -115,8 +117,9 @@ export function CadastroUsuario() {
       });
 
       setEmpresasCompatíveis(empresasCompatíveis)
-
       console.log('Empresas compatíveis:', empresasCompatíveis);
+
+      navigate('/empresa/patrocinios-disponiveis',{state: empresasCompatíveis})
     }
 
   } catch (err) {

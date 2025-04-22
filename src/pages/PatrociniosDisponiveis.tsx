@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
 
 interface Empresa {
   id: number;
@@ -13,51 +12,8 @@ interface Empresa {
 }
 
 export function PatrociniosDisponiveis() {
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEmpresasCompatíveis = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("patrocinadores")
-          .select("id, nome, descricao, url_exclusiva, url_logo_baixa_resolucao")
-          .order("nome", { ascending: true });
-
-        if (error) throw error;
-        if (data) setEmpresas(data);
-      } catch (error) {
-        console.error("Erro ao buscar empresas compatíveis:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEmpresasCompatíveis();
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-        <Header />
-        <main className="p-5 font-sans">
-          <h1 className="text-2xl font-bold mb-5 text-center">Empresas Compatíveis</h1>
-          <div className="flex flex-wrap gap-5 justify-center">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="border border-gray-300 rounded-lg p-5 w-52 text-center shadow-sm flex flex-col items-center bg-white"
-              >
-                <div className="w-20 h-20 bg-gray-200 mb-4 rounded-lg animate-pulse" />
-                <div className="w-3/5 h-5 bg-gray-200 mb-3 rounded animate-pulse" />
-                <div className="w-full h-10 bg-gray-200 mt-auto rounded animate-pulse" />
-              </div>
-            ))}
-          </div>
-        </main>
-      </>
-    );
-  }
+  const location = useLocation();
+  const [empresas, setEmpresas] = useState<Empresa[]>(location.state ? location.state : []);
 
   return (
     <>
