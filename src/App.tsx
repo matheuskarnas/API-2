@@ -7,6 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { CadastroUsuario } from './pages/CadastroUsuario';
 import { CadastroEmpresas } from './pages/CadastroEmpresas';
 import { Patrocinio } from './pages/Patrocinio';
+import { PatrociniosDisponiveis } from "./pages/PatrociniosDisponiveis";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="*" element={<ErrorPage />} />
         <Route path="/empresa/cadastro" element={<CadastroEmpresas/>} />
         <Route path="/patrocinio" element={<Patrocinio/>} />
+        <Route path="/empresa/patrocinios-disponiveis" element={<PatrociniosDisponiveis/>} />
       </Routes>
       <Analytics />
     </Router>
