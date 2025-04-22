@@ -23,6 +23,8 @@ const schema = yup.object({
 export function CadastroUsuario() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [empresasCompatíveis, setEmpresasCompatíveis] = useState<any[]>([]);
+
   
   const {
     register,
@@ -104,17 +106,15 @@ export function CadastroUsuario() {
 
      
       const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
-       
         const estadoCompatível = perfil.estados.includes(data.estado);
-        
         const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
-        
         const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
-        
         const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
 
         return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
       });
+
+      setEmpresasCompatíveis(empresasCompatíveis)
 
       console.log('Empresas compatíveis:', empresasCompatíveis);
     }
