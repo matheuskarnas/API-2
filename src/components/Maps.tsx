@@ -25,9 +25,30 @@ const Maps = () => {
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
-    null
-  );
+  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
+  const [estado, setEstado] = useState<string | null>(null);
+  const [cidade, setCidade] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedLocation) {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: selectedLocation.coordenadas }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
+          console.log(results);
+          setEstado(
+            results[0]?.address_components?.find(component =>
+              component.types.includes("administrative_area_level_1")
+            )?.short_name || null
+          );
+          const cidade = results
+            .flatMap(result => result.address_components)
+            .find(component => component.types.includes("locality"))?.long_name || null;
+
+          setCidade(cidade);
+        }
+      });
+    }
+  }, [selectedLocation as LocationData | null]);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -431,9 +452,7 @@ const Maps = () => {
                 />
                 </svg>
               </button>
-              {/* placeholder para quando der para puxar o nome da localização do banco */}
-              <h3 className="text-center text-2xl font-[Helvetica] font-bold text-blue-900 mb-2">"Estado"
-                {/* {selectedLocation.localizacaoId} */}
+              <h3 className="text-center text-2xl font-[Helvetica] font-bold text-blue-900 mb-2">{cidade} - {estado}
               </h3>
               <div className="space-y-2">
                 <p className="flex items-center gap-5 text-blue-600">
