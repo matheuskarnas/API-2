@@ -3,29 +3,73 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Header from "../components/Header";
 import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
   data_nascimento: yup.string().required("Campo obrigatório"),
   sexo: yup.string().required("Campo obrigatório"),
-  cpf: yup.string().required("Campo obrigatório"),
+  cpf: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("valid-cpf", "CPF inválido", (value) => {
+      if (!value) return false;
+      const cpf = value.replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto >= 10) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto >= 10) resto = 0;
+      return resto === parseInt(cpf.charAt(10));
+    }),
   estado: yup.string().required("Campo obrigatório"),
   cidade: yup.string().required("Campo obrigatório"),
   rua: yup.string().required("Campo obrigatório"),
   numero: yup.string().required("Campo obrigatório"),
   complemento: yup.string(),
-  celular: yup.string().required("Campo obrigatório"),
+  celular: yup
+    .string()
+    .required("Campo obrigatório")
+    .test("valid-celular", "Celular inválido", (value) => {
+      if (!value) return false;
+      const celular = value.replace(/\D/g, '');
+      return /^\d{2}9\d{8}$/.test(celular);
+    }),
   renda_familiar: yup.string().required("Campo obrigatório"),
   escolaridade: yup.string().required("Campo obrigatório"),
-}).required()
+}).required();
 
 export function CadastroUsuario() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [estados, setEstados] = useState([]);
+  const [estadoSelecionado, setEstadoSelecionado] = useState("");
+  const [cidades, setCidades] = useState([]);
 
+  useEffect(() => {
+    fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((res) => res.json())
+      .then((data) => setEstados(data.sort((a: { nome: string; }, b: { nome: any; }) => a.nome.localeCompare(b.nome))));
+  }, []);
+
+  useEffect(() => {
+    if (estadoSelecionado) {
+      fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSelecionado}/municipios`)
+        .then((res) => res.json())
+        .then((data) => setCidades(data.sort((a: { nome: string; }, b: { nome: any; }) => a.nome.localeCompare(b.nome))));
+    } else {
+      setCidades([]);
+    }
+  }, [estadoSelecionado]);
   
   const {
     register,
@@ -129,10 +173,10 @@ export function CadastroUsuario() {
             
           } else if (empresasData) {
             console.log('Dados completos das empresas compatíveis:', empresasData);
-            navigate('/usuario/patrocinios-disponiveis', { state: empresasData });
+            navigate('/empresa/patrocinios-disponiveis', { state: empresasData });
           }
         } else {
-          navigate('/usuario/patrocinios-disponiveis', { state: [] }); 
+          navigate('/empresa/patrocinios-disponiveis', { state: [] }); 
         }
     }
 
@@ -220,7 +264,14 @@ export function CadastroUsuario() {
           <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Data Nascimento:*</label>
-              <input type="date" style={inputStyle} {...register("data_nascimento")} />
+              <input 
+              type="date" 
+              style={inputStyle} 
+              {...register("data_nascimento")} 
+              max={new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+                .toISOString()
+                .split("T")[0]}
+              />
               <p style={errorStyle}>{errors.data_nascimento?.message}</p>
             </div>
             <div style={{ width: '100px' }}>
@@ -237,7 +288,6 @@ export function CadastroUsuario() {
               <input 
                 style={inputStyle} 
                 {...register("cpf")} 
-                placeholder="Somente números"
               />
               <p style={errorStyle}>{errors.cpf?.message}</p>
             </div>
@@ -246,11 +296,23 @@ export function CadastroUsuario() {
           <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Estado:*</label>
-              <select style={inputStyle} {...register("estado")}>
+              <select 
+                style={inputStyle} 
+                value={estadoSelecionado}
+                {...register("estado")} 
+                onChange={(e) => {
+                  setEstadoSelecionado(e.target.value);
+                }}
+              >
                 <option value="">-</option>
-                <option value="SP">SP</option>
-                <option value="RJ">RJ</option>
-                {/* outros estados... */}
+                {estados.map((estado: { sigla: string; nome: string }) => (
+                <option 
+                  key={estado.sigla} 
+                  value={estado.sigla}
+                >
+                  {estado.nome}
+                </option>
+                ))}
               </select>
               <p style={errorStyle}>{errors.estado?.message}</p>
             </div>
@@ -258,15 +320,11 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Cidade:*</label>
               <select style={inputStyle} {...register("cidade")}>
                 <option value="">-</option>
-                <option value="São Paulo">São Paulo</option>
-                <option value="Rio de Janeiro">Rio de Janeiro</option>
-                <option value="Taubaté">Taubaté</option>
-                <option value="Pindamonhangaba">Pindamonhangaba</option>
-                <option value="Guaratingueta">Guaratingueta</option>
-                <option value="Campos de jordão">Campos de jordão</option>
-                <option value="Jacareí">Jacareí</option>
-                <option value="Campinas">Campinas</option>
-                {/* outras cidades... */}
+              {cidades.map((cidade: { nome: string }) => (
+                <option key={cidade.nome} value={cidade.nome}>
+                  {cidade.nome}
+                </option>
+              ))}
               </select>
               <p style={errorStyle}>{errors.cidade?.message}</p>
             </div>
@@ -302,9 +360,11 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Renda Familiar:*</label>
               <select style={inputStyle} {...register("renda_familiar")}>
                 <option value="">-</option>
-                <option value="E">Até 1 salário</option>
-                <option value="D">1-3 salários</option>
-                <option value="C">Mais de 3</option>
+                <option value="E">Até R$1.045,00</option>
+                <option value="D">De R$1.045,01 a R$2.089,60</option>
+                <option value="C">De R$2.089,61 a R$3.134,40</option>
+                <option value="B">De R$3.134,41 a R$6.101,26</option>
+                <option value="A">Acima de R$6.101,26</option>
               </select>
               <p style={errorStyle}>{errors.renda_familiar?.message}</p>
             </div>
@@ -315,6 +375,10 @@ export function CadastroUsuario() {
                 <option value="EFI">Ensino Fundamental Incompleto</option>
                 <option value="EFC">Ensino Fundamental Completo</option>
                 <option value="EMI">Ensino Medio Incompleto</option>
+                <option value="EMC">Ensino Medio Completo</option>
+                <option value="ESI">Ensino Superior Incompleto</option>
+                <option value="ESC">Ensino Superior Completo</option>
+                <option value="POS">Pós-graduação(Especialização)</option>
               </select>
               <p style={errorStyle}>{errors.escolaridade?.message}</p>
             </div>
