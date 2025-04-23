@@ -129,10 +129,10 @@ export function CadastroUsuario() {
             
           } else if (empresasData) {
             console.log('Dados completos das empresas compatíveis:', empresasData);
-            navigate('/empresa/patrocinios-disponiveis', { state: empresasData });
+            navigate('/usuario/patrocinios-disponiveis', { state: empresasData });
           }
         } else {
-          navigate('/empresa/patrocinios-disponiveis', { state: [] }); 
+          navigate('/usuario/patrocinios-disponiveis', { state: [] }); 
         }
     }
 
