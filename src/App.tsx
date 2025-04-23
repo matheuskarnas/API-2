@@ -16,11 +16,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/empresa/:empresaUrl" element={<EmpresaPage />} />
-        <Route path="/usuario/cadastro" element={<CadastroUsuario/>} />
-        <Route path="*" element={<ErrorPage />} />
+        <Route path="/empresa/planos" element={<ErrorPage />} /> // criar página de planos para empresas
         <Route path="/empresa/cadastro" element={<CadastroEmpresas/>} />
-        <Route path="/patrocinio" element={<Patrocinio/>} />
-        <Route path="/empresa/patrocinios-disponiveis" element={<PatrociniosDisponiveis/>} />
+        <Route path="/empresa/patrocinio" element={<Patrocinio/>} />
+        <Route path="/usuario/planos" element={<ErrorPage/>} /> // criar página de planos para usuários
+        <Route path="/usuario/cadastro" element={<CadastroUsuario/>} />
+        <Route path="/usuario/patrocinios-disponiveis" element={<PatrociniosDisponiveis/>} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Analytics />
     </Router>
