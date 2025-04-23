@@ -24,7 +24,6 @@ const schema = yup.object({
 export function CadastroUsuario() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [empresasCompatíveis, setEmpresasCompatíveis] = useState<any[]>([]);
   const navigate = useNavigate();
 
   
