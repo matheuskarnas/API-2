@@ -98,7 +98,7 @@ export function CadastroUsuario() {
 
       const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
       .from('perfis_patrocinio')
-      .select('*');
+      .select('*, patrocinador_id');
 
     if (perfis_patrocinioError) {
       console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
@@ -116,10 +116,25 @@ export function CadastroUsuario() {
         return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
       });
 
-      setEmpresasCompatíveis(empresasCompatíveis)
-      console.log('Empresas compatíveis:', empresasCompatíveis);
+      const idsEmpresasCompatíveis = empresasCompatíveis.map((perfil:any)=> perfil.patrocinador_id)
+      console.log('IDs das empresas compatíveis:', idsEmpresasCompatíveis);
 
-      navigate('/empresa/patrocinios-disponiveis',{state: empresasCompatíveis})
+      if (idsEmpresasCompatíveis.length > 0) {
+        const { data: empresasData, error: empresasError } = await supabase
+          .from('patrocinadores')
+          .select('*')
+          .in('id', idsEmpresasCompatíveis);
+
+          if (empresasError) {
+            console.error('Erro ao buscar detalhes das empresas:', empresasError);
+            
+          } else if (empresasData) {
+            console.log('Dados completos das empresas compatíveis:', empresasData);
+            navigate('/empresa/patrocinios-disponiveis', { state: empresasData });
+          }
+        } else {
+          navigate('/empresa/patrocinios-disponiveis', { state: [] }); 
+        }
     }
 
   } catch (err) {

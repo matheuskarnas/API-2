@@ -13,6 +13,7 @@ interface Empresa {
 
 export function PatrociniosDisponiveis() {
   const location = useLocation();
+  console.log ('dados recebidos em PatrociniosDisponiveis:', location.state)
   const [empresas, setEmpresas] = useState<Empresa[]>(location.state ? location.state : []);
 
   return (
