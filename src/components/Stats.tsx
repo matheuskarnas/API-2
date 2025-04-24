@@ -138,7 +138,7 @@ export function Stats() {
       grid grid-cols-2  {/* Sempre 2 colunas */}
       gap-2 md:gap-4 xl:gap-6
       w-full 
-      min-[500px]:max-w-[90%] 
+      max-w-[90%] 
       xl:max-w-[75%]
       mx-auto
       text-gray-600

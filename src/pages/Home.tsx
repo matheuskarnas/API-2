@@ -8,7 +8,7 @@ interface Empresa {
   nome: string;
   descricao: string;
   url_exclusiva: string;
-  url_logo_baixa_resolucao?: string;
+  url_logo?: string;
 }
 
 export function Home() {
@@ -24,7 +24,7 @@ export function Home() {
       try {
         const { data, error } = await supabase
           .from("patrocinadores")
-          .select("id, nome, descricao, url_exclusiva, url_logo_baixa_resolucao")
+          .select("id, nome, descricao, url_exclusiva, url_logo")
           .order("nome", { ascending: true });
 
         if (error) throw error;
@@ -128,9 +128,9 @@ export function Home() {
                   alignItems: "center"
                 }}
               >
-                {empresa.url_logo_baixa_resolucao && (
+                {empresa.url_logo && (
                   <img 
-                    src={empresa.url_logo_baixa_resolucao} 
+                    src={empresa.url_logo} 
                     alt={`Logo ${empresa.nome}`}
                     style={{ 
                       width: "80px", 

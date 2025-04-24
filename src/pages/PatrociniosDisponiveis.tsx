@@ -7,7 +7,7 @@ interface Empresa {
   nome: string;
   descricao: string;
   url_exclusiva: string;
-  url_logo_baixa_resolucao?: string;
+  url_logo?: string;
 }
 
 export function PatrociniosDisponiveis() {
@@ -72,9 +72,9 @@ export function PatrociniosDisponiveis() {
                   alignItems: "center"
                 }}
               >
-                {empresa.url_logo_baixa_resolucao && (
+                {empresa.url_logo && (
                   <img
-                    src={empresa.url_logo_baixa_resolucao}
+                    src={empresa.url_logo}
                     alt={`Logo ${empresa.nome}`}
                     style={{
                       width: "80px",
@@ -84,7 +84,7 @@ export function PatrociniosDisponiveis() {
                     }}
                   />
                 )}
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", color: "black", marginBottom: "10px" }}>
                   {empresa.nome}
                 </h3>
                 <Link
