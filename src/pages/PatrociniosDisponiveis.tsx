@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import Header from "../components/Header";
 import { Link, useLocation } from "react-router-dom";
+import { supabase } from "../services/supabaseClient";
 
 interface Empresa {
   id: number;
@@ -10,14 +11,116 @@ interface Empresa {
   url_logo?: string;
 }
 
+interface EmpresaComStats extends Empresa {
+  lojasCriadas?: number;
+  cidadesImpactadas?: number;
+}
+
+const fetchStatsByUrl = async (empresaUrl: string): Promise<{ lojasCriadas: number; cidadesImpactadas: number }> => {
+  let lojasCriadas = 0;
+  let cidadesImpactadas = 0;
+
+  try {
+    const { data: patrocinador } = await supabase
+      .from("patrocinadores")
+      .select("id")
+      .eq("url_exclusiva", empresaUrl)
+      .single();
+
+    if (patrocinador?.id) {
+      const patrocinadorId = patrocinador.id;
+
+      const { data: usuariosPatrocinados } = await supabase
+        .from("patrocinadores_usuarios")
+        .select("usuario_id")
+        .eq("patrocinador_id", patrocinadorId);
+
+      const usuariosIds = usuariosPatrocinados?.map(u => u.usuario_id) || [];
+
+      if (usuariosIds.length > 0) {
+        const { count: lojasCount } = await supabase
+          .from("lojas")
+          .select("*", { count: "exact", head: true })
+          .in("usuario_id", usuariosIds);
+        lojasCriadas = lojasCount || 0;
+
+        const { data: lojasData } = await supabase
+          .from("lojas")
+          .select("localizacao_id")
+          .in("usuario_id", usuariosIds);
+
+        const { data: comunidadesUsuarios } = await supabase
+          .from("usuarios_comunidades")
+          .select("comunidade_id")
+          .in("usuario_id", usuariosIds);
+
+        const comunidadesUnicas = [...new Set(
+          comunidadesUsuarios?.map(c => c.comunidade_id) || []
+        )];
+
+        const { data: comunidadesData } = await supabase
+          .from("comunidades")
+          .select("localizacao_id")
+          .in("id", comunidadesUnicas);
+
+        const localizacoesLojas = lojasData?.map(l => l.localizacao_id) || [];
+        const localizacoesComunidades = comunidadesData?.map(c => c.localizacao_id) || [];
+
+        const localizacoesUnicas = [...new Set([
+          ...localizacoesLojas,
+          ...localizacoesComunidades
+        ])];
+        cidadesImpactadas = localizacoesUnicas.length;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas para", empresaUrl, error);
+  }
+
+  return { lojasCriadas, cidadesImpactadas };
+};
+
 export function PatrociniosDisponiveis() {
   const location = useLocation();
-  console.log ('dados recebidos em PatrociniosDisponiveis:', location.state)
-  const [empresas] = useState<Empresa[]>(location.state ? location.state : []);
+  console.log ('dados recebidos em PatrociniosDisponiveis:', location.state);
+  const [empresas, setEmpresas] = useState<EmpresaComStats[]>(location.state ? location.state : []);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    const fetchStatsForEmpresas = async () => {
+      setLoadingStats(true);
+      const empresasComStats = await Promise.all(
+        empresas.map(async (empresa) => {
+          const stats = await fetchStatsByUrl(empresa.url_exclusiva);
+          return { ...empresa, lojasCriadas: stats.lojasCriadas, cidadesImpactadas: stats.cidadesImpactadas };
+        })
+      );
+      setEmpresas(empresasComStats);
+      setLoadingStats(false);
+    };
+
+    fetchStatsForEmpresas();
+  }, []);
+
   const empresasFiltradas = empresas.filter(empresa =>
-    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase()) 
+    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loadingStats) {
+    return (
+      <>
+        <Header />
+        <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+          <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
+            Patrocínios Disponíveis
+          </h1>
+          <p style={{ textAlign: "center", color: "#666" }}>Carregando informações...</p>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -27,12 +130,12 @@ export function PatrociniosDisponiveis() {
         </h1>
       <div style={{
           display: "flex",
-          justifyContent: "flex-start", 
+          justifyContent: "flex-start",
           marginBottom: "20px",
           marginLeft: "20px",
-          maxWidth: "400px", 
-          width: "calc(100% - 40px)" 
-        }}>         
+          maxWidth: "400px",
+          width: "calc(100% - 40px)"
+        }}>
           <input
             type="text"
             placeholder="Pesquisar"
@@ -51,7 +154,7 @@ export function PatrociniosDisponiveis() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {empresas.length === 0 ? (
+        {empresasFiltradas.length === 0 ? (
           <p style={{ textAlign: "center", color: "#666" }}>
             Nenhuma empresa compatível encontrada.
           </p>
@@ -87,6 +190,16 @@ export function PatrociniosDisponiveis() {
                 <h3 style={{ fontSize: "18px", color: "black", marginBottom: "10px" }}>
                   {empresa.nome}
                 </h3>
+                <div style={{display: "flex" , gap:"20px", paddingBottom:"15px" , paddingTop: "5px"}}>
+                  <div style={{display: "flex" , gap:"3px"}}>
+                    <img src="/assets/cidades.png" alt="cidades" style={{width: '26px', height: '26px'}} />
+                    <h1 style={{color: "black", paddingTop: "5px"}}>{empresa.cidadesImpactadas !== undefined ? empresa.cidadesImpactadas : '0'}</h1>
+                  </div>
+                  <div style={{display: "flex" , gap:"3px"}}>
+                    <img src="/assets/lojas.png" alt="lojas"  style={{width: '26px', height: '26px'}} />
+                    <h1 style={{color: "black", paddingTop: "5px"}}>{empresa.lojasCriadas !== undefined ? empresa.lojasCriadas : '0'}</h1>
+                  </div>
+                </div>
                 <Link
                   to={`/empresa/${empresa.url_exclusiva}`}
                   style={{
