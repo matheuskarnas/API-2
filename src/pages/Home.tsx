@@ -14,6 +14,10 @@ interface Empresa {
 export function Home() {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const empresasFiltradas = empresas.filter(empresa =>
+    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchEmpresas = async () => {
@@ -64,12 +68,39 @@ export function Home() {
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
         <h1 style={{ 
           fontSize: "24px", 
-          fontWeight: "bold", 
+          fontFamily: "inter" , 
           marginBottom: "20px",
-          textAlign: "center"
+          textAlign: "center",
+          color: "black"
         }}>
-          Nossos Patrocinadores
+          Empresas que estão fazendo a diferença!
         </h1>
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          marginBottom: "20px",
+          marginLeft: "20px",
+          maxWidth: "400px",
+          width: "calc(100% - 40px)"
+        }}>
+          <input
+            type="text"
+            placeholder="Pesquisar Patrocinador"
+            style={{
+              padding: "10px",
+              border: "none",
+              borderRadius: "8px",
+              width: "100%",
+              backgroundColor: "#f0f0f0",
+              color: "black",
+              fontSize: "16px",
+              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              paddingLeft: "15px",
+            }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         
         {empresas.length === 0 ? (
           <p style={{ textAlign: "center", color: "#666" }}>
@@ -82,7 +113,7 @@ export function Home() {
             flexWrap: "wrap",
             justifyContent: "center"
           }}>
-            {empresas.map((empresa) => (
+            {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}
                 style={{

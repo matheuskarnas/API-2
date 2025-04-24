@@ -14,22 +14,50 @@ export function PatrociniosDisponiveis() {
   const location = useLocation();
   console.log ('dados recebidos em PatrociniosDisponiveis:', location.state)
   const [empresas] = useState<Empresa[]>(location.state ? location.state : []);
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const empresasFiltradas = empresas.filter(empresa =>
+    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase()) 
+  );
   return (
     <>
       <Header />
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1 style={{ fontSize: "24px", color: "black", marginBottom: "20px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
-
+      <div style={{
+          display: "flex",
+          justifyContent: "flex-start", 
+          marginBottom: "20px",
+          marginLeft: "20px",
+          maxWidth: "400px", 
+          width: "calc(100% - 40px)" 
+        }}>         
+          <input
+            type="text"
+            placeholder="Pesquisar"
+            style={{
+              padding: "10px",
+              border: "none",
+              borderRadius: "8px",
+              width: "100%",
+              backgroundColor: "#f0f0f0",
+              color: "black",
+              fontSize: "16px",
+              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              paddingLeft: "15px",
+            }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         {empresas.length === 0 ? (
           <p style={{ textAlign: "center", color: "#666" }}>
             Nenhuma empresa compatível encontrada.
           </p>
         ) : (
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
-            {empresas.map((empresa) => (
+            {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}
                 style={{
@@ -71,7 +99,7 @@ export function PatrociniosDisponiveis() {
                     width: "100%"
                   }}
                 >
-                  Ver detalhes
+                  Pegar Patrocinio
                 </Link>
               </div>
             ))}
