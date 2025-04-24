@@ -68,16 +68,10 @@ export function Home() {
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
         <h1 style={{ 
           fontSize: "24px", 
-<<<<<<< HEAD
           fontFamily: "inter" , 
           marginBottom: "20px",
           textAlign: "center",
           color: "black"
-=======
-          marginBottom: "20px",
-          textAlign: "center",
-          color: "#000"
->>>>>>> da74233 (style: Update Home component styles and headings for improved readability and clarity)
         }}>
           Empresas que estão fazendo a diferença!
         </h1>
