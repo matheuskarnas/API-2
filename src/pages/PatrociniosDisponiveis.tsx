@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../services/supabaseClient";
+import { useState } from "react";
 import Header from "../components/Header";
 import { Link, useLocation } from "react-router-dom";
 
@@ -8,13 +7,13 @@ interface Empresa {
   nome: string;
   descricao: string;
   url_exclusiva: string;
-  url_logo_baixa_resolucao?: string;
+  url_logo?: string;
 }
 
 export function PatrociniosDisponiveis() {
   const location = useLocation();
   console.log ('dados recebidos em PatrociniosDisponiveis:', location.state)
-  const [empresas, setEmpresas] = useState<Empresa[]>(location.state ? location.state : []);
+  const [empresas] = useState<Empresa[]>(location.state ? location.state : []);
 
   return (
     <>
@@ -45,9 +44,9 @@ export function PatrociniosDisponiveis() {
                   alignItems: "center"
                 }}
               >
-                {empresa.url_logo_baixa_resolucao && (
+                {empresa.url_logo && (
                   <img
-                    src={empresa.url_logo_baixa_resolucao}
+                    src={empresa.url_logo}
                     alt={`Logo ${empresa.nome}`}
                     style={{
                       width: "80px",
