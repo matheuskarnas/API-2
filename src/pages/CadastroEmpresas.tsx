@@ -157,18 +157,9 @@ export function CadastroEmpresas() {
       <Header />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        style={{
-          backgroundColor: '#eee',
-          borderRadius: '12px',
-          padding: '30px',
-          width: '90%',
-          marginTop: '40px',
-          marginBottom: '40px',
-          maxWidth: '600px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-        }}
+        className="bg-gray-200 rounded-lg p-3 sm:p-10 w-11/12 mt-10 mb-10 max-w-lg shadow-md"
       >
-        <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Cadastro</h3>
+        <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black', fontSize: '1.5rem' }}>Cadastro</h3>
 
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Nome da Empresa: <span style={{ color: 'red' }}>*</span></label>
@@ -176,7 +167,7 @@ export function CadastroEmpresas() {
           <p style={errorStyle}>{errors.nome?.message}</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+        <div className="grid sm:grid-cols-2 gap-4 mb-4 flex sm:flex-col">
           <div>
             <label style={labelStyle}>URL personalizada: <span style={{ color: 'red' }}>*</span></label>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -212,7 +203,7 @@ export function CadastroEmpresas() {
         </div>
 
         <h4 style={{ marginBottom: '15px', color: '#333' }}>Redes Sociais (opcional)</h4>
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '25px'}}>
+        <div className="grid sm:grid-cols-2 gap-4 mb-6 grid-cols-1">
           {socialFields.map((item, index) => (
             <div key={index} style={{display: 'flex', alignItems: 'center', gap: '10px'}} >
               <img src={item.icon} alt={item.name} style={{ width: '24px', height: '24px' }} />
