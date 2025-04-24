@@ -32,7 +32,7 @@ export function EmpresaPage() {
   }, [empresaUrl, navigate]);
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden">
+    <div className="flex flex-col h-screen w-full overflow-hidden content-between">
       {/* Header - altura adaptável */}
       <div className="flex-none bg-[#16254D] min-[500px]:px-2">
         <Header />
@@ -46,12 +46,12 @@ export function EmpresaPage() {
         </div>
 
         {/* Stats - altura fixa proporcional */}
-        <div className="flex-none p-4">
+        <div className="flex-none">
           <Stats/>
         </div>
 
         {/* Maps - ocupa o restante do espaço */}
-        <div className="flex-1 min-h-[200px] p-4 pt-0">
+        <div className="flex-1 min-h-[200px]  pt-0">
           <Maps />
         </div>
       </div>
