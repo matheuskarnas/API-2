@@ -422,8 +422,8 @@ const Maps = () => {
               position={loc.coordenadas}
               onClick={() => setSelectedLocation(loc)}
               icon={{
-                url: "https://icons.iconarchive.com/icons/icons8/windows-8/256/Maps-Marker-icon.png",
-                scaledSize: new window.google.maps.Size(32, 32),
+                url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                scaledSize: new window.google.maps.Size(24, 24),
               }}
             />
           ))}
