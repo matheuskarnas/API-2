@@ -32,26 +32,21 @@ export function EmpresaPage() {
   }, [empresaUrl, navigate]);
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden content-between">
-      {/* Header - altura adaptável */}
-      <div className="flex-none bg-[#16254D] min-[500px]:px-2">
+    <div className="flex flex-col h-screen w-full overflow-hidden">
+      <div className="flex-none bg-[#16254D] min-[500px]:px-2 sticky top-0 z-10">
         <Header />
       </div>
 
-      {/* Conteúdo principal - ocupa o espaço restante sem scroll */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* EmpresaInfos - se adapta ao conteúdo */}
-        <div className="flex-none pt-4 sm:p-4">
+      <div className="flex-1 flex flex-col justify-between gap-4 p-4 overflow-hidden">
+        <div className="flex-none">
           <EmpresaInfos />
         </div>
 
-        {/* Stats - altura fixa proporcional */}
         <div className="flex-none">
-          <Stats/>
+          <Stats />
         </div>
 
-        {/* Maps - ocupa o restante do espaço */}
-        <div className="flex-1 min-h-[200px]  pt-0">
+        <div className="flex-none">
           <Maps />
         </div>
       </div>
