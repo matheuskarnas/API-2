@@ -19,8 +19,8 @@ export function PatrociniosDisponiveis() {
     <>
       <Header />
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center" }}>
-          Empresas Compatíveis
+        <h1 style={{ fontSize: "24px", color: "black", marginBottom: "20px", textAlign: "center" }}>
+          Patrocínios Disponíveis
         </h1>
 
         {empresas.length === 0 ? (
@@ -56,7 +56,7 @@ export function PatrociniosDisponiveis() {
                     }}
                   />
                 )}
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", color: "black", marginBottom: "10px" }}>
                   {empresa.nome}
                 </h3>
                 <Link
