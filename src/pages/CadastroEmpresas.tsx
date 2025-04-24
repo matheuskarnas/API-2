@@ -18,7 +18,16 @@ const schema = Yup.object().shape({
   nome: Yup.string().required("Campo obrigatório"),
   url: Yup.string()
     .required("Campo obrigatório")
-    .matches(/^[a-z0-9-]+$/, "A URL deve conter apenas letras minúsculas, números e hífens"),
+    .matches(/^[a-z0-9-]+$/, "A URL deve conter apenas letras minúsculas, números e hífens")
+    .test("unique-url", "Esta URL já está em uso por outra empresa", async (value) => {
+      if (!value) return false;
+      const { data: existingCompany } = await supabase
+        .from("patrocinadores")
+        .select("url_exclusiva")
+        .eq("url_exclusiva", value)
+        .single();
+      return !existingCompany;
+    }),
   logo: Yup.string()
     .required("Campo obrigatório")
     .url("Deve ser uma URL válida"),
@@ -73,52 +82,10 @@ export function CadastroEmpresas() {
     setLoading(true);
     
     try {
-      console.log('Verificando URL existente...');
-      const { data: existingCompany } = await supabase
-        .from('patrocinadores')
-        .select('url_exclusiva')
-        .eq('url_exclusiva', data.url)
-        .single();
-      console.log('Resultado da verificação:', existingCompany);
-
-      if (existingCompany) {
-        throw new Error('Esta URL já está em uso por outra empresa');
-      }
-
-      const { error: insertError } = await supabase
-        .from('patrocinadores')
-        .insert([{
-          nome: data.nome,
-          url_exclusiva: data.url,
-          url_logo: data.logo,
-          descricao: data.apresentacao,
-          twitter: data.twitter || null,
-          whatsapp: data.whatsapp || null,
-          url_site: data.site || null,
-          tiktok: data.tiktok || null,
-          linkedin: data.linkedin || null,
-          instagram: data.instagram || null,
-          facebook: data.facebook || null,
-          kawai: data.kawai || null,
-        }]);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      const { data: maxIdData, error: maxIdError } = await supabase
-        .from('patrocinadores')
-        .select('id')
-        .order('id', { ascending: false })
-        .single();
-
-      if (maxIdError) {
-        throw maxIdError;
-      }
-
-      navigate('/empresa/patrocinio', { state: { success: true, id: maxIdData?.id } });
-
+      navigate('/empresa/patrocinio', { state: { success: true, data } });
     } catch (err) {
+      console.error("Error during submission:", err);
+      alert("Ocorreu um erro ao cadastrar a empresa. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -157,9 +124,18 @@ export function CadastroEmpresas() {
       <Header />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-gray-200 rounded-lg p-3 sm:p-10 w-11/12 mt-10 mb-10 max-w-lg shadow-md"
+        style={{
+          backgroundColor: '#eee',
+          borderRadius: '12px',
+          padding: '30px',
+          width: '90%',
+          marginTop: '40px',
+          marginBottom: '40px',
+          maxWidth: '600px',
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+        }}
       >
-        <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black', fontSize: '1.5rem' }}>Cadastro</h3>
+        <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Cadastro</h3>
 
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Nome da Empresa: <span style={{ color: 'red' }}>*</span></label>
@@ -167,7 +143,7 @@ export function CadastroEmpresas() {
           <p style={errorStyle}>{errors.nome?.message}</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4 mb-4 flex sm:flex-col">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
           <div>
             <label style={labelStyle}>URL personalizada: <span style={{ color: 'red' }}>*</span></label>
             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -203,7 +179,7 @@ export function CadastroEmpresas() {
         </div>
 
         <h4 style={{ marginBottom: '15px', color: '#333' }}>Redes Sociais (opcional)</h4>
-        <div className="grid sm:grid-cols-2 gap-4 mb-6 grid-cols-1">
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '25px'}}>
           {socialFields.map((item, index) => (
             <div key={index} style={{display: 'flex', alignItems: 'center', gap: '10px'}} >
               <img src={item.icon} alt={item.name} style={{ width: '24px', height: '24px' }} />

@@ -2,6 +2,9 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import Header from "../components/Header"
+import { useEffect, useState } from "react"
+import { supabase } from "../services/supabaseClient";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const schema = yup.object({
   estados: yup.array().min(1, "Selecione pelo menos um estado"),
@@ -11,17 +14,35 @@ const schema = yup.object({
 }).required()
 
 export function Patrocinio() {
+  const [loading, setLoading] = useState(false);
+  const [estados, setEstados] = useState([]);
+  const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const empresaData = location.state?.data;
+
+  useEffect(() => {
+    if (!empresaData) {
+      alert("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas.");
+      navigate("/empresa/cadastro");
+    }
+  }, [empresaData, navigate]);
+
+  useEffect(() => {
+    fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((res) => res.json())
+      .then((data) => setEstados(data.sort((a: { nome: string }, b: { nome: string }) => a.nome.localeCompare(b.nome))));
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
-  })
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
+  });
 
   const checkboxGroupStyle: React.CSSProperties = {
     display: 'flex',
@@ -29,115 +50,327 @@ export function Patrocinio() {
     gap: '10px',
     marginBottom: '15px',
   }
-  
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data: patrocinadoresData, error: patrocinadoresError } = await supabase
+        .from("patrocinadores")
+        .insert([
+          {
+            nome: empresaData.nome,
+            url_exclusiva: empresaData.url,
+            url_logo: empresaData.logo,
+            descricao: empresaData.apresentacao,
+            twitter: empresaData.twitter,
+            whatsapp: empresaData.whatsapp,
+            url_site: empresaData.site,
+            tiktok: empresaData.tiktok,
+            linkedin: empresaData.linkedin,
+            instagram: empresaData.instagram,
+            facebook: empresaData.facebook,
+            kawai: empresaData.kawai,
+          },
+        ])
+        .select("id")
+        .single();
+
+      if (patrocinadoresError) {
+        console.log("Erro ao inserir patrocinadores:", patrocinadoresError);
+        setError(`Erro ao inserir patrocinadores: ${patrocinadoresError.message}`);
+        throw patrocinadoresError;
+      }
+
+      const id = patrocinadoresData.id;
+
+      const { error: perfisError } = await supabase
+        .from('perfis_patrocinio')
+        .insert([{
+          patrocinador_id: id,
+          estados: data.estados,
+          faixas_etarias: data.faixasEtarias,
+          escolaridades: data.escolaridade,
+          rendas_familiares: data.rendaFamiliar,
+        }]);
+
+      if (perfisError) {
+        console.log('Erro ao inserir perfis de patrocínio:', perfisError);
+        setError(`Erro ao inserir perfis de patrocínio: ${perfisError.message}`);
+        throw perfisError;
+      }
+
+      alert("Cadastro realizado com sucesso!");
+    } catch (err) {
+      console.error("Erro no cadastro:", err);
+      if (err instanceof Error) {
+        setError(`Erro: ${err.message}`);
+      } else if (typeof err === "object" && err !== null && "message" in err) {
+        setError(`Erro: ${(err as any).message}`);
+      } else {
+        setError("Erro desconhecido ao cadastrar. Verifique o console para mais detalhes.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sectionStyle = { marginBottom: '25px', color: '#000' }
 
   return (
     <>
       <Header />
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px', marginBottom: '40px' }}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{
-            backgroundColor: '#eee',
-            borderRadius: '12px',
-            padding: '30px',
-            width: '100%',
-            maxWidth: '500px',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Perfil para patrocínio</h3>
+      {empresaData ? (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "40px", marginBottom: "40px" }}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{
+              backgroundColor: "#eee",
+              borderRadius: "12px",
+              padding: "30px",
+              width: "100%",
+              maxWidth: "500px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <h3 style={{ textAlign: "center", marginBottom: "25px", color: "black" }}>Perfil para patrocínio</h3>
 
-          {/* Estados */}
-          <div style={sectionStyle}>
-            <label>Estados que deseja patrocinar:</label>
-            <div style={checkboxGroupStyle}>
-              {['SP', 'RJ', 'MG', 'CE', 'BA'].map((estado) => (
-                <label key={estado}>
-                  <input type="checkbox" value={estado} {...register("estados")} />
-                  {' '}{estado}
-                </label>
-              ))}
+            {/* Estados */}
+            <div style={sectionStyle}>
+              <div style={{ marginBottom: '10px' }}>
+                <label>Estados que deseja patrocinar:</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allEstados = estados.map((estado: { sigla: string; }) => estado.sigla);
+                    const currentValues = watch("estados") || [];
+                    if (currentValues.length === allEstados.length) {
+                      setValue("estados", [], { shouldValidate: true });
+                    } else {
+                      setValue("estados", allEstados, { shouldValidate: true });
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#1692FF',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                    padding: '3px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    marginLeft: '10px',
+                    transition: 'background-color 0.3s, color 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#16AAFF';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1692FF';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                >
+                  {watch("estados")?.length === 27 ? 'Desmarcar Todos' : 'Selecionar Todos'}
+                </button>
+              </div>
+              <div style={checkboxGroupStyle}>
+                {estados.map((estado: { sigla: string; nome: string }) => (
+                  <label key={estado.nome}>
+                    <input type="checkbox" value={estado.sigla} {...register("estados")} />
+                    {' '}{estado.sigla}
+                  </label>
+                ))}
+              </div>
+              <p style={{ color: 'red' }}>{errors.estados?.message}</p>
             </div>
-            <p style={{ color: 'red' }}>{errors.estados?.message}</p>
-          </div>
 
-          {/* Faixas Etárias */}
-          <div style={sectionStyle}>
-            <label>Faixas etárias:</label>
-            <div style={checkboxGroupStyle}>
-              {['18 a 24', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65+'].map((faixa, index) => (
-                <label key={index}>
-                  <input type="checkbox" value={faixa} {...register("faixasEtarias")} />
-                  {' '}{faixa}
-                </label>
-              ))}
+            {/* Faixas Etárias */}
+            <div style={sectionStyle}>
+              <div style={{ marginBottom: '10px' }}>
+                <label>Faixas etárias:</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allFaixas = ['18 a 24', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65+'];
+                    const currentValues = watch("faixasEtarias") || [];
+                    if (currentValues.length === allFaixas.length) {
+                      setValue("faixasEtarias", [], { shouldValidate: true });
+                    } else {
+                      setValue("faixasEtarias", allFaixas, { shouldValidate: true });
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#1692FF',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                    padding: '3px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    marginLeft: '10px',
+                    transition: 'background-color 0.3s, color 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#16AAFF';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1692FF';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                >
+                  {watch("faixasEtarias")?.length === 6 ? 'Desmarcar Todos' : 'Selecionar Todos'}
+                </button>
+              </div>
+              <div style={checkboxGroupStyle}>
+                {['18 a 24', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65+'].map((faixa, index) => (
+                  <label key={index}>
+                    <input type="checkbox" value={faixa} {...register("faixasEtarias")} />
+                    {' '}{faixa}
+                  </label>
+                ))}
+              </div>
+              <p style={{ color: 'red' }}>{errors.faixasEtarias?.message}</p>
             </div>
-            <p style={{ color: 'red' }}>{errors.faixasEtarias?.message}</p>
-          </div>
 
-          {/* Escolaridade */}
-          <div style={sectionStyle}>
-            <label>Escolaridade:</label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              {[
-                "Ensino Fundamental Incompleto",
-                "Ensino Fundamental",
-                "Ensino Médio Incompleto",
-                "Ensino Médio Completo",
-                "Ensino Superior Incompleto",
-                "Ensino Superior Completo",
-                "Pós-graduação (Especialização) +"
-              ].map((item, index) => (
-                <label key={index}>
-                  <input type="checkbox" value={item} {...register("escolaridade")} />
-                  {' '}{item}
-                </label>
-              ))}
+            {/* Escolaridade */}
+            <div style={sectionStyle}>
+              <div style={{ marginBottom: '10px' }}>
+                <label>Escolaridade:</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allEscolaridade = ['EFI', 'EFC', 'EMI', 'EMC', 'ESI', 'ESC', 'POS'];
+                    const currentValues = watch("escolaridade") || [];
+                    if (currentValues.length === allEscolaridade.length) {
+                      setValue("escolaridade", [], { shouldValidate: true });
+                    } else {
+                      setValue("escolaridade", allEscolaridade, { shouldValidate: true });
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#1692FF',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                    padding: '3px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    marginLeft: '10px',
+                    transition: 'background-color 0.3s, color 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#16AAFF';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1692FF';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                >
+                  {watch("escolaridade")?.length === 7 ? 'Desmarcar Todos' : 'Selecionar Todos'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                {[
+                  ["Ensino Fundamental Incompleto", "EFI"],
+                  ["Ensino Fundamental Completo", "EFC"],
+                  ["Ensino Médio Incompleto", "EMI"],
+                  ["Ensino Médio Completo", "EMC"],
+                  ["Ensino Superior Incompleto", "ESI"],
+                  ["Ensino Superior Completo", "ESC"],
+                  ["Pós-graduação (Especialização) +", "POS"]
+                ].map((item, index) => (
+                  <label key={index}>
+                    <input type="checkbox" value={item[1]} {...register("escolaridade")} />
+                    {' '}{item[0]}
+                  </label>
+                ))}
+              </div>
+              <p style={{ color: 'red' }}>{errors.escolaridade?.message}</p>
             </div>
-            <p style={{ color: 'red' }}>{errors.escolaridade?.message}</p>
-          </div>
 
-          {/* Renda Familiar */}
-          <div style={sectionStyle}>
-            <label>Renda familiar:</label>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              {[
-                "Classe E - Até R$ 2.824",
-                "Classe D - R$ 2.824 a R$ 5.648",
-                "Classe C - R$ 5.648 a R$ 14.120",
-                "Classe B - R$ 14.120 a R$ 28.240",
-                "Classe A - Acima de R$ 28.240",
-              ].map((classe, index) => (
-                <label key={index}>
-                  <input type="checkbox" value={classe} {...register("rendaFamiliar")} />
-                  {' '}{classe}
-                </label>
-              ))}
+            {/* Renda Familiar */}
+            <div style={sectionStyle}>
+              <div style={{ marginBottom: '10px' }}>
+                <label>Renda Familiar:</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const allRendas = ['A', 'B', 'C', 'D', 'E'];
+                    const currentValues = watch("rendaFamiliar") || [];
+                    if (currentValues.length === allRendas.length) {
+                      setValue("rendaFamiliar", [], { shouldValidate: true });
+                    } else {
+                      setValue("rendaFamiliar", allRendas, { shouldValidate: true });
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#1692FF',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                    padding: '3px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    marginLeft: '10px',
+                    transition: 'background-color 0.3s, color 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#16AAFF';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1692FF';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                >
+                  {watch("rendaFamiliar")?.length === 5 ? 'Desmarcar Todos' : 'Selecionar Todos'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                {[
+                  ["E", "Até R$1.045,00"],
+                  ["D", "De R$1.045,01 a R$2.089,60"],
+                  ["C", "De R$2.089,61 a R$3.134,40"],
+                  ["B", "De R$3.134,41 a R$6.101,26"],
+                  ["A", "Acima de R$6.101,26"]
+                ].map((classe, index) => (
+                  <label key={index}>
+                    <input type="checkbox" value={classe[0]} {...register("rendaFamiliar")} />
+                    {' '}Classe {classe[0]} - {classe[1]}
+                  </label>
+                ))}
+              </div>
+              <p style={{ color: 'red' }}>{errors.rendaFamiliar?.message}</p>
             </div>
-            <p style={{ color: 'red' }}>{errors.rendaFamiliar?.message}</p>
-          </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <button
-              type="submit"
-              style={{
-                backgroundColor: '#0080ff',
-                color: '#fff',
-                border: 'none',
-                padding: '10px 30px',
-                borderRadius: '8px',
-                fontSize: '16px',
-                cursor: 'pointer',
-              }}
-            >
-              Cadastrar
-            </button>
-          </div>
-        </form>
-      </div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: '#0080ff',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '10px 30px',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                }}
+              >
+                {loading ? 'Enviando...' : 'Cadastrar'}
+              </button>
+            </div>
+
+            {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '15px' }}>{error}</p>}
+          </form>
+        </div>
+      ) : (
+        <p style={{ textAlign: "center", color: "red", marginTop: "20px" }}>
+          Redirecionando para o cadastro de empresas...
+        </p>
+      )}
     </>
-  )
+  );
 }
