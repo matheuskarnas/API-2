@@ -64,15 +64,15 @@ export function Home() {
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
         <h1 style={{ 
           fontSize: "24px", 
-          fontWeight: "bold", 
           marginBottom: "20px",
-          textAlign: "center"
+          textAlign: "center",
+          color: "#000"
         }}>
-          Nossos Patrocinadores
+          Empresas que estão fazendo a diferença!
         </h1>
         
         {empresas.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#666" }}>
+          <p style={{ textAlign: "center", color: "#000" }}>
             Nenhum patrocinador cadastrado
           </p>
         ) : (
@@ -109,7 +109,7 @@ export function Home() {
                     }}
                   />
                 )}
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "10px" }}>
+                <h3 style={{ fontSize: "18px", marginBottom: "10px", color: '#000' }}>
                   {empresa.nome}
                 </h3>
                 <Link
