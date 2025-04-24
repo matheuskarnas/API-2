@@ -261,7 +261,7 @@ export function CadastroUsuario() {
             <p style={errorStyle}>{errors.nome?.message}</p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Data Nascimento:*</label>
               <input 
@@ -274,7 +274,7 @@ export function CadastroUsuario() {
               />
               <p style={errorStyle}>{errors.data_nascimento?.message}</p>
             </div>
-            <div style={{ width: '100px' }}>
+            <div className="w-full sm:w-[100px]">
               <label style={labelStyle}>Sexo:*</label>
               <select style={inputStyle} {...register("sexo")}>
                 <option value="">-</option>
@@ -293,7 +293,7 @@ export function CadastroUsuario() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Estado:*</label>
               <select 
@@ -330,7 +330,7 @@ export function CadastroUsuario() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 3 }}>
               <label style={labelStyle}>Rua:*</label>
               <input style={inputStyle} {...register("rua")} />
@@ -343,7 +343,7 @@ export function CadastroUsuario() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Complemento:</label>
               <input style={inputStyle} {...register("complemento")} />
@@ -355,7 +355,7 @@ export function CadastroUsuario() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
+          <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Renda Familiar:*</label>
               <select style={inputStyle} {...register("renda_familiar")}>
