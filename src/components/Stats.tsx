@@ -144,10 +144,10 @@ export function Stats() {
       text-gray-600
       xl:flex xl:flex-wrap xl:justify-between  
     ">
-      <Card title='Lojas Criadas' value={totalLojas} />
-      <Card title="Famílias impactadas" value={familiasImpactadas} />
-      <Card title="Cidades impactadas" value={cidadesImpactadas} />
-      <Card title="Comunidades" value={totalComunidades} />
+      <Card title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
+      <Card title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
+      <Card title="Cidades impactadas" value={cidadesImpactadas} tipo="cidades_impactadas" />
+      <Card title="Comunidades" value={totalComunidades} tipo="comunidades" />
     </div>
   )
 }

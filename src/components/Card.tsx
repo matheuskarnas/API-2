@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import Grafico from "./Grafico";
 
 interface CardProps {
-    title: string;
-    value: number;
-    onClick?: () => void;
+  title: string;
+  value: number;
+  tipo: "lojas_criadas" | "familias_impactadas" | "cidades_impactadas" | "comunidades"; // Prop para definir o tipo do gráfico
+  onClick?: () => void;
 }
-export const Card: React.FC<CardProps> = ({ title, value}) => {
-  const [isModalOpen, setIsmodalOpen] = useState(false);
 
-  const handleOpenModal = () => setIsmodalOpen(true);
-  const handleCloseModal = () => setIsmodalOpen(false);
+export const Card: React.FC<CardProps> = ({ title, value, tipo }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -31,10 +33,10 @@ export const Card: React.FC<CardProps> = ({ title, value}) => {
 
   return (
     <>
-      <div 
+      <div
         onClick={handleOpenModal}
         className="
-        bg-wite p-3 rounded-lg shadow 
+        bg-white p-3 rounded-lg shadow 
         flex flex-col items-center
         xl:w-[48%]
         border-3 
@@ -42,25 +44,29 @@ export const Card: React.FC<CardProps> = ({ title, value}) => {
         shadow-md
         shadow-black
         cursor-pointer
-      ">
-        <p className="text-black text-lg sm:text-sm md:text-base whitespace-nowrap relative -top-3">{title}</p>  
+      "
+      >
+        <p className="text-black text-lg sm:text-sm md:text-base whitespace-nowrap relative -top-3">
+          {title}
+        </p>
         <p className="text-black text-xl sm:text-2xl md:text-lg font-bold">{value}</p>
       </div>
-      
+
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-xs"
-        onClick={handleClickOutside}
-        > 
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-xs"
+          onClick={handleClickOutside}
+        >
           <div className="bg-white p-6 rounded-[24px] md:rounded-[37px] shadow-lg w-[90%] h-[80%] md:w-[771px] md:h-[640px]">
             <div className="flex items-center mb-4">
               <h2 className="text-[32px] font-normal text-black text-center w-full leading-[100%] tracking-[0]">
                 {title}
               </h2>
             </div>
-            <Grafico />
+            <Grafico tipo={tipo} />
           </div>
         </div>
       )}
     </>
   );
-}
+};
