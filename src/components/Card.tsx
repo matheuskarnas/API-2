@@ -4,9 +4,10 @@ import Grafico from "./Grafico";
 interface CardProps {
     title: string;
     value: number;
+    srcImg: string;
     onClick?: () => void;
 }
-export const Card: React.FC<CardProps> = ({ title, value}) => {
+export const Card: React.FC<CardProps> = ({ title, value, srcImg}) => {
   const [isModalOpen, setIsmodalOpen] = useState(false);
 
   const handleOpenModal = () => setIsmodalOpen(true);
@@ -34,17 +35,25 @@ export const Card: React.FC<CardProps> = ({ title, value}) => {
       <div 
         onClick={handleOpenModal}
         className="
-        bg-wite p-3 rounded-lg shadow 
-        flex flex-col items-center
+        sm:h-[90px]
+        flex flex-row
+        items-center
+        bg-wite p-1 rounded-lg shadow 
         xl:w-[48%]
         border-3 
         border-[#328DD8]
         shadow-md
         shadow-black
-        cursor-pointer
-      ">
-        <p className="text-black text-lg sm:text-sm md:text-base whitespace-nowrap relative -top-3">{title}</p>  
-        <p className="text-black text-xl sm:text-2xl md:text-lg font-bold">{value}</p>
+        cursor-pointer">
+        
+        <div className="flex items-center justify-center">
+          <img src={srcImg} className="h-[20px] w-[20px] sm:w-[42px] sm:h-[42px] mt-3 sm:ml-[40px]"/>
+        </div>
+
+        <div className="flex flex-col justify-center text-center w-full">
+          <p className="text-black text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>  
+          <p className="text-black text-[24px] sm:text-[36px] font-bold">{value}</p>
+        </div>
       </div>
       
       {isModalOpen && (

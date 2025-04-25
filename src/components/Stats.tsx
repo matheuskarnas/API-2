@@ -144,10 +144,10 @@ export function Stats() {
       text-gray-600
       xl:flex xl:flex-wrap xl:justify-between  
     ">
-      <Card title='Lojas Criadas' value={totalLojas} />
-      <Card title="Famílias impactadas" value={familiasImpactadas} />
-      <Card title="Cidades impactadas" value={cidadesImpactadas} />
-      <Card title="Comunidades" value={totalComunidades} />
+      <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={totalLojas} />
+      <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={familiasImpactadas} />
+      <Card srcImg="/assets/map-marker.png" title="Cidades impactadas" value={cidadesImpactadas} />
+      <Card srcImg="/assets/building.png" title="Comunidades" value={totalComunidades} />
     </div>
   )
 }
