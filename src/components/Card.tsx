@@ -35,6 +35,7 @@ export const Card: React.FC<CardProps> = ({ title, value, srcImg}) => {
       <div 
         onClick={handleOpenModal}
         className="
+        w-[164px]
         sm:h-[90px]
         flex flex-row
         items-center
@@ -51,7 +52,7 @@ export const Card: React.FC<CardProps> = ({ title, value, srcImg}) => {
         </div>
 
         <div className="flex flex-col justify-center text-center w-full">
-          <p className="text-black text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>  
+          <p className="text-black text-[11px] text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>  
           <p className="text-black text-[24px] sm:text-[36px] font-bold">{value}</p>
         </div>
       </div>
