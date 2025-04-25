@@ -234,7 +234,6 @@ const Maps = () => {
   w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
   h-[150px]
   md:h-[200px] w:[100%]
-
 ">
       {isLoaded ? (
         <GoogleMap
