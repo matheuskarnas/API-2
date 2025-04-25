@@ -136,7 +136,7 @@ export function Stats() {
   return (
     <div className="
       grid grid-cols-2  {/* Sempre 2 colunas */}
-      gap-2 md:gap-4 xl:gap-6
+      gap-[15px] sm:gap-y-[26px] sm:gap-x-[23px]
       w-full 
       max-w-[90%] 
       xl:max-w-[75%]
