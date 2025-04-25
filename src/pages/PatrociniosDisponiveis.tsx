@@ -112,7 +112,7 @@ export function PatrociniosDisponiveis() {
       <>
         <Header />
         <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-          <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
+          <h1 style={{ fontSize: "24px",  marginBottom: "20px", textAlign: "center" }}>
             Patrocínios Disponíveis
           </h1>
           <p style={{ textAlign: "center", color: "#666" }}>Carregando informações...</p>
@@ -125,7 +125,7 @@ export function PatrociniosDisponiveis() {
     <>
       <Header />
       <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
+        <h1 style={{ fontSize: "24px", marginBottom: "20px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
         <div className="flex justify-center mb-5  W-full  ">
