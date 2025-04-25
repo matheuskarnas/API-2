@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
@@ -55,6 +56,19 @@ export function CadastroUsuario() {
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidades, setCidades] = useState([]);
 
+  const notify = () => {
+    return new Promise<void>((resolve) => {
+      toast.success('Cadastro realizado!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        onClose: () => resolve(),
+      });
+    });
+  };
+
   useEffect(() => {
     fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
       .then((res) => res.json())
@@ -70,7 +84,7 @@ export function CadastroUsuario() {
       setCidades([]);
     }
   }, [estadoSelecionado]);
-  
+
   const {
     register,
     handleSubmit,
@@ -82,10 +96,10 @@ export function CadastroUsuario() {
   const onSubmit = async (data: any) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const dataNascimento = new Date(data.data_nascimento).toISOString();
-      
+
       const { error: supabaseError } = await supabase
         .from('usuarios')
         .insert([{
@@ -103,20 +117,20 @@ export function CadastroUsuario() {
           escolaridade: data.escolaridade,
         }])
 
-        if (supabaseError) {
-          if (supabaseError.code === '23505') {
-            if (supabaseError.message.includes('cpf')) {
-              throw new Error('CPF já cadastrado no sistema');
-            } else if (supabaseError.message.includes('celular')) {
-              throw new Error('Celular já cadastrado no sistema');
-            }
+      if (supabaseError) {
+        if (supabaseError.code === '23505') {
+          if (supabaseError.message.includes('cpf')) {
+            throw new Error('CPF já cadastrado no sistema');
+          } else if (supabaseError.message.includes('celular')) {
+            throw new Error('Celular já cadastrado no sistema');
           }
-          throw supabaseError;
         }
+        throw supabaseError;
+      }
 
-      alert('Cadastro realizado com sucesso!');
+      await notify();
 
-      const nascimento = new Date(data.data_nascimento); 
+      const nascimento = new Date(data.data_nascimento);
       const hoje = new Date();
       let idade = hoje.getFullYear() - nascimento.getFullYear();
       const mes = hoje.getMonth() - nascimento.getMonth();
@@ -140,61 +154,58 @@ export function CadastroUsuario() {
 
 
       const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
-      .from('perfis_patrocinio')
-      .select('*, patrocinador_id');
+        .from('perfis_patrocinio')
+        .select('*, patrocinador_id');
 
-    if (perfis_patrocinioError) {
-      console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
-    } else {
-      console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
-    
+      if (perfis_patrocinioError) {
+        console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
+      } else {
+        console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
 
-     
-      const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
-        const estadoCompatível = perfil.estados.includes(data.estado);
-        const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
-        const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
-        const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
 
-        return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
-      });
 
-      const idsEmpresasCompatíveis = empresasCompatíveis.map((perfil:any)=> perfil.patrocinador_id)
-      console.log('IDs das empresas compatíveis:', idsEmpresasCompatíveis);
+        const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
+          const estadoCompatível = perfil.estados.includes(data.estado);
+          const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
+          const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
+          const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
 
-      if (idsEmpresasCompatíveis.length > 0) {
-        const { data: empresasData, error: empresasError } = await supabase
-          .from('patrocinadores')
-          .select('*')
-          .in('id', idsEmpresasCompatíveis);
+          return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
+        });
+
+        const idsEmpresasCompatíveis = empresasCompatíveis.map((perfil: any) => perfil.patrocinador_id)
+        console.log('IDs das empresas compatíveis:', idsEmpresasCompatíveis);
+
+        if (idsEmpresasCompatíveis.length > 0) {
+          const { data: empresasData, error: empresasError } = await supabase
+            .from('patrocinadores')
+            .select('*')
+            .in('id', idsEmpresasCompatíveis);
 
           if (empresasError) {
             console.error('Erro ao buscar detalhes das empresas:', empresasError);
-            
+
           } else if (empresasData) {
             console.log('Dados completos das empresas compatíveis:', empresasData);
             navigate('/usuario/patrocinios-disponiveis', { state: empresasData });
           }
         } else {
-          navigate('/usuario/patrocinios-disponiveis', { state: [] }); 
+          navigate('/usuario/patrocinios-disponiveis', { state: [] });
         }
+      }
+
+    } catch (err) {
+
+      console.error('Erro no cadastro:', err);
+      if (err instanceof Error) {
+        setError(err.message || 'Erro ao cadastrar. Tente novamente.');
+      } else {
+        setError('Erro ao cadastrar. Tente novamente.');
+      }
+    } finally {
+      setLoading(false);
     }
-
-  } catch (err) {
-
-    console.error('Erro no cadastro:', err);
-    if (err instanceof Error) {
-      setError(err.message || 'Erro ao cadastrar. Tente novamente.');
-    } else {
-      setError('Erro ao cadastrar. Tente novamente.');
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-      
-    
-
+  };
 
   const inputStyle = {
     backgroundColor: 'white',
@@ -222,6 +233,9 @@ export function CadastroUsuario() {
   return (
     <>
       <Header />
+      <ToastContainer
+        autoClose={5000}
+      />
       <div style={{
         display: 'flex',
         justifyContent: 'center',
@@ -243,9 +257,9 @@ export function CadastroUsuario() {
           <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Cadastro</h3>
 
           {error && (
-            <div style={{ 
-              color: 'red', 
-              textAlign: 'center', 
+            <div style={{
+              color: 'red',
+              textAlign: 'center',
               marginBottom: '20px',
               backgroundColor: '#ffeeee',
               padding: '10px',
@@ -264,13 +278,13 @@ export function CadastroUsuario() {
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Data Nascimento:*</label>
-              <input 
-              type="date" 
-              style={inputStyle} 
-              {...register("data_nascimento")} 
-              max={new Date(new Date().setFullYear(new Date().getFullYear() - 18))
-                .toISOString()
-                .split("T")[0]}
+              <input
+                type="date"
+                style={inputStyle}
+                {...register("data_nascimento")}
+                max={new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+                  .toISOString()
+                  .split("T")[0]}
               />
               <p style={errorStyle}>{errors.data_nascimento?.message}</p>
             </div>
@@ -285,9 +299,17 @@ export function CadastroUsuario() {
             </div>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>CPF:*</label>
-              <input 
-                style={inputStyle} 
-                {...register("cpf")} 
+              <input
+                style={inputStyle}
+                {...register("cpf")}
+                placeholder="000.000.000-00"
+                onInput={(e) => {
+                  let value = e.currentTarget.value.replace(/\D/g, '');
+                  if (value.length > 3) value = value.replace(/^(\d{3})/, '$1.');
+                  if (value.length > 7) value = value.replace(/^(\d{3})\.(\d{3})/, '$1.$2.');
+                  if (value.length > 11) value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})/, '$1.$2.$3-');
+                  e.currentTarget.value = value.substring(0, 14);
+                }}
               />
               <p style={errorStyle}>{errors.cpf?.message}</p>
             </div>
@@ -296,22 +318,22 @@ export function CadastroUsuario() {
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Estado:*</label>
-              <select 
-                style={inputStyle} 
+              <select
+                style={inputStyle}
                 value={estadoSelecionado}
-                {...register("estado")} 
+                {...register("estado")}
                 onChange={(e) => {
                   setEstadoSelecionado(e.target.value);
                 }}
               >
                 <option value="">-</option>
                 {estados.map((estado: { sigla: string; nome: string }) => (
-                <option 
-                  key={estado.sigla} 
-                  value={estado.sigla}
-                >
-                  {estado.nome}
-                </option>
+                  <option
+                    key={estado.sigla}
+                    value={estado.sigla}
+                  >
+                    {estado.nome}
+                  </option>
                 ))}
               </select>
               <p style={errorStyle}>{errors.estado?.message}</p>
@@ -320,11 +342,11 @@ export function CadastroUsuario() {
               <label style={labelStyle}>Cidade:*</label>
               <select style={inputStyle} {...register("cidade")}>
                 <option value="">-</option>
-              {cidades.map((cidade: { nome: string }) => (
-                <option key={cidade.nome} value={cidade.nome}>
-                  {cidade.nome}
-                </option>
-              ))}
+                {cidades.map((cidade: { nome: string }) => (
+                  <option key={cidade.nome} value={cidade.nome}>
+                    {cidade.nome}
+                  </option>
+                ))}
               </select>
               <p style={errorStyle}>{errors.cidade?.message}</p>
             </div>
@@ -350,7 +372,26 @@ export function CadastroUsuario() {
             </div>
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Celular:*</label>
-              <input style={inputStyle} {...register("celular")} />
+              <input
+                style={inputStyle}
+                {...register("celular")}
+                placeholder="(XX) 9XXXX-XXXX"
+                onInput={(e) => {
+                  let value = e.currentTarget.value.replace(/\D/g, '');
+                  if (value.length > 7) {
+                    value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                  } else if (value.length > 2) {
+                    value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                  }
+                  e.currentTarget.value = value.substring(0, 15);
+                }}
+                onKeyDown={(e) => {
+                  if (!/[\d]|Backspace|Delete|ArrowLeft|ArrowRight|Tab/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                maxLength={15}
+              />
               <p style={errorStyle}>{errors.celular?.message}</p>
             </div>
           </div>

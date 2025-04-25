@@ -80,7 +80,7 @@ export function CadastroEmpresas() {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    
+
     try {
       navigate('/empresa/patrocinio', { state: { success: true, data } });
     } catch (err) {
@@ -122,6 +122,79 @@ export function CadastroEmpresas() {
       alignItems: 'center',
     }}>
       <Header />
+      <div style={{
+        width: '90%',
+        maxWidth: '600px',
+        marginTop: '20px',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          marginBottom: '8px',
+          fontSize: '14px',
+          color: '#555',
+          position: 'relative',
+        }}>
+          <span style={{
+            fontWeight: 'bold',
+            color: '#0080ff',
+            zIndex: 2,
+            backgroundColor: 'white',
+            padding: '0 5px'
+          }}>1</span>
+          <span style={{
+            fontWeight: 'bold',
+            color: '#999',
+            zIndex: 2,
+            backgroundColor: 'white',
+            padding: '0 5px'
+          }}>2</span>
+        </div>
+        <div style={{
+          display: 'flex',
+          height: '6px',
+          position: 'relative',
+        }}>
+          <div style={{
+            width: '50%',
+            height: '100%',
+            backgroundColor: '#0080ff',
+            position: 'relative',
+            overflow: 'hidden',
+            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+          }}></div>
+          <div style={{
+            width: '1px',
+            height: '100%',
+            backgroundColor: 'white',
+          }}></div>
+          <div style={{
+            width: '50%',
+            height: '100%',
+            backgroundColor: '#e0e0e0',
+            position: 'relative',
+            overflow: 'hidden',
+            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+          }}></div>
+        </div>
+        <div style={{
+          display: 'flex',
+          marginBottom: '8px',
+          marginLeft: '10%',
+          fontSize: '14px',
+          color: '#555',
+        }}>
+          <span style={{ fontWeight: 'bold', color: '#0080ff' }}>Informações da Empresa</span>
+        </div>
+        <p style={{
+          textAlign: 'center',
+          marginTop: '8px',
+          fontSize: '13px',
+          color: '#666',
+        }}>
+          Preencha as informações básicas da sua empresa
+        </p>
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{
@@ -147,21 +220,21 @@ export function CadastroEmpresas() {
           <div>
             <label style={labelStyle}>URL personalizada: <span style={{ color: 'red' }}>*</span></label>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <input 
-                style={{ ...inputStyle, borderRadius: '0 5px 5px 0', width: '100%' }} 
-                {...register("url")} 
+              <input
+                style={{ ...inputStyle, borderRadius: '0 5px 5px 0', width: '100%' }}
+                {...register("url")}
                 placeholder="sua-empresa"
               />
             </div>
             <p style={errorStyle}>{errors.url?.message}</p>
           </div>
-          
+
           <div>
             <label style={labelStyle}>URL da Logo: <span style={{ color: 'red' }}>*</span></label>
-            <input 
-              style={inputStyle} 
-              {...register("logo")} 
-              placeholder="https://exemplo.com/logo.png" 
+            <input
+              style={inputStyle}
+              {...register("logo")}
+              placeholder="https://exemplo.com/logo.png"
             />
             <p style={errorStyle}>{errors.logo?.message}</p>
           </div>
@@ -169,24 +242,24 @@ export function CadastroEmpresas() {
 
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Apresentação: <span style={{ color: 'red' }}>*</span></label>
-          <textarea 
-            style={inputStyle} 
-            {...register("apresentacao")} 
-            rows={5} 
+          <textarea
+            style={inputStyle}
+            {...register("apresentacao")}
+            rows={5}
             placeholder="Descreva sua empresa em detalhes (mínimo 50 caracteres)"
           />
           <p style={errorStyle}>{errors.apresentacao?.message}</p>
         </div>
 
         <h4 style={{ marginBottom: '15px', color: '#333' }}>Redes Sociais (opcional)</h4>
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '25px'}}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '25px' }}>
           {socialFields.map((item, index) => (
-            <div key={index} style={{display: 'flex', alignItems: 'center', gap: '10px'}} >
+            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px' }} >
               <img src={item.icon} alt={item.name} style={{ width: '24px', height: '24px' }} />
-              <input 
-                {...register(item.name)} 
-                style={inputStyle} 
-                placeholder={`https://${item.name}.com/seu-perfil`} 
+              <input
+                {...register(item.name)}
+                style={inputStyle}
+                placeholder={`https://${item.name}.com/seu-perfil`}
               />
             </div>
           ))}
