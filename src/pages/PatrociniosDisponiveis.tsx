@@ -124,11 +124,11 @@ export function PatrociniosDisponiveis() {
   return (
     <>
       <Header />
-      <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1 style={{ fontSize: "24px", marginBottom: "20px", textAlign: "center", color: "black" }}>
+      <main style={{  fontFamily: "Arial, sans-serif" }}>
+        <h1 style={{ fontSize: "24px", marginTop: "40px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
-        <div className="flex justify-center mb-5  W-full  ">
+        <div className="flex justify-center mt-[30px]  W-full  ">
           <input
             type="text"
             placeholder="Pesquisar"
@@ -139,11 +139,11 @@ export function PatrociniosDisponiveis() {
           />
         </div>
         {empresasFiltradas.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#666" }}>
+          <p style={{ textAlign: "center", marginTop: "30px", color: "#666" }}>
             Nenhuma empresa compatível encontrada.
           </p>
         ) : (
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center", marginTop: "30px"}}>
             {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}

@@ -68,14 +68,13 @@ export function Home() {
       <main className="px-5 md:px-[10%]  font-sans">
         <h1 style={{ 
           fontSize: "24px", 
-          fontFamily: "inter" , 
-          marginBottom: "20px",
+          marginTop: "40px",
           textAlign: "center",
           color: "black"
         }}>
           Empresas que estão fazendo a diferença!
         </h1>
-        <div className="flex justify-center mb-5  W-full  ">
+        <div className="flex justify-center mt-[30px]  W-full  ">
           <input
             type="text"
             placeholder="Pesquisar Patrocinador"
@@ -91,6 +90,7 @@ export function Home() {
           </p>
         ) : (
           <div style={{ 
+            marginTop: "30px",
             display: "flex", 
             gap: "20px", 
             flexWrap: "wrap",
