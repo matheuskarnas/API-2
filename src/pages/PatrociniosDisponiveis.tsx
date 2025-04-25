@@ -128,28 +128,12 @@ export function PatrociniosDisponiveis() {
         <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
-      <div style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "20px",
-          marginLeft: "20px",
-          maxWidth: "400px",
-          width: "calc(100% - 40px)"
-        }}>
+        <div className="flex justify-center mb-5  W-full  ">
           <input
             type="text"
             placeholder="Pesquisar"
-            style={{
-              padding: "10px",
-              border: "none",
-              borderRadius: "8px",
-              width: "100%",
-              backgroundColor: "#f0f0f0",
-              color: "black",
-              fontSize: "16px",
-              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-              paddingLeft: "15px",
-            }}
+            className="p-2 border-none rounded-lg w-[200px] sm:w-[250px] md:w-[350px] h-[42px] md bg-gray-200 text-black text-base shadow-md pl-4"
+
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
