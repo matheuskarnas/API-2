@@ -112,7 +112,7 @@ export function PatrociniosDisponiveis() {
       <>
         <Header />
         <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-          <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
+          <h1 style={{ fontSize: "24px",  marginBottom: "20px", textAlign: "center" }}>
             Patrocínios Disponíveis
           </h1>
           <p style={{ textAlign: "center", color: "#666" }}>Carregando informações...</p>
@@ -124,42 +124,26 @@ export function PatrociniosDisponiveis() {
   return (
     <>
       <Header />
-      <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px", textAlign: "center", color: "black" }}>
+      <main style={{  fontFamily: "Arial, sans-serif" }}>
+        <h1 style={{ fontSize: "24px", marginTop: "40px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
-      <div style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "20px",
-          marginLeft: "20px",
-          maxWidth: "400px",
-          width: "calc(100% - 40px)"
-        }}>
+        <div className="flex justify-center mt-[30px]  W-full  ">
           <input
             type="text"
             placeholder="Pesquisar"
-            style={{
-              padding: "10px",
-              border: "none",
-              borderRadius: "8px",
-              width: "100%",
-              backgroundColor: "#f0f0f0",
-              color: "black",
-              fontSize: "16px",
-              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-              paddingLeft: "15px",
-            }}
+            className="p-2 border-none rounded-lg w-[200px] sm:w-[250px] md:w-[350px] h-[42px] md bg-gray-200 text-black text-base shadow-md pl-4"
+
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         {empresasFiltradas.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#666" }}>
+          <p style={{ textAlign: "center", marginTop: "30px", color: "#666" }}>
             Nenhuma empresa compatível encontrada.
           </p>
         ) : (
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center", marginTop: "30px"}}>
             {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}

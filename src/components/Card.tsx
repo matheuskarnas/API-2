@@ -4,11 +4,12 @@ import Grafico from "./Grafico";
 interface CardProps {
   title: string;
   value: number;
-  tipo: "lojas_criadas" | "familias_impactadas" | "cidades_impactadas" | "comunidades"; // Prop para definir o tipo do gráfico
+  tipo: "lojas_criadas" | "familias_impactadas" | "cidades_impactadas" | "comunidades";
+  srcImg: string;
   onClick?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({ title, value, tipo }) => {
+export const Card: React.FC<CardProps> = ({ title, value, tipo , srcImg}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -36,20 +37,26 @@ export const Card: React.FC<CardProps> = ({ title, value, tipo }) => {
       <div
         onClick={handleOpenModal}
         className="
-        bg-white p-3 rounded-lg shadow 
-        flex flex-col items-center
+        w-[164px]
+        sm:h-[90px]
+        flex flex-row
+        items-center
+        bg-wite p-1 rounded-lg shadow 
         xl:w-[48%]
         border-3 
         border-[#328DD8]
         shadow-md
         shadow-black
-        cursor-pointer
-      "
-      >
-        <p className="text-black text-lg sm:text-sm md:text-base whitespace-nowrap relative -top-3">
-          {title}
-        </p>
-        <p className="text-black text-xl sm:text-2xl md:text-lg font-bold">{value}</p>
+        cursor-pointer">
+        
+        <div className="flex items-center justify-center">
+          <img src={srcImg} className="h-[20px] w-[20px] sm:w-[42px] sm:h-[42px] mt-3 sm:ml-[40px]"/>
+        </div>
+
+        <div className="flex flex-col justify-center text-center w-full">
+          <p className="text-black text-[11px] text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>  
+          <p className="text-black text-[24px] sm:text-[36px] font-bold">{value}</p>
+        </div>
       </div>
 
       {isModalOpen && (

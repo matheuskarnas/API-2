@@ -5,6 +5,7 @@ import Header from "../components/Header"
 import { useEffect, useState } from "react"
 import { supabase } from "../services/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
 
 const schema = yup.object({
   estados: yup.array().min(1, "Selecione pelo menos um estado"),
@@ -20,6 +21,19 @@ export function Patrocinio() {
   const location = useLocation();
   const navigate = useNavigate();
   const empresaData = location.state?.data;
+
+  const notify = () => {
+    return new Promise<void>((resolve) => {
+      toast.success('Cadastro finalizado!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        onClose: () => resolve(),
+      });
+    });
+  };
 
   useEffect(() => {
     if (!empresaData) {
@@ -101,7 +115,9 @@ export function Patrocinio() {
         throw perfisError;
       }
 
-      alert("Cadastro realizado com sucesso!");
+      await notify();
+      navigate(`/empresa/${data.url}`);
+
     } catch (err) {
       console.error("Erro no cadastro:", err);
       if (err instanceof Error) {
@@ -121,8 +137,82 @@ export function Patrocinio() {
   return (
     <>
       <Header />
+      <ToastContainer />
       {empresaData ? (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "40px", marginBottom: "40px" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px", flexDirection: "column", alignItems: "center" }}>
+          <div style={{
+            width: '90%',
+            maxWidth: '600px',
+            marginTop: '20px',
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              marginBottom: '8px',
+              fontSize: '14px',
+              color: '#555',
+              position: 'relative',
+            }}>
+              <span style={{
+                fontWeight: 'bold',
+                color: '#999',
+                zIndex: 2,
+                backgroundColor: 'white',
+                padding: '0 5px'
+              }}>1</span>
+              <span style={{
+                fontWeight: 'bold',
+                color: '#0080ff',
+                zIndex: 2,
+                backgroundColor: 'white',
+                padding: '0 5px'
+              }}>2</span>
+            </div>
+            <div style={{
+              display: 'flex',
+              height: '6px',
+              position: 'relative',
+            }}>
+              <div style={{
+                width: '50%',
+                height: '100%',
+                backgroundColor: '#0080ff',
+                position: 'relative',
+                overflow: 'hidden',
+                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+              }}></div>
+              <div style={{
+                width: '1px',
+                height: '100%',
+                backgroundColor: 'white',
+              }}></div>
+              <div style={{
+                width: '50%',
+                height: '100%',
+                backgroundColor: '#0080ff',
+                position: 'relative',
+                overflow: 'hidden',
+                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+              }}></div>
+            </div>
+            <div style={{
+              display: 'flex',
+              marginBottom: '8px',
+              marginLeft: '65%',
+              fontSize: '14px',
+              color: '#555',
+            }}>
+              <span style={{ fontWeight: 'bold', color: '#0080ff' }}>Perfil dos usuários</span>
+            </div>
+            <p style={{
+              textAlign: 'center',
+              marginTop: '8px',
+              fontSize: '13px',
+              color: '#666',
+            }}>
+              Escolha as características dos usuários que deseja patrocinar
+            </p>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{
@@ -130,6 +220,7 @@ export function Patrocinio() {
               borderRadius: "12px",
               padding: "30px",
               width: "100%",
+              marginTop: "40px",
               maxWidth: "500px",
               boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
             }}

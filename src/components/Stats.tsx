@@ -136,7 +136,7 @@ export function Stats() {
   return (
     <div className="
       grid grid-cols-2  {/* Sempre 2 colunas */}
-      gap-2 md:gap-4 xl:gap-6
+      gap-[15px] sm:gap-y-[26px] sm:gap-x-[23px]
       w-full 
       max-w-[90%] 
       xl:max-w-[75%]
@@ -144,10 +144,10 @@ export function Stats() {
       text-gray-600
       xl:flex xl:flex-wrap xl:justify-between  
     ">
-      <Card title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
-      <Card title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
-      <Card title="Cidades impactadas" value={cidadesImpactadas} tipo="cidades_impactadas" />
-      <Card title="Comunidades" value={totalComunidades} tipo="comunidades" />
+      <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
+      <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
+      <Card srcImg="/assets/map-marker.png" title="Cidades impactadas" value={cidadesImpactadas} tipo="cidades_impactadas" />
+      <Card srcImg="/assets/building.png" title="Comunidades" value={totalComunidades} tipo="comunidades" />
     </div>
   )
 }

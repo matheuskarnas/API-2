@@ -65,38 +65,20 @@ export function Home() {
   return (
     <>
       <Header />
-      <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <main className="px-5 md:px-[10%]  font-sans">
         <h1 style={{ 
           fontSize: "24px", 
-          fontFamily: "inter" , 
-          marginBottom: "20px",
+          marginTop: "40px",
           textAlign: "center",
           color: "black"
         }}>
           Empresas que estão fazendo a diferença!
         </h1>
-        <div style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "20px",
-          marginLeft: "20px",
-          maxWidth: "400px",
-          width: "calc(100% - 40px)"
-        }}>
+        <div className="flex justify-center mt-[30px]  W-full  ">
           <input
             type="text"
             placeholder="Pesquisar Patrocinador"
-            style={{
-              padding: "10px",
-              border: "none",
-              borderRadius: "8px",
-              width: "100%",
-              backgroundColor: "#f0f0f0",
-              color: "black",
-              fontSize: "16px",
-              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-              paddingLeft: "15px",
-            }}
+            className="p-2 border-none rounded-lg w-[200px] sm:w-[250px] md:w-[350px] h-[42px] md bg-gray-200 text-black text-base shadow-md pl-4"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -108,6 +90,7 @@ export function Home() {
           </p>
         ) : (
           <div style={{ 
+            marginTop: "30px",
             display: "flex", 
             gap: "20px", 
             flexWrap: "wrap",
@@ -116,17 +99,7 @@ export function Home() {
             {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "20px",
-                  width: "200px",
-                  textAlign: "center",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
-                }}
+                className="border border-gray-300 rounded-lg p-5 w-[200px] text-center shadow-md flex flex-col items-center"
               >
                 {empresa.url_logo && (
                   <img 

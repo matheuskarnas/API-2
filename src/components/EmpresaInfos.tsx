@@ -54,10 +54,8 @@ export function EmpresaInfos() {
 
   return (
     <div className="w-full bg-white rounded-lg px-4 mx-auto">
-      {/* Layout para telas menores (mobile/tablet) */}
       <div className="xl:hidden">
         <div className="relative">
-          {/* Imagem - Centralizada apenas em mobile */}
           <div className="flex justify-center min-[500px]:block min-[500px]:float-left min-[500px]:mr-6 mb-4 min-[500px]:mb-0">
             {empresa?.url_logo ? (
               <img
@@ -72,19 +70,16 @@ export function EmpresaInfos() {
             )}
           </div>
   
-          {/* Texto - Comportamento original */}
-          <p className="text-black text-base sm:text-lg md:text-xl [hyphens:auto]">
+          <p className="text-black text-base sm:text-[20px] md:text-xl [hyphens:auto]">
             {empresa?.descricao}
           </p>
           <div className="clear-both"></div>
         </div>
       </div>
   
-      {/* Layout específico para XL (1280px+) - Versão corrigida */}
       <div className="hidden xl:block">
         <div className="flex justify-center">
           <div className="flex items-center gap-8 max-w-6xl">
-            {/* Imagem XL */}
             <div className="flex-shrink-0 w-64">
               {empresa?.url_logo ? (
                 <img
@@ -99,7 +94,6 @@ export function EmpresaInfos() {
               )}
             </div>
   
-            {/* Texto XL */}
             <p className="text-black text-xl [hyphens:auto] max-w-[600px]">
               {empresa?.descricao}
             </p>
