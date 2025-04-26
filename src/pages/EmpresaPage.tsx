@@ -37,7 +37,7 @@ export function EmpresaPage() {
         <Header />
       </div>
 
-      <div className="flex-1 flex flex-col justify-evenly gap-15 sm:gap-30 overflow-hidden pt-8 pb-10">
+      <div className="flex-1 flex flex-col justify-evenly gap-8 md:gap-28 overflow-hidden pt-8 pb-10">
         <div className="flex-none">
           <EmpresaInfos />
         </div>
@@ -46,7 +46,7 @@ export function EmpresaPage() {
           <Stats />
         </div>
 
-        <div className="flex-none mt-auto">
+        <div className="flex ">
           <Maps />
         </div>
       </div>
