@@ -61,7 +61,7 @@ export function Header() {
   }, [empresaUrl]);
 
   return (
-    <nav className="w-full bg-[#16254D] p-2 flex justify-between items-center min-h-[115px]">
+    <nav className="w-full bg-[#16254D] p-2 flex justify-between items-center h-[94px] md:h-[115px]">
       {loading ? (
         <div className="animate-pulse bg-[#16254D] rounded h-8 w-32"></div>
       ) : empresaUrl ? (
