@@ -28,6 +28,166 @@ const Maps = () => {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
   const [estado, setEstado] = useState<string | null>(null);
   const [cidade, setCidade] = useState<string | null>(null);
+  const mapStyle= [
+    {
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#f5f5f5"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#616161"
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#f5f5f5"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#bdbdbd"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#eeeeee"
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#757575"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#e5e5e5"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#9e9e9e"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#ffffff"
+        }
+      ]
+    },
+    {
+      "featureType": "road.arterial",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#757575"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#dadada"
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#616161"
+        }
+      ]
+    },
+    {
+      "featureType": "road.local",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#9e9e9e"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.line",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#e5e5e5"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.station",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#eeeeee"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#c9c9c9"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#9e9e9e"
+        }
+      ]
+    }
+  ]
 
   useEffect(() => {
     if (selectedLocation) {
@@ -53,6 +213,7 @@ const Maps = () => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
+    language: "pt-BR",
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -81,7 +242,9 @@ const Maps = () => {
 
         if (puError) throw puError;
         if (!patrocinadorUsuarios || patrocinadorUsuarios.length === 0) {
-          throw new Error("Nenhum usuário encontrado para este patrocinador");
+          console.warn("Nenhum usuário encontrado para este patrocinador");
+          setLocations([]); 
+          return;
         }
 
         const usuarioIds = patrocinadorUsuarios.map((pu) => pu.usuario_id);
@@ -223,8 +386,27 @@ const Maps = () => {
 
   if (locations.length === 0) {
     return (
-      <div className="flex justify-center items-center h-57 max-sm:h-55 p-4">
-        <p>Nenhuma localização encontrada para este patrocinador.</p>
+      <div className="
+  w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
+  h-[150px]
+  md:h-[200px] w:[100%]
+">
+        {isLoaded ? (
+          <GoogleMap
+          mapContainerStyle={{ width: "100%", height: "400px" }}
+          center={{ lat: -23.55052, lng: -46.633308 }}
+          zoom={4}
+          options={{
+            styles: mapStyle
+          }}
+        />
+        ) : (
+          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="w-10 h-10 border-4 border-blue-500 rounded-full border-t-transparent animate-spin" />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -241,172 +423,7 @@ const Maps = () => {
           options={{
             disableDefaultUI: true,
             gestureHandling: 'cooperative',
-            styles:
-              // {
-              //   stylers: [{ visibility: "off" }]
-              // }
-              
-              [
-                {
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#f5f5f5"
-                    }
-                  ]
-                },
-                {
-                  "elementType": "labels.icon",
-                  "stylers": [
-                    {
-                      "visibility": "off"
-                    }
-                  ]
-                },
-                {
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#616161"
-                    }
-                  ]
-                },
-                {
-                  "elementType": "labels.text.stroke",
-                  "stylers": [
-                    {
-                      "color": "#f5f5f5"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "administrative.land_parcel",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#bdbdbd"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#eeeeee"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#757575"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi.park",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#e5e5e5"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "poi.park",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#9e9e9e"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#ffffff"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.arterial",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#757575"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.highway",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#dadada"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.highway",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#616161"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "road.local",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#9e9e9e"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "transit.line",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#e5e5e5"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "transit.station",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#eeeeee"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "water",
-                  "elementType": "geometry",
-                  "stylers": [
-                    {
-                      "color": "#c9c9c9"
-                    }
-                  ]
-                },
-                {
-                  "featureType": "water",
-                  "elementType": "labels.text.fill",
-                  "stylers": [
-                    {
-                      "color": "#9e9e9e"
-                    }
-                  ]
-                }
-              ]
-            
+            styles: mapStyle,          
           }}
           onLoad={(map) => {
             mapRef.current = map;
