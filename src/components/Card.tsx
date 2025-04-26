@@ -37,12 +37,11 @@ export const Card: React.FC<CardProps> = ({ title, value, tipo , srcImg}) => {
       <div
         onClick={handleOpenModal}
         className="
-        w-[164px]
+        w-[100%]
         sm:h-[90px]
         flex flex-row
         items-center
         bg-wite p-1 rounded-lg shadow 
-        xl:w-[48%]
         border-3 
         border-[#328DD8]
         shadow-md

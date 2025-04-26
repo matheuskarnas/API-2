@@ -135,14 +135,13 @@ export function Stats() {
 
   return (
     <div className="
-      grid grid-cols-2  {/* Sempre 2 colunas */}
+      grid grid-cols-2
       gap-[15px] sm:gap-y-[26px] sm:gap-x-[23px]
       w-full 
       max-w-[90%] 
       xl:max-w-[75%]
       mx-auto
       text-gray-600
-      xl:flex xl:flex-wrap xl:justify-between  
     ">
       <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
       <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
