@@ -22,9 +22,9 @@ export function Patrocinio() {
   const navigate = useNavigate();
   const empresaData = location.state?.data;
 
-  const notify = () => {
+  const notify = (mensagem: String) => {
     return new Promise<void>((resolve) => {
-      toast.success('Cadastro finalizado!', {
+      toast.success(mensagem, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -36,10 +36,33 @@ export function Patrocinio() {
   };
 
   useEffect(() => {
-    if (!empresaData) {
-      alert("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas.");
-      navigate("/empresa/cadastro");
-    }
+    const fetchData = async () => {
+      if (!empresaData) {
+        await notify("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas.");
+        navigate("/empresa/cadastro");
+      }
+      const checkUrlExists = async () => {
+        try {
+          const { data } = await supabase
+            .from("patrocinadores")
+            .select("url_exclusiva")
+            .eq("url_exclusiva", empresaData.url)
+            .single();
+
+          if (data) {
+            await notify('O Url já está em uso por outra empresa. Redirecionando para o cadastro de empresas!');
+            navigate("/empresa/cadastro");
+          }
+
+        } catch (err) {
+          console.error("Erro ao verificar URL:", err);
+        }
+      };
+
+      await checkUrlExists();
+    };
+
+    fetchData();
   }, [empresaData, navigate]);
 
   useEffect(() => {
@@ -115,8 +138,8 @@ export function Patrocinio() {
         throw perfisError;
       }
 
-      await notify();
-      navigate(`/empresa/${data.url}`);
+      await notify('Cadastro finalizado!');
+      navigate(`/empresa/${empresaData.url}`);
 
     } catch (err) {
       console.error("Erro no cadastro:", err);
@@ -170,6 +193,8 @@ export function Patrocinio() {
             </div>
             <div style={{
               display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
               height: '6px',
               position: 'relative',
             }}>
@@ -177,32 +202,35 @@ export function Patrocinio() {
                 width: '50%',
                 height: '100%',
                 backgroundColor: '#0080ff',
-                position: 'relative',
-                overflow: 'hidden',
                 clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
-              }}></div>
-              <div style={{
-                width: '1px',
-                height: '100%',
-                backgroundColor: 'white',
               }}></div>
               <div style={{
                 width: '50%',
                 height: '100%',
                 backgroundColor: '#0080ff',
-                position: 'relative',
-                overflow: 'hidden',
                 clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
               }}></div>
             </div>
             <div style={{
               display: 'flex',
-              marginBottom: '8px',
-              marginLeft: '65%',
-              fontSize: '14px',
-              color: '#555',
+              justifyContent: 'space-around',
+              marginTop: '8px',
+              width: '100%',
             }}>
-              <span style={{ fontWeight: 'bold', color: '#0080ff' }}>Perfil dos usuários</span>
+              <span style={{
+                visibility: 'hidden',
+                pointerEvents: 'none',
+              }}>
+                Perfil dos usuários
+              </span>
+              <span style={{
+                fontSize: '14px',
+                fontWeight: 'bold',
+                color: '#0080ff',
+                backgroundColor: 'white',
+              }}>
+                Perfil dos usuários
+              </span>
             </div>
             <p style={{
               textAlign: 'center',

@@ -123,78 +123,83 @@ export function CadastroEmpresas() {
     }}>
       <Header />
       <div style={{
-        width: '90%',
-        maxWidth: '600px',
-        marginTop: '20px',
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          marginBottom: '8px',
-          fontSize: '14px',
-          color: '#555',
-          position: 'relative',
-        }}>
-          <span style={{
-            fontWeight: 'bold',
-            color: '#0080ff',
-            zIndex: 2,
-            backgroundColor: 'white',
-            padding: '0 5px'
-          }}>1</span>
-          <span style={{
-            fontWeight: 'bold',
-            color: '#999',
-            zIndex: 2,
-            backgroundColor: 'white',
-            padding: '0 5px'
-          }}>2</span>
-        </div>
-        <div style={{
-          display: 'flex',
-          height: '6px',
-          position: 'relative',
-        }}>
-          <div style={{
-            width: '50%',
-            height: '100%',
-            backgroundColor: '#0080ff',
-            position: 'relative',
-            overflow: 'hidden',
-            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
-          }}></div>
-          <div style={{
-            width: '1px',
-            height: '100%',
-            backgroundColor: 'white',
-          }}></div>
-          <div style={{
-            width: '50%',
-            height: '100%',
-            backgroundColor: '#e0e0e0',
-            position: 'relative',
-            overflow: 'hidden',
-            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
-          }}></div>
-        </div>
-        <div style={{
-          display: 'flex',
-          marginBottom: '8px',
-          marginLeft: '10%',
-          fontSize: '14px',
-          color: '#555',
-        }}>
-          <span style={{ fontWeight: 'bold', color: '#0080ff' }}>Informações da Empresa</span>
-        </div>
-        <p style={{
-          textAlign: 'center',
-          marginTop: '8px',
-          fontSize: '13px',
-          color: '#666',
-        }}>
-          Preencha as informações básicas da sua empresa
-        </p>
-      </div>
+            width: '90%',
+            maxWidth: '600px',
+            marginTop: '20px',
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              marginBottom: '8px',
+              fontSize: '14px',
+              color: '#555',
+              position: 'relative',
+            }}>
+              <span style={{
+                fontWeight: 'bold',
+                color: '#0080ff',
+                zIndex: 2,
+                backgroundColor: 'white',
+                padding: '0 5px'
+              }}>1</span>
+              <span style={{
+                fontWeight: 'bold',
+                color: '#999',
+                zIndex: 2,
+                backgroundColor: 'white',
+                padding: '0 5px'
+              }}>2</span>
+            </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              height: '6px',
+              position: 'relative',
+            }}>
+              <div style={{
+                width: '50%',
+                height: '100%',
+                backgroundColor: '#0080ff',
+                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+              }}></div>
+              <div style={{
+                width: '50%',
+                height: '100%',
+                backgroundColor: '#999',
+                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+              }}></div>
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              marginTop: '8px',
+              width: '100%',
+            }}>
+              <span style={{
+                fontSize: '14px',
+                fontWeight: 'bold',
+                color: '#0080ff',
+                backgroundColor: 'white',
+              }}>
+                Informações da Empresa
+              </span>
+              <span style={{
+                visibility: 'hidden',
+                pointerEvents: 'none',
+              }}>
+                Perfil dos usuários
+              </span>
+            </div>
+            <p style={{
+              textAlign: 'center',
+              marginTop: '8px',
+              fontSize: '13px',
+              color: '#666',
+            }}>
+              Preencha as informações básicas da sua empresa
+            </p>
+          </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{
