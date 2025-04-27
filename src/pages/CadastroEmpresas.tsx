@@ -2,8 +2,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { supabase } from "../services/supabaseClient";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 import twitterIcon from "../../public/assets/x.png";
 import whatsappIcon from "../../public/assets/whatsapp.png";
 import globeIcon from "../../public/assets/web.png";
@@ -69,6 +70,37 @@ const socialFields: { icon: string; name: SocialField }[] = [
 export function CadastroEmpresas() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const planoId = location.state?.id;
+
+  const notify = (mensagem: string, tipo: 'success' | 'error') => {
+    return new Promise<void>((resolve) => {
+      const toastConfig = {
+        position: "top-center" as ToastPosition,
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        onClose: () => resolve(),
+      };
+
+      if (tipo === 'success') {
+        toast.success(mensagem, toastConfig);
+      } else if (tipo === 'error') {
+        toast.error(mensagem, toastConfig);
+      }
+    });
+  };
+
+  useEffect(() => {
+    const chackId = async () => {
+      if (!planoId) {
+        await notify('Você não possui um plano. Redirecinando para a página de planos...', 'error');
+        navigate('/empresa/planos');
+      }
+    }
+    chackId();
+  }, [planoId, navigate]);
 
   const {
     register,
@@ -82,7 +114,7 @@ export function CadastroEmpresas() {
     setLoading(true);
 
     try {
-      navigate('/empresa/patrocinio', { state: { success: true, data } });
+      navigate('/empresa/patrocinio', { state: { success: true, data, id: planoId } });
     } catch (err) {
       console.error("Error during submission:", err);
       alert("Ocorreu um erro ao cadastrar a empresa. Tente novamente.");
@@ -122,84 +154,85 @@ export function CadastroEmpresas() {
       alignItems: 'center',
     }}>
       <Header />
+      <ToastContainer />
       <div style={{
-            width: '90%',
-            maxWidth: '600px',
-            marginTop: '20px',
+        width: '90%',
+        maxWidth: '600px',
+        marginTop: '20px',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          marginBottom: '8px',
+          fontSize: '14px',
+          color: '#555',
+          position: 'relative',
+        }}>
+          <span style={{
+            fontWeight: 'bold',
+            color: '#0080ff',
+            zIndex: 2,
+            backgroundColor: 'white',
+            padding: '0 5px'
+          }}>1</span>
+          <span style={{
+            fontWeight: 'bold',
+            color: '#999',
+            zIndex: 2,
+            backgroundColor: 'white',
+            padding: '0 5px'
+          }}>2</span>
+        </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          height: '6px',
+          position: 'relative',
+        }}>
+          <div style={{
+            width: '50%',
+            height: '100%',
+            backgroundColor: '#0080ff',
+            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+          }}></div>
+          <div style={{
+            width: '50%',
+            height: '100%',
+            backgroundColor: '#999',
+            clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
+          }}></div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          marginTop: '8px',
+          width: '100%',
+        }}>
+          <span style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#0080ff',
+            backgroundColor: 'white',
           }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              marginBottom: '8px',
-              fontSize: '14px',
-              color: '#555',
-              position: 'relative',
-            }}>
-              <span style={{
-                fontWeight: 'bold',
-                color: '#0080ff',
-                zIndex: 2,
-                backgroundColor: 'white',
-                padding: '0 5px'
-              }}>1</span>
-              <span style={{
-                fontWeight: 'bold',
-                color: '#999',
-                zIndex: 2,
-                backgroundColor: 'white',
-                padding: '0 5px'
-              }}>2</span>
-            </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              height: '6px',
-              position: 'relative',
-            }}>
-              <div style={{
-                width: '50%',
-                height: '100%',
-                backgroundColor: '#0080ff',
-                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
-              }}></div>
-              <div style={{
-                width: '50%',
-                height: '100%',
-                backgroundColor: '#999',
-                clipPath: 'polygon(0 0, calc(100% - 5px) 0, 100% 100%, 5px 100%)',
-              }}></div>
-            </div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              marginTop: '8px',
-              width: '100%',
-            }}>
-              <span style={{
-                fontSize: '14px',
-                fontWeight: 'bold',
-                color: '#0080ff',
-                backgroundColor: 'white',
-              }}>
-                Informações da Empresa
-              </span>
-              <span style={{
-                visibility: 'hidden',
-                pointerEvents: 'none',
-              }}>
-                Perfil dos usuários
-              </span>
-            </div>
-            <p style={{
-              textAlign: 'center',
-              marginTop: '8px',
-              fontSize: '13px',
-              color: '#666',
-            }}>
-              Preencha as informações básicas da sua empresa
-            </p>
-          </div>
+            Informações da Empresa
+          </span>
+          <span style={{
+            visibility: 'hidden',
+            pointerEvents: 'none',
+          }}>
+            Perfil dos usuários
+          </span>
+        </div>
+        <p style={{
+          textAlign: 'center',
+          marginTop: '8px',
+          fontSize: '13px',
+          color: '#666',
+        }}>
+          Preencha as informações básicas da sua empresa
+        </p>
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         style={{

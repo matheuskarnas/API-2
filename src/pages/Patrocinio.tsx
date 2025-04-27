@@ -21,6 +21,7 @@ export function Patrocinio() {
   const location = useLocation();
   const navigate = useNavigate();
   const empresaData = location.state?.data;
+  const planoId = location.state?.id;
 
   const notify = (mensagem: String) => {
     return new Promise<void>((resolve) => {
@@ -37,6 +38,10 @@ export function Patrocinio() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!planoId) {
+        await notify("Você não possui um plano. Redirecinando para a página de planos...");
+        navigate("/empresa/planos");
+      }
       if (!empresaData) {
         await notify("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas.");
         navigate("/empresa/cadastro");
@@ -115,6 +120,7 @@ export function Patrocinio() {
             instagram: empresaData.instagram,
             facebook: empresaData.facebook,
             kawai: empresaData.kawai,
+            plano_id: planoId,
           },
         ])
         .select("id")

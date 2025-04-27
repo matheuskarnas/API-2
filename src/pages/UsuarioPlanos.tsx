@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Plano {
   id: number;
@@ -9,6 +10,7 @@ interface Plano {
 }
 
 export function UsuarioPlanos() {
+  const navigate = useNavigate();
   const [planos] = useState<Plano[]>([
     {
       id: 1,
@@ -94,6 +96,9 @@ export function UsuarioPlanos() {
                 onMouseOut={(e) => {
                   (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
+                }}
+                onClick={() => {
+                  navigate("/usuario/cadastro", { state: { id: plano.id } });
                 }}
               >
                 Assinar

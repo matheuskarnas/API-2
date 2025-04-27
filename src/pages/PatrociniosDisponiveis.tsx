@@ -1,7 +1,8 @@
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
+import { toast, ToastContainer } from 'react-toastify';
 
 interface Empresa {
   id: number;
@@ -82,10 +83,36 @@ const fetchStatsByUrl = async (empresaUrl: string): Promise<{ lojasCriadas: numb
 
 export function PatrociniosDisponiveis() {
   const location = useLocation();
-  console.log ('dados recebidos em PatrociniosDisponiveis:', location.state);
-  const [empresas, setEmpresas] = useState<EmpresaComStats[]>(location.state ? location.state : []);
+  const planoId = location.state?.id || null;
+  const [empresas, setEmpresas] = useState<EmpresaComStats[]>(
+    location.state?.empresasData || []
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [loadingStats, setLoadingStats] = useState(true);
+  const navigate = useNavigate();
+
+  const notify = (mensagem: String) => {
+    return new Promise<void>((resolve) => {
+      toast.error(mensagem, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        onClose: () => resolve(),
+      });
+    });
+  };
+
+  useEffect(() => {
+    const chackId = async () => {
+      if (!planoId) {
+        await notify('Você não possui um plano. Redirecinando para a página de planos...');
+        navigate('/usuario/planos');
+      }
+    }
+    chackId();
+  }, [planoId, navigate]);
 
   useEffect(() => {
     const fetchStatsForEmpresas = async () => {
@@ -111,8 +138,9 @@ export function PatrociniosDisponiveis() {
     return (
       <>
         <Header />
+        <ToastContainer />
         <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-          <h1 style={{ fontSize: "24px",  marginBottom: "20px", textAlign: "center" }}>
+          <h1 style={{ fontSize: "24px", marginBottom: "20px", textAlign: "center" }}>
             Patrocínios Disponíveis
           </h1>
           <p style={{ textAlign: "center", color: "#666" }}>Carregando informações...</p>
@@ -124,7 +152,8 @@ export function PatrociniosDisponiveis() {
   return (
     <>
       <Header />
-      <main style={{  fontFamily: "Arial, sans-serif" }}>
+      <ToastContainer />
+      <main style={{ fontFamily: "Arial, sans-serif" }}>
         <h1 style={{ fontSize: "24px", marginTop: "40px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
@@ -143,7 +172,7 @@ export function PatrociniosDisponiveis() {
             Nenhuma empresa compatível encontrada.
           </p>
         ) : (
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center", marginTop: "30px"}}>
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center", marginTop: "30px" }}>
             {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}
@@ -174,14 +203,14 @@ export function PatrociniosDisponiveis() {
                 <h3 style={{ fontSize: "18px", color: "black", marginBottom: "10px" }}>
                   {empresa.nome}
                 </h3>
-                <div style={{display: "flex" , gap:"20px", paddingBottom:"15px" , paddingTop: "5px"}}>
-                  <div style={{display: "flex" , gap:"3px"}}>
-                    <img src="/assets/cidades.png" alt="cidades" style={{width: '26px', height: '26px'}} />
-                    <h1 style={{color: "black", paddingTop: "5px"}}>{empresa.cidadesImpactadas !== undefined ? empresa.cidadesImpactadas : '0'}</h1>
+                <div style={{ display: "flex", gap: "20px", paddingBottom: "15px", paddingTop: "5px" }}>
+                  <div style={{ display: "flex", gap: "3px" }}>
+                    <img src="/assets/cidades.png" alt="cidades" style={{ width: '26px', height: '26px' }} />
+                    <h1 style={{ color: "black", paddingTop: "5px" }}>{empresa.cidadesImpactadas !== undefined ? empresa.cidadesImpactadas : '0'}</h1>
                   </div>
-                  <div style={{display: "flex" , gap:"3px"}}>
-                    <img src="/assets/lojas.png" alt="lojas"  style={{width: '26px', height: '26px'}} />
-                    <h1 style={{color: "black", paddingTop: "5px"}}>{empresa.lojasCriadas !== undefined ? empresa.lojasCriadas : '0'}</h1>
+                  <div style={{ display: "flex", gap: "3px" }}>
+                    <img src="/assets/lojas.png" alt="lojas" style={{ width: '26px', height: '26px' }} />
+                    <h1 style={{ color: "black", paddingTop: "5px" }}>{empresa.lojasCriadas !== undefined ? empresa.lojasCriadas : '0'}</h1>
                   </div>
                 </div>
                 <Link
