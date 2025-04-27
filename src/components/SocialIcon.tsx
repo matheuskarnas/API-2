@@ -13,7 +13,7 @@ export function SocialIcon({ alt, img, ref, className }: SocialIconProps) {
         alt={alt}
         className={`
           w-[25px] h-[25px] 
-          md:w-[50px] md:h-[50px]
+          md:w-[35px] md:h-[35px]
           ${className || ""}
         `}
       />
