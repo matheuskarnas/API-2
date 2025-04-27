@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
+import { Card } from "./Card";
 
 export function Stats() {
   const { empresaUrl } = useParams();
@@ -81,7 +82,7 @@ export function Stats() {
           .select("*", { count: "exact", head: true })
           .in("usuario_id", usuariosIds);
 
-        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0));
+        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0) + usuariosIds.length || 0);
         setTotalLojas(lojasCount || 0);
 
         const { data: lojasData } = await supabase
@@ -134,54 +135,18 @@ export function Stats() {
 
   return (
     <div className="
-      grid grid-cols-2  {/* Sempre 2 colunas */}
-      gap-2 md:gap-4 xl:gap-6
+      grid grid-cols-2
+      gap-[15px] sm:gap-y-[26px] sm:gap-x-[23px]
       w-full 
-      min-[500px]:max-w-[90%] 
+      max-w-[90%] 
       xl:max-w-[75%]
       mx-auto
       text-gray-600
-      xl:flex xl:flex-wrap xl:justify-between  
     ">
-      {/* Card 1 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-      ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Lojas criadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalLojas}</p>
-      </div>
-  
-      {/* Card 2 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-      ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Famílias impactadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{familiasImpactadas}</p>
-      </div>
-  
-      {/* Card 3 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-      ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Cidades impactadas</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{cidadesImpactadas}</p>
-      </div>
-  
-      {/* Card 4 */}
-      <div className="
-        bg-gray-100 p-3 rounded-lg shadow 
-        flex flex-col items-center
-        xl:w-[48%]
-      ">
-        <p className="text-xs sm:text-sm md:text-base whitespace-nowrap">Comunidades</p>
-        <p className="text-xl sm:text-2xl md:text-3xl font-bold">{totalComunidades}</p>
-      </div>
+      <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
+      <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
+      <Card srcImg="/assets/map-marker.png" title="Cidades impactadas" value={cidadesImpactadas} tipo="cidades_impactadas" />
+      <Card srcImg="/assets/building.png" title="Comunidades" value={totalComunidades} tipo="comunidades" />
     </div>
   )
 }

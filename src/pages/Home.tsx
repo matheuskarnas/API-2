@@ -8,19 +8,23 @@ interface Empresa {
   nome: string;
   descricao: string;
   url_exclusiva: string;
-  url_logo_baixa_resolucao?: string;
+  url_logo?: string;
 }
 
 export function Home() {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const empresasFiltradas = empresas.filter(empresa =>
+    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
         const { data, error } = await supabase
           .from("patrocinadores")
-          .select("id, nome, descricao, url_exclusiva, url_logo_baixa_resolucao")
+          .select("id, nome, descricao, url_exclusiva, url_logo")
           .order("nome", { ascending: true });
 
         if (error) throw error;
@@ -61,15 +65,24 @@ export function Home() {
   return (
     <>
       <Header />
-      <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <main className="px-5 md:px-[10%]  font-sans">
         <h1 style={{ 
           fontSize: "24px", 
-          marginBottom: "20px",
+          marginTop: "40px",
           textAlign: "center",
-          color: "#000"
+          color: "black"
         }}>
           Empresas que estão fazendo a diferença!
         </h1>
+        <div className="flex justify-center mt-[30px]  W-full  ">
+          <input
+            type="text"
+            placeholder="Pesquisar Patrocinador"
+            className="p-2 border-none rounded-lg w-[200px] sm:w-[250px] md:w-[350px] h-[42px] md bg-gray-200 text-black text-base shadow-md pl-4"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         
         {empresas.length === 0 ? (
           <p style={{ textAlign: "center", color: "#000" }}>
@@ -77,29 +90,20 @@ export function Home() {
           </p>
         ) : (
           <div style={{ 
+            marginTop: "30px",
             display: "flex", 
             gap: "20px", 
             flexWrap: "wrap",
             justifyContent: "center"
           }}>
-            {empresas.map((empresa) => (
+            {empresasFiltradas.map((empresa) => (
               <div
                 key={empresa.id}
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "20px",
-                  width: "200px",
-                  textAlign: "center",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
-                }}
+                className="border border-gray-300 rounded-lg p-5 w-[200px] text-center shadow-md flex flex-col items-center"
               >
-                {empresa.url_logo_baixa_resolucao && (
+                {empresa.url_logo && (
                   <img 
-                    src={empresa.url_logo_baixa_resolucao} 
+                    src={empresa.url_logo} 
                     alt={`Logo ${empresa.nome}`}
                     style={{ 
                       width: "80px", 

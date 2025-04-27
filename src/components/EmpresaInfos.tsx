@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 
 interface Empresa {
-  url_logo_baixa_resolucao: string;
+  url_logo: string;
   descricao: string;
   nome: string;
 }
@@ -54,14 +54,12 @@ export function EmpresaInfos() {
 
   return (
     <div className="w-full bg-white rounded-lg px-4 mx-auto">
-      {/* Layout para telas menores (mobile/tablet) */}
       <div className="xl:hidden">
         <div className="relative">
-          {/* Imagem - Centralizada apenas em mobile */}
           <div className="flex justify-center min-[500px]:block min-[500px]:float-left min-[500px]:mr-6 mb-4 min-[500px]:mb-0">
-            {empresa?.url_logo_baixa_resolucao ? (
+            {empresa?.url_logo ? (
               <img
-                src={empresa.url_logo_baixa_resolucao}
+                src={empresa.url_logo}
                 alt={`Logo da ${empresa.nome}`}
                 className="w-[150px] min-[500px]:w-40 md:w-48 lg:w-56 object-contain rounded-md"
               />
@@ -72,35 +70,31 @@ export function EmpresaInfos() {
             )}
           </div>
   
-          {/* Texto - Comportamento original */}
-          <p className="text-gray-600 text-base sm:text-lg md:text-xl [hyphens:auto]">
+          <p className="text-black text-base sm:text-[20px] md:text-xl [hyphens:auto]">
             {empresa?.descricao}
           </p>
           <div className="clear-both"></div>
         </div>
       </div>
   
-      {/* Layout específico para XL (1280px+) - Versão corrigida */}
       <div className="hidden xl:block">
         <div className="flex justify-center">
           <div className="flex items-center gap-8 max-w-6xl">
-            {/* Imagem XL */}
             <div className="flex-shrink-0 w-64">
-              {empresa?.url_logo_baixa_resolucao ? (
+              {empresa?.url_logo ? (
                 <img
-                  src={empresa.url_logo_baixa_resolucao}
+                  src={empresa.url_logo}
                   alt={`Logo da ${empresa.nome}`}
                   className="object-contain rounded-md"
                 />
               ) : (
                 <div className="w-64 h-64 bg-gray-200 rounded-md flex items-center justify-center">
-                  <span className="text-gray-500">Sem logo</span>
+                  <span className="text-black">Sem logo</span>
                 </div>
               )}
             </div>
   
-            {/* Texto XL */}
-            <p className="text-gray-600 text-xl [hyphens:auto] max-w-[600px]">
+            <p className="text-black text-xl [hyphens:auto] max-w-[600px]">
               {empresa?.descricao}
             </p>
           </div>
