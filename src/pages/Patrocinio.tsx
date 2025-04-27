@@ -5,7 +5,7 @@ import Header from "../components/Header"
 import { useEffect, useState } from "react"
 import { supabase } from "../services/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 
 const schema = yup.object({
   estados: yup.array().min(1, "Selecione pelo menos um estado"),
@@ -23,27 +23,33 @@ export function Patrocinio() {
   const empresaData = location.state?.data;
   const planoId = location.state?.id;
 
-  const notify = (mensagem: String) => {
+  const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
-      toast.success(mensagem, {
-        position: "top-center",
+      const toastConfig = {
+        position: "top-center" as ToastPosition,
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         onClose: () => resolve(),
-      });
+      };
+
+      if (tipo === 'success') {
+        toast.success(mensagem, toastConfig);
+      } else if (tipo === 'error') {
+        toast.error(mensagem, toastConfig);
+      }
     });
   };
 
   useEffect(() => {
     const fetchData = async () => {
       if (!planoId) {
-        await notify("Você não possui um plano. Redirecinando para a página de planos...");
+        await notify("Você não possui um plano. Redirecinando para a página de planos...", "error");
         navigate("/empresa/planos");
       }
       if (!empresaData) {
-        await notify("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas.");
+        await notify("Os dados da empresa não foram recebidos. Redirecionando para o cadastro de empresas...", "error");
         navigate("/empresa/cadastro");
       }
       const checkUrlExists = async () => {
@@ -55,7 +61,7 @@ export function Patrocinio() {
             .single();
 
           if (data) {
-            await notify('O Url já está em uso por outra empresa. Redirecionando para o cadastro de empresas!');
+            await notify('O Url já está em uso por outra empresa. Redirecionando para o cadastro de empresas...', 'error');
             navigate("/empresa/cadastro");
           }
 
@@ -150,7 +156,7 @@ export function Patrocinio() {
         throw perfisError;
       }
 
-      await notify('Cadastro finalizado!');
+      await notify('Cadastro finalizado!', 'success');
       navigate(`/empresa/${empresaData.url}`);
 
     } catch (err) {

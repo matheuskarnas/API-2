@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -79,6 +79,45 @@ const fetchStatsByUrl = async (empresaUrl: string): Promise<{ lojasCriadas: numb
   }
 
   return { lojasCriadas, cidadesImpactadas };
+};
+
+const handlePegarPatrocinio = async (patrocinadorId: number, patrocinadorUrl: string, navigate: (path: string) => void) => {
+  try {
+    const { data: ultimoUsuario, error: usuarioError } = await supabase
+      .from("usuarios")
+      .select("id")
+      .order("id", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (usuarioError || !ultimoUsuario) {
+      console.error("Erro ao buscar o último usuário:", usuarioError);
+      return;
+    }
+
+    const usuarioId = ultimoUsuario.id;
+
+    const { error: insercaoError } = await supabase
+      .from("patrocinadores_usuarios")
+      .insert([
+        {
+          usuario_id: usuarioId,
+          patrocinador_id: patrocinadorId,
+        },
+      ]);
+
+    if (insercaoError) {
+      console.error("Erro ao inserir na tabela patrocinadores_usuarios:", insercaoError);
+      return;
+    }
+
+    toast.success("Patrocínio registrado com sucesso!");
+
+    navigate(`/empresa/${patrocinadorUrl}`);
+  } catch (error) {
+    console.error("Erro ao processar o patrocínio:", error);
+    toast.error("Erro ao processar o patrocínio.");
+  }
 };
 
 export function PatrociniosDisponiveis() {
@@ -213,8 +252,7 @@ export function PatrociniosDisponiveis() {
                     <h1 style={{ color: "black", paddingTop: "5px" }}>{empresa.lojasCriadas !== undefined ? empresa.lojasCriadas : '0'}</h1>
                   </div>
                 </div>
-                <Link
-                  to={`/empresa/${empresa.url_exclusiva}`}
+                <button
                   style={{
                     textDecoration: "none",
                     color: "white",
@@ -222,11 +260,16 @@ export function PatrociniosDisponiveis() {
                     padding: "10px 15px",
                     borderRadius: "4px",
                     marginTop: "auto",
-                    width: "100%"
+                    width: "100%",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onClick={async () => {
+                    await handlePegarPatrocinio(empresa.id, empresa.url_exclusiva, navigate);
                   }}
                 >
                   Pegar Patrocinio
-                </Link>
+                </button>
               </div>
             ))}
           </div>

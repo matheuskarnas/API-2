@@ -82,7 +82,7 @@ export function Stats() {
           .select("*", { count: "exact", head: true })
           .in("usuario_id", usuariosIds);
 
-        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0));
+        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0) + usuariosIds.length || 0);
         setTotalLojas(lojasCount || 0);
 
         const { data: lojasData } = await supabase
