@@ -9,7 +9,7 @@ interface EmpresaData {
   instagram?: string;
   kawai?: string;
   linkedin?: string;
-  site_web?: string;
+  url_site?: string;
   tiktok?: string;
   whatsapp?: string;
   twitter?: string;
@@ -115,11 +115,11 @@ export function Header() {
                 ref={empresa.linkedin} 
               />
             )}
-            {empresa?.site_web && (
+            {empresa?.url_site && (
               <SocialIcon 
                 alt="Site Oficial" 
                 img="web.png" 
-                ref={empresa.site_web} 
+                ref={empresa.url_site} 
               />
             )}
             {empresa?.tiktok && (
