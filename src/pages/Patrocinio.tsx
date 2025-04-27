@@ -261,7 +261,6 @@ export function Patrocinio() {
           >
             <h3 style={{ textAlign: "center", marginBottom: "25px", color: "black" }}>Perfil para patrocínio</h3>
 
-            {/* Estados */}
             <div style={sectionStyle}>
               <div style={{ marginBottom: '10px' }}>
                 <label>Estados que deseja patrocinar:</label>
@@ -310,7 +309,6 @@ export function Patrocinio() {
               <p style={{ color: 'red' }}>{errors.estados?.message}</p>
             </div>
 
-            {/* Faixas Etárias */}
             <div style={sectionStyle}>
               <div style={{ marginBottom: '10px' }}>
                 <label>Faixas etárias:</label>
@@ -366,7 +364,6 @@ export function Patrocinio() {
               <p style={{ color: 'red' }}>{errors.faixasEtarias?.message}</p>
             </div>
 
-            {/* Escolaridade */}
             <div style={sectionStyle}>
               <div style={{ marginBottom: '10px' }}>
                 <label>Escolaridade:</label>
@@ -423,7 +420,6 @@ export function Patrocinio() {
               <p style={{ color: 'red' }}>{errors.escolaridade?.message}</p>
             </div>
 
-            {/* Renda Familiar */}
             <div style={sectionStyle}>
               <div style={{ marginBottom: '10px' }}>
                 <label>Renda Familiar:</label>

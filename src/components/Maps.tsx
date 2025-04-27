@@ -393,7 +393,7 @@ const Maps = () => {
 ">
         {isLoaded ? (
           <GoogleMap
-          mapContainerStyle={{ width: "100%", height: "400px" }}
+          mapContainerStyle={{ width: "100%", height: "100%" }}
           center={{ lat: -23.55052, lng: -46.633308 }}
           zoom={4}
           options={{
