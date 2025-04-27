@@ -9,6 +9,7 @@ import { CadastroEmpresas } from './pages/CadastroEmpresas';
 import { Patrocinio } from './pages/Patrocinio';
 import { PatrociniosDisponiveis } from "./pages/PatrociniosDisponiveis";
 import { UsuarioPlanos } from "./pages/UsuarioPlanos";
+import { EmpresaPlanos } from './pages/EmpresaPlanos';
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/empresa/:empresaUrl" element={<EmpresaPage />} />
-        <Route path="/empresa/planos" element={<ErrorPage />} />
+        <Route path="/empresa/planos" element={<EmpresaPlanos />} />
         <Route path="/empresa/cadastro" element={<CadastroEmpresas/>} />
         <Route path="/empresa/patrocinio" element={<Patrocinio/>} />
         <Route path="/usuario/planos" element={<UsuarioPlanos/>} />
