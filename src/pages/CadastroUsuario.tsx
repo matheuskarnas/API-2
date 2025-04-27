@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 
 const schema = yup.object({
   nome: yup.string().required("Campo obrigatório"),
@@ -50,22 +50,27 @@ const schema = yup.object({
 
 export function CadastroUsuario() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [estados, setEstados] = useState([]);
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidades, setCidades] = useState([]);
 
-  const notify = () => {
+  const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
-      toast.success('Cadastro realizado!', {
-        position: "top-center",
+      const toastConfig = {
+        position: "top-center" as ToastPosition,
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         onClose: () => resolve(),
-      });
+      };
+
+      if (tipo === 'success') {
+        toast.success(mensagem, toastConfig);
+      } else if (tipo === 'error') {
+        toast.error(mensagem, toastConfig);
+      }
     });
   };
 
@@ -95,7 +100,6 @@ export function CadastroUsuario() {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    setError(null);
 
     try {
       const dataNascimento = new Date(data.data_nascimento).toISOString();
@@ -120,15 +124,15 @@ export function CadastroUsuario() {
       if (supabaseError) {
         if (supabaseError.code === '23505') {
           if (supabaseError.message.includes('cpf')) {
-            throw new Error('CPF já cadastrado no sistema');
+            await notify('CPF já cadastrado no sistema', 'error');
           } else if (supabaseError.message.includes('celular')) {
-            throw new Error('Celular já cadastrado no sistema');
+            await notify('Celular já cadastrado no sistema', 'error');
           }
         }
         throw supabaseError;
       }
 
-      await notify();
+      await notify('Cadastro realizado!', 'success');
 
       const nascimento = new Date(data.data_nascimento);
       const hoje = new Date();
@@ -161,8 +165,6 @@ export function CadastroUsuario() {
         console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
       } else {
         console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
-
-
 
         const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
           const estadoCompatível = perfil.estados.includes(data.estado);
@@ -198,9 +200,9 @@ export function CadastroUsuario() {
 
       console.error('Erro no cadastro:', err);
       if (err instanceof Error) {
-        setError(err.message || 'Erro ao cadastrar. Tente novamente.');
+        await notify(err.message || 'Erro ao cadastrar. Tente novamente.', 'error');
       } else {
-        setError('Erro ao cadastrar. Tente novamente.');
+        await notify('Erro ao cadastrar. Tente novamente.', 'error');
       }
     } finally {
       setLoading(false);
@@ -256,28 +258,15 @@ export function CadastroUsuario() {
         >
           <h3 style={{ textAlign: 'center', marginBottom: '25px', color: 'black' }}>Cadastro</h3>
 
-          {error && (
-            <div style={{
-              color: 'red',
-              textAlign: 'center',
-              marginBottom: '20px',
-              backgroundColor: '#ffeeee',
-              padding: '10px',
-              borderRadius: '5px'
-            }}>
-              {error}
-            </div>
-          )}
-
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>Nome:*</label>
+            <label style={labelStyle}>Nome: <span style={{ color: 'red' }}>*</span></label>
             <input style={inputStyle} {...register("nome")} />
             <p style={errorStyle}>{errors.nome?.message}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Data Nascimento:*</label>
+              <label style={labelStyle}>Data Nascimento: <span style={{ color: 'red' }}>*</span></label>
               <input
                 type="date"
                 style={inputStyle}
@@ -289,7 +278,7 @@ export function CadastroUsuario() {
               <p style={errorStyle}>{errors.data_nascimento?.message}</p>
             </div>
             <div className="w-full sm:w-[100px]">
-              <label style={labelStyle}>Sexo:*</label>
+              <label style={labelStyle}>Sexo: <span style={{ color: 'red' }}>*</span></label>
               <select style={inputStyle} {...register("sexo")}>
                 <option value="">-</option>
                 <option value="M">M</option>
@@ -298,7 +287,7 @@ export function CadastroUsuario() {
               <p style={errorStyle}>{errors.sexo?.message}</p>
             </div>
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>CPF:*</label>
+              <label style={labelStyle}>CPF: <span style={{ color: 'red' }}>*</span></label>
               <input
                 style={inputStyle}
                 {...register("cpf")}
@@ -317,7 +306,7 @@ export function CadastroUsuario() {
 
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Estado:*</label>
+              <label style={labelStyle}>Estado: <span style={{ color: 'red' }}>*</span></label>
               <select
                 style={inputStyle}
                 value={estadoSelecionado}
@@ -339,7 +328,7 @@ export function CadastroUsuario() {
               <p style={errorStyle}>{errors.estado?.message}</p>
             </div>
             <div style={{ flex: 2 }}>
-              <label style={labelStyle}>Cidade:*</label>
+              <label style={labelStyle}>Cidade: <span style={{ color: 'red' }}>*</span></label>
               <select style={inputStyle} {...register("cidade")}>
                 <option value="">-</option>
                 {cidades.map((cidade: { nome: string }) => (
@@ -354,12 +343,12 @@ export function CadastroUsuario() {
 
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 3 }}>
-              <label style={labelStyle}>Rua:*</label>
+              <label style={labelStyle}>Rua: <span style={{ color: 'red' }}>*</span></label>
               <input style={inputStyle} {...register("rua")} />
               <p style={errorStyle}>{errors.rua?.message}</p>
             </div>
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Nº:*</label>
+              <label style={labelStyle}>Nº: <span style={{ color: 'red' }}>*</span></label>
               <input style={inputStyle} {...register("numero")} />
               <p style={errorStyle}>{errors.numero?.message}</p>
             </div>
@@ -371,7 +360,7 @@ export function CadastroUsuario() {
               <input style={inputStyle} {...register("complemento")} />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Celular:*</label>
+              <label style={labelStyle}>Celular: <span style={{ color: 'red' }}>*</span></label>
               <input
                 style={inputStyle}
                 {...register("celular")}
@@ -398,7 +387,7 @@ export function CadastroUsuario() {
 
           <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:gap-4 sm:mb-6">
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Renda Familiar:*</label>
+              <label style={labelStyle}>Renda Familiar: <span style={{ color: 'red' }}>*</span></label>
               <select style={inputStyle} {...register("renda_familiar")}>
                 <option value="">-</option>
                 <option value="E">Até R$1.045,00</option>
@@ -410,7 +399,7 @@ export function CadastroUsuario() {
               <p style={errorStyle}>{errors.renda_familiar?.message}</p>
             </div>
             <div style={{ flex: 1 }}>
-              <label style={labelStyle}>Escolaridade:*</label>
+              <label style={labelStyle}>Escolaridade: <span style={{ color: 'red' }}>*</span></label>
               <select style={inputStyle} {...register("escolaridade")}>
                 <option value="">-</option>
                 <option value="EFI">Ensino Fundamental Incompleto</option>

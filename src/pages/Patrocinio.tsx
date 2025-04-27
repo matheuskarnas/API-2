@@ -79,6 +79,12 @@ export function Patrocinio() {
     setValue,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      estados: [],
+      faixasEtarias: [],
+      escolaridade: [],
+      rendaFamiliar: [],
+    },
   });
 
   const checkboxGroupStyle: React.CSSProperties = {
@@ -311,7 +317,7 @@ export function Patrocinio() {
                 <button
                   type="button"
                   onClick={() => {
-                    const allFaixas = ['18 a 24', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65+'];
+                    const allFaixas = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'];
                     const currentValues = watch("faixasEtarias") || [];
                     if (currentValues.length === allFaixas.length) {
                       setValue("faixasEtarias", [], { shouldValidate: true });
@@ -343,10 +349,17 @@ export function Patrocinio() {
                 </button>
               </div>
               <div style={checkboxGroupStyle}>
-                {['18 a 24', '25 a 34', '35 a 44', '45 a 54', '55 a 64', '65+'].map((faixa, index) => (
+                {[
+                  { label: '18 a 24', value: '18-24' },
+                  { label: '25 a 34', value: '25-34' },
+                  { label: '35 a 44', value: '35-44' },
+                  { label: '45 a 54', value: '45-54' },
+                  { label: '55 a 64', value: '55-64' },
+                  { label: '65+', value: '65+' }
+                ].map((faixa, index) => (
                   <label key={index}>
-                    <input type="checkbox" value={faixa} {...register("faixasEtarias")} />
-                    {' '}{faixa}
+                  <input type="checkbox" value={faixa.value} {...register("faixasEtarias")} />
+                  {' '}{faixa.label}
                   </label>
                 ))}
               </div>
