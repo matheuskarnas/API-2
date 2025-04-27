@@ -80,7 +80,6 @@ export function Header() {
         </button>
       )}
 
-      {/* Redes Sociais com alts específicos */}
       <div className="flex gap-[5px] sm:gap-[15px] flex-wrap justify-end">
         {loading ? (
           [...Array(3)].map((_, i) => (

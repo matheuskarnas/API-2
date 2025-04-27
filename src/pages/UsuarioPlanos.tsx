@@ -68,7 +68,7 @@ export function UsuarioPlanos() {
               <div className={`${plano.cor} w-full text-center py-4 text-white font-bold text-xl`}>
                 {plano.titulo}
               </div>
-              <div className="text-3xl font-bold text-blue-600 my-4">{plano.preco}</div> {/* Preço em destaque */}
+              <div className="text-3xl font-bold text-blue-600 my-4">{plano.preco}</div>
               <ul className="px-6 flex-1 mb-4">
                 {plano.beneficios.map((beneficio, index) => (
                   <li key={index} className="mb-2 text-gray-700 text-sm text-center">
