@@ -4,16 +4,39 @@
 
 # Objetivo do Projeto
 
-A aplicação tem como objetivo fornecer uma plataforma digital intuitiva e acessível para divulgar as empresas patrocinadoras do programa da Helpnei, destacando o impacto positivo de seus investimentos no empreendedorismo local. Através de uma interface clara e objetiva, a aplicação exibe dados essenciais sobre o alcance do patrocínio, incluindo o número de lojas criadas, usuários impactados, cidades atendidas e comunidades beneficiadas.
+A aplicação tem como objetivo fornecer uma plataforma digital **intuitiva, acessível e moderna** para divulgar e valorizar as empresas patrocinadoras do programa da **Helpnei**, destacando de maneira clara e visualmente impactante o impacto positivo dos seus investimentos no fortalecimento do empreendedorismo local.
 
-Além de promover transparência e valorização dos patrocinadores, o projeto também serve como um canal de propaganda para as empresas envolvidas. O design prioriza a simplicidade e a usabilidade, garantindo que as informações sejam apresentadas de forma clara e direta. Para reforçar o impacto visual, a aplicação conta com um mapa interativo que destaca geograficamente as comunidades alcançadas pelo programa.
+Através de uma interface clara e objetiva, os usuários poderão visualizar **informações essenciais** sobre os resultados gerados pelo patrocínio, incluindo:
+- **Número de lojas criadas** por meio do apoio recebido;
+- **Total de usuários impactados** diretamente pelas ações;
+- **Cidades atendidas** onde o programa se faz presente;
+- **Comunidades beneficiadas** que se desenvolveram através da iniciativa.
+
+Além da exibição de métricas, a aplicação funciona como um **canal estratégico de divulgação** para as marcas parceiras, reforçando seu compromisso social e ampliando sua presença digital. Cada patrocinador conta com:
+- Um espaço dedicado para **apresentação da marca**;
+- **Links diretos** para suas redes sociais oficiais;
+- **Identidade visual personalizada** para fortalecer o reconhecimento de sua atuação.
+
+O projeto é pensado para unir **transparência, usabilidade e impacto visual**, apresentando todas as informações de forma direta, acessível a diferentes perfis de público, sem necessidade de conhecimentos técnicos avançados.
+
+Outro ponto fundamental da aplicação é o **mapa interativo**, que proporciona uma visão geográfica detalhada das regiões e comunidades que foram alcançadas pelas ações patrocinadas. Esse recurso torna a experiência ainda mais envolvente, permitindo que os usuários naveguem pelas áreas de atuação e compreendam de forma prática a extensão dos benefícios gerados.
+
+Por fim, o design do sistema foi cuidadosamente desenvolvido para oferecer uma **navegação fluida e responsiva**, adequada para diferentes dispositivos (desktop, tablet e mobile), garantindo que o alcance da plataforma seja maximizado e que todos consigam acessar as informações com facilidade e clareza.
+
+Em resumo, o projeto visa:
+- **Valorizar e reconhecer** os patrocinadores;
+- **Evidenciar resultados concretos** de forma transparente;
+- **Ampliar o alcance digital** das empresas envolvidas;
+- **Fortalecer a imagem institucional** dos parceiros perante a sociedade;
+- **Fomentar a continuidade** e o crescimento das iniciativas apoiadas.
+
 
 ###  Entregas de Sprints
 
-| Sprint |          Data           | Status       |                                               Histórico                                               |
-| :----: | :---------------------: | :----------- | :---------------------------------------------------------------------------------------------------: |
-|   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md) |
-|   02   | 07/04/2025 a 27/04/2025 | Em breve     |                                                                                                       |
+| Sprint |          Data           | Status       |                                               Histórico                                               |      MVP      |
+| :----: | :---------------------: | :----------- | :---------------------------------------------------------------------------------------------------: |:-------------:|
+|   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md) |[ver MVP](https://www.youtube.com/watch?v=G04f3AHD46E)|
+|   02   | 07/04/2025 a 27/04/2025 | ✔️ Concluída     | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md)|[ver MVP]()|
 |   03   | 05/05/2025 a 25/05/2025 | Em breve     |                                                                                                       |
 
 # 🛠️ Tecnologias
@@ -31,87 +54,6 @@ As seguintes ferramentas, linguagens, bibliotecas e tecnologias foram usadas na 
 <img src="https://img.shields.io/badge/vite-CED4DA?style=for-the-badge&logo=vite" alt="vite" />
 <img src="https://img.shields.io/badge/tailwindcss-CED4DA?style=for-the-badge&logo=tailwindcss" alt="tailwindcss" />
 <img src="https://img.shields.io/badge/vercel-CED4DA?style=for-the-badge&logo=vercel&logoColor=000" alt="vercel" />
-
-
-
-# Como baixar e rodar um projeto React com Vite localmente
-
-## 📥 Pré-requisitos
-
-Antes de começar, certifique-se de ter instalado:
-- [Node.js](https://nodejs.org/) (Recomendado: versão LTS)
-- [Git](https://git-scm.com/)
-
-Verifique se estão instalados corretamente rodando:
-```sh
-node -v   # Verifica a versão do Node.js
-yarn -v   # Se estiver usando Yarn (opcional)
-npm -v    # Se estiver usando npm
-git --version  # Verifica a versão do Git
-```
-
-## 🚀 Passos para baixar e rodar o projeto
-
-### 1️⃣ Clonar o repositório
-Abra o terminal e execute:
-```sh
-git clone https://github.com/matheuskarnas/API-2.git
-```
-
-### 2️⃣ Acessar a pasta do projeto
-```sh
-cd API-2
-```
-
-### 3️⃣ Instalar as dependências
-Se estiver usando npm:
-```sh
-npm install
-```
-Se estiver usando Yarn:
-```sh
-yarn install
-```
-Se estiver usando pnpm:
-```sh
-pnpm install
-```
-
-### 4️⃣ Rodar o projeto localmente
-Se estiver usando npm:
-```sh
-npm run dev
-```
-Se estiver usando Yarn:
-```sh
-yarn dev
-```
-Se estiver usando pnpm:
-```sh
-pnpm dev
-```
-
-O terminal mostrará um link como este:
-```
-  Local: http://localhost:5173/
-```
-Acesse no navegador para visualizar o projeto.
-
-## 🛠️ Comandos úteis
-
-Rodar o servidor local:
-```sh
-npm run dev
-```
-Gerar a versão de produção:
-```sh
-npm run build
-```
-Executar a versão de produção localmente:
-```
-npm run preview
-```
-
 
 # Requisitos 
 
@@ -230,6 +172,84 @@ npm run preview
         </tr>
     </tbody>
 </table>
+
+# Como baixar e rodar um projeto React com Vite localmente
+
+## 📥 Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+- [Node.js](https://nodejs.org/) (Recomendado: versão LTS)
+- [Git](https://git-scm.com/)
+
+Verifique se estão instalados corretamente rodando:
+```sh
+node -v   # Verifica a versão do Node.js
+yarn -v   # Se estiver usando Yarn (opcional)
+npm -v    # Se estiver usando npm
+git --version  # Verifica a versão do Git
+```
+
+## 🚀 Passos para baixar e rodar o projeto
+
+### 1️⃣ Clonar o repositório
+Abra o terminal e execute:
+```sh
+git clone https://github.com/matheuskarnas/API-2.git
+```
+
+### 2️⃣ Acessar a pasta do projeto
+```sh
+cd API-2
+```
+
+### 3️⃣ Instalar as dependências
+Se estiver usando npm:
+```sh
+npm install
+```
+Se estiver usando Yarn:
+```sh
+yarn install
+```
+Se estiver usando pnpm:
+```sh
+pnpm install
+```
+
+### 4️⃣ Rodar o projeto localmente
+Se estiver usando npm:
+```sh
+npm run dev
+```
+Se estiver usando Yarn:
+```sh
+yarn dev
+```
+Se estiver usando pnpm:
+```sh
+pnpm dev
+```
+
+O terminal mostrará um link como este:
+```
+  Local: http://localhost:5173/
+```
+Acesse no navegador para visualizar o projeto.
+
+## 🛠️ Comandos úteis
+
+Rodar o servidor local:
+```sh
+npm run dev
+```
+Gerar a versão de produção:
+```sh
+npm run build
+```
+Executar a versão de produção localmente:
+```
+npm run preview
+```
 
 # Autores
 
