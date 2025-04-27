@@ -197,13 +197,8 @@ export function CadastroUsuario() {
       }
 
     } catch (err) {
-
       console.error('Erro no cadastro:', err);
-      if (err instanceof Error) {
-        await notify(err.message || 'Erro ao cadastrar. Tente novamente.', 'error');
-      } else {
-        await notify('Erro ao cadastrar. Tente novamente.', 'error');
-      }
+      
     } finally {
       setLoading(false);
     }
