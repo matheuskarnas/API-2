@@ -38,7 +38,7 @@ Em resumo, o projeto visa:
 | Sprint |          Data           | Status       |                                                      Histórico                                                       |                          MVP                           |
 | :----: | :---------------------: | :----------- | :------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------: |
 |   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md) | [ver MVP](https://www.youtube.com/watch?v=G04f3AHD46E) |
-|   02   | 07/04/2025 a 27/04/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-2/sprint-2.md) |                      [ver MVP]()                       |
+|   02   | 07/04/2025 a 27/04/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-2/sprint-2.md) |                      [ver MVP](https://www.youtube.com/watch?v=mDbiHK8ujrc&list=PLOIAehj9FoFyKjtV8Jpx-KXWgdg8LDj8X&ab_channel=MatheusCastillo)                       |
 |   03   | 05/05/2025 a 25/05/2025 | Em breve     |                                                                                                                      |
 
 # Backlog do Produto
