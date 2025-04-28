@@ -29,3 +29,11 @@ Uma tarefa é considerada concluída quando:
 # Banco de dados
 
 ![Burndown Chart](https://raw.githubusercontent.com/matheuskarnas/API-2/refs/heads/main/documentation/sprints-reports/sprint-2/bd.jpg)
+
+---
+
+# Figma
+
+[Acesse o Figma](https://www.figma.com/design/SDYILbJEiJR22dSbearsgj/API?node-id=0-1&p=f&t=NS1gT6Jma0GwrYXd-0)
+
+---
