@@ -28,4 +28,4 @@ Uma tarefa é considerada concluída quando:
 
 # Banco de dados
 
-![Burndown Chart](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-2/bd.jpg)
+![Burndown Chart](https://raw.githubusercontent.com/matheuskarnas/API-2/refs/heads/main/documentation/sprints-reports/sprint-2/bd.jpg)
