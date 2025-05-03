@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { EmpresaPage } from './pages/EmpresaPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import { CadastroUsuario } from './pages/CadastroUsuario';
 import { CadastroEmpresas } from './pages/CadastroEmpresas';
 import { Patrocinio } from './pages/Patrocinio';
@@ -26,6 +27,7 @@ function App() {
         <Route path="/usuario/patrocinios-disponiveis" element={<PatrociniosDisponiveis/>} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+      <SpeedInsights/>
       <Analytics />
     </Router>
   );
