@@ -3,13 +3,12 @@ import Grafico from "./Grafico";
 
 interface CardProps {
   title: string;
-  value: number;
-  tipo: "lojas_criadas" | "familias_impactadas" | "cidades_impactadas" | "comunidades";
+  value: Record<string, number>;
   srcImg: string;
   onClick?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({ title, value, tipo , srcImg}) => {
+export const Card: React.FC<CardProps> = ({ title, value, srcImg }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -47,14 +46,16 @@ export const Card: React.FC<CardProps> = ({ title, value, tipo , srcImg}) => {
         shadow-md
         shadow-black
         cursor-pointer">
-        
+
         <div className="flex items-center justify-center">
           <img src={srcImg} className="h-[20px] w-[20px] sm:w-[42px] sm:h-[42px] mt-3 sm:ml-[40px]"/>
         </div>
 
         <div className="flex flex-col justify-center text-center w-full">
-          <p className="text-black text-[11px] text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>  
-          <p className="text-black text-[24px] sm:text-[36px] font-bold">{value}</p>
+          <p className="text-black text-[11px] text-sm sm:text-xl md:text-xl md:text-base whitespace-nowrap">{title}</p>
+          <p className="text-black text-[24px] sm:text-[36px] font-bold">
+            {Object.values(value).reduce((sum, num) => sum + num, 0)}
+          </p>
         </div>
       </div>
 
@@ -69,7 +70,7 @@ export const Card: React.FC<CardProps> = ({ title, value, tipo , srcImg}) => {
                 {title}
               </h2>
             </div>
-            <Grafico tipo={tipo} />
+            <Grafico value={value} />
           </div>
         </div>
       )}

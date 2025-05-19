@@ -177,7 +177,7 @@ export function Patrocinio() {
 
   return (
     <>
-      <Header />
+      <Header empresa={ null } loading={ loading }/>
       <ToastContainer />
       {empresaData ? (
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px", flexDirection: "column", alignItems: "center" }}>

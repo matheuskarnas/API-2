@@ -1,120 +1,23 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../services/supabaseClient";
 import { Card } from "./Card";
 
-export function Stats() {
-  const { empresaUrl } = useParams();
-  const [totalLojas, setTotalLojas] = useState<number>(0);
-  const [familiasImpactadas, setFamiliasImpactadas] = useState<number>(0);
-  const [totalComunidades, setTotalComunidades] = useState<number>(0);
-  const [cidadesImpactadas, setCidadesImpactadas] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
+interface StatsProps {
+  usuarios: Record<string, number>;
+  lojas: Record<string, number>;
+  comunidades: Record<string, number>;
+  cidades: Record<string, number>;
+  familiasImpactadas: Record<string, number>;
+  loading: boolean;
+}
+
+export function Stats({ lojas, comunidades, cidades, familiasImpactadas, loading }: StatsProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const buscarDados = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data: patrocinador, error: patrocinadorError } = await supabase
-          .from("patrocinadores")
-          .select("id")
-          .eq("url_exclusiva", empresaUrl)
-          .single();
-
-        if (patrocinadorError || !patrocinador) {
-          throw new Error("Patrocinador não encontrado");
-        }
-
-        const { data: usuariosPatrocinados, error: usuariosError } = await supabase
-          .from("patrocinadores_usuarios")
-          .select("usuario_id")
-          .eq("patrocinador_id", patrocinador.id);
-
-        if (usuariosError) throw usuariosError;
-        const usuariosIds = usuariosPatrocinados?.map(u => u.usuario_id) || [];
-
-        if (usuariosIds.length === 0) {
-          setTotalLojas(0);
-          setFamiliasImpactadas(0);
-          setTotalComunidades(0);
-          setCidadesImpactadas(0);
-          return;
-        }
-
-        const { count: lojasCount } = await supabase
-          .from("lojas")
-          .select("*", { count: "exact", head: true })
-          .in("usuario_id", usuariosIds);
-
-        const { data: comunidadesUsuarios, error: comunidadesError } = await supabase
-          .from("usuarios_comunidades")
-          .select("comunidade_id")
-          .in("usuario_id", usuariosIds);
-
-        if (comunidadesError) throw comunidadesError;
-        setTotalComunidades(comunidadesUsuarios?.length || 0);
-
-        let totalPessoasComunidades = 0;
-        const comunidadesUnicas = [...new Set(
-          comunidadesUsuarios?.map(c => c.comunidade_id) || []
-        )];
-
-        for (const comunidadeId of comunidadesUnicas) {
-          const { count: totalMembros } = await supabase
-            .from("usuarios_comunidades")
-            .select("*", { count: "exact", head: true })
-            .eq("comunidade_id", comunidadeId);
-
-          const { count: usuariosNestaComunidade } = await supabase
-            .from("usuarios_comunidades")
-            .select("*", { count: "exact", head: true })
-            .eq("comunidade_id", comunidadeId)
-            .in("usuario_id", usuariosIds);
-
-          totalPessoasComunidades += (totalMembros || 0) * (usuariosNestaComunidade || 0);
-        }
-
-        const { count: totalAmizades } = await supabase
-          .from("amizades")
-          .select("*", { count: "exact", head: true })
-          .in("usuario_id", usuariosIds);
-
-        setFamiliasImpactadas(totalPessoasComunidades + (totalAmizades || 0) + usuariosIds.length || 0);
-        setTotalLojas(lojasCount || 0);
-
-        const { data: lojasData } = await supabase
-          .from("lojas")
-          .select("localizacao_id")
-          .in("usuario_id", usuariosIds);
-
-        const { data: comunidadesData } = await supabase
-          .from("comunidades")
-          .select("localizacao_id")
-          .in("id", comunidadesUnicas);
-
-        const localizacoesLojas = lojasData?.map(l => l.localizacao_id) || [];
-        const localizacoesComunidades = comunidadesData?.map(c => c.localizacao_id) || [];
-        
-        const localizacoesUnicas = [...new Set([
-          ...localizacoesLojas,
-          ...localizacoesComunidades
-        ])];
-
-        setCidadesImpactadas(localizacoesUnicas.length);
-
-      } catch (err) {
-        setError((err as Error).message);
-        console.error("Erro ao buscar estatísticas:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    buscarDados();
-  }, [empresaUrl]);
+    if (!loading) {
+      setError(null);
+    }
+  }, [loading]);
 
   if (loading) {
     return (
@@ -143,10 +46,10 @@ export function Stats() {
       mx-auto
       text-gray-600
     ">
-      <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={totalLojas} tipo="lojas_criadas" />
-      <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={familiasImpactadas} tipo="familias_impactadas" />
-      <Card srcImg="/assets/map-marker.png" title="Cidades impactadas" value={cidadesImpactadas} tipo="cidades_impactadas" />
-      <Card srcImg="/assets/building.png" title="Comunidades" value={totalComunidades} tipo="comunidades" />
+      <Card srcImg="/assets/shop.png" title='Lojas Criadas' value={ lojas } />
+      <Card srcImg="/assets/users-alt.png" title="Famílias impactadas" value={ familiasImpactadas } />
+      <Card srcImg="/assets/map-marker.png" title="Cidades impactadas" value={ cidades } />
+      <Card srcImg="/assets/building.png" title="Comunidades" value={ comunidades } />
     </div>
   )
 }

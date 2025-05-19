@@ -5,13 +5,13 @@ import { useParams } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 
 interface GraficoProps {
-  tipo: "lojas_criadas" | "familias_impactadas" | "cidades_impactadas" |"comunidades";
+  value: Record<string, number>;
 }
 
-const Grafico = ({ tipo }: GraficoProps) => {
+const Grafico = ({ value }: GraficoProps) => {
   const [dataInicio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
-  const [dadosTotais, setDadosTotais] = useState<{ data: string; valor: number }[]>([]);
+  const [dadosOriginais, setDadosOriginais] = useState<{ data: string; valor: number }[]>([]);
   const [dadosFiltrados, setDadosFiltrados] = useState<{ data: string; valor: number }[]>([]);
   const [filtroData, setFiltroData] = useState('');
   const { empresaUrl } = useParams();
@@ -44,156 +44,17 @@ const Grafico = ({ tipo }: GraficoProps) => {
         const usuariosIds = usuariosPatrocinados?.map((u) => u.usuario_id) || [];
 
         if (usuariosIds.length === 0) {
-          setDadosTotais([]);
+          setDadosOriginais([]);
           setDadosFiltrados([]);
           return;
         }
 
-        let dados: { data: string; valor: number }[] = [];
+        const dados = Object.entries(value)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([data, valor]) => ({ data, valor }));
 
-        switch (tipo) {
-          case "lojas_criadas": {
-            const { data: lojas, error } = await supabase
-              .from("lojas")
-              .select("data_criacao")
-              .in("usuario_id", usuariosIds);
-
-            if (error) throw error;
-
-            const agrupado = lojas.reduce((acc: Record<string, number>, loja) => {
-              const data = loja.data_criacao?.slice(0, 10);
-              if (data) acc[data] = (acc[data] || 0) + 1;
-              return acc;
-            }, {});
-
-            let acumulado = 0;
-            dados = Object.entries(agrupado)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([data, valor]) => {
-                acumulado += valor;
-                return { data, valor: acumulado };
-              });
-            break;
-          }
-
-          case "familias_impactadas": {          
-            const { data: comunidadesUsuarios, error: comunidadesError } = await supabase
-              .from("usuarios_comunidades")
-              .select("comunidade_id, usuario_id, data_ingresso")
-              .in("usuario_id", usuariosIds);
-          
-            if (comunidadesError) throw comunidadesError;
-          
-            const comunidadesUnicas = [...new Set(comunidadesUsuarios?.map(c => c.comunidade_id) || [])];
-          
-            const impactosPorData: Record<string, number> = {};
-          
-            for (const comunidadeId of comunidadesUnicas) {
-              const { data: todosMembros, count: totalMembros } = await supabase
-                .from("usuarios_comunidades")
-                .select("usuario_id, data_ingresso", { count: "exact" })
-                .eq("comunidade_id", comunidadeId);
-          
-              if (!todosMembros || totalMembros === null) continue;
-          
-              const membrosPatrocinados = todosMembros.filter(m =>
-                usuariosIds.includes(m.usuario_id)
-              );
-          
-              for (const membro of membrosPatrocinados) {
-                const data = membro.data_ingresso?.split("T")[0];
-                if (!data) continue;
-          
-                impactosPorData[data] = (impactosPorData[data] || 0) + totalMembros;
-              }
-            }
-          
-            const { data: amizades } = await supabase
-              .from("amizades")
-              .select("data_criacao")
-              .in("usuario_id", usuariosIds);
-          
-            amizades?.forEach((amizade) => {
-              const data = amizade.data_criacao?.split("T")[0];
-              if (!data) return;
-              impactosPorData[data] = (impactosPorData[data] || 0) + 1;
-            });
-          
-            let acumulado = 0;
-            dados = Object.entries(impactosPorData)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([data, valor]) => {
-                acumulado += valor;
-                return { data, valor: acumulado };
-              });
-            break;
-          }          
-
-          case "cidades_impactadas": {
-            const { data: lojas, error: lojasError } = await supabase
-              .from("lojas")
-              .select("localizacao_id, data_criacao")
-              .in("usuario_id", usuariosIds);
-          
-            if (lojasError) throw lojasError;
-          
-            const primeiraOcorrencia: Record<string, string> = {};
-          
-            lojas?.forEach(loja => {
-              const locId = loja.localizacao_id;
-              const data = loja.data_criacao?.slice(0, 10);
-          
-              if (!locId || !data) return;
-          
-              if (!primeiraOcorrencia[locId] || data < primeiraOcorrencia[locId]) {
-                primeiraOcorrencia[locId] = data;
-              }
-            });
-          
-            const contadorPorData: Record<string, number> = {};
-          
-            Object.values(primeiraOcorrencia).forEach(data => {
-              contadorPorData[data] = (contadorPorData[data] || 0) + 1;
-            });
-          
-            let acumulado = 0;
-            dados = Object.entries(contadorPorData)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([data, valor]) => {
-                acumulado += valor;
-                return { data, valor: acumulado };
-              });
-          
-            break;
-          }
-
-          case "comunidades": {
-            const { data: uc, error } = await supabase
-              .from("usuarios_comunidades")
-              .select("data_ingresso")
-              .in("usuario_id", usuariosIds);
-
-            if (error) throw error;
-
-            const agrupado = uc.reduce((acc: Record<string, number>, u) => {
-              const data = u.data_ingresso?.slice(0, 10);
-              if (data) acc[data] = (acc[data] || 0) + 1;
-              return acc;
-            }, {});
-
-            let acumulado = 0;
-            dados = Object.entries(agrupado)
-              .sort(([a], [b]) => a.localeCompare(b))
-              .map(([data, valor]) => {
-                acumulado += valor;
-                return { data, valor: acumulado };
-              });
-            break;
-          }
-        }
-
-        setDadosTotais(dados);
-        setDadosFiltrados(dados);
+        setDadosOriginais(dados);
+        setDadosFiltrados(acumularDados(dados));
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -202,15 +63,26 @@ const Grafico = ({ tipo }: GraficoProps) => {
     };
 
     buscarDados();
-  }, [empresaUrl, tipo]);
+  }, [empresaUrl]);
+
+  const acumularDados = (dados: { data: string; valor: number }[]) => {
+    return dados.reduce((acc, { data, valor }, index) => {
+      const acumulado = index === 0 ? valor : valor + acc[index - 1].valor;
+      acc.push({ data, valor: acumulado });
+      return acc;
+    }, [] as { data: string; valor: number }[]);
+  };
+
+  const acumularDadosFiltrados = (dados: { data: string; valor: number }[]) => {
+    return dados.reduce((acc, { data, valor }, index) => {
+      const acumulado = index === 0 ? valor : valor + acc[index - 1].valor;
+      acc.push({ data, valor: acumulado });
+      return acc;
+    }, [] as { data: string; valor: number }[]);
+  };
 
   useEffect(() => {
-    if (filtroData === "customizado") {
-      setDataInicio("");
-      setDataFim("");
-      setDadosFiltrados(dadosTotais);
-      return;
-    }
+    if (!dadosOriginais.length) return;
 
     let inicio = dataInicio;
     let fim = dataFim;
@@ -226,29 +98,26 @@ const Grafico = ({ tipo }: GraficoProps) => {
       fim = formatDate(endOfYear(new Date()));
     }
 
-    if (!filtroData) {
-      setDadosFiltrados(dadosTotais);
+    if (filtroData === "customizado") {
+      if (!dataInicio || !dataFim) {
+        setDadosFiltrados(acumularDados(dadosOriginais));
+        return;
+      }
+    } else if (!filtroData) {
+      setDadosFiltrados(acumularDados(dadosOriginais));
       return;
     }
 
-    const filtrado = dadosTotais.filter(
+    const filtrado = dadosOriginais.filter(
       (item) => item.data >= inicio && item.data <= fim
     );
-    setDadosFiltrados(filtrado);
+
+    const dadosAcumuladosFiltrados = acumularDadosFiltrados(filtrado);
+    
+    setDadosFiltrados(dadosAcumuladosFiltrados);
     setDataInicio(inicio);
     setDataFim(fim);
-  }, [filtroData]);
-
-  useEffect(() => {
-    if (filtroData !== "customizado") return;
-    if (!dataInicio || !dataFim) return;
-    if (new Date(dataInicio) > new Date(dataFim)) return;
-
-    const filtrado = dadosTotais.filter(
-      (item) => item.data >= dataInicio && item.data <= dataFim
-    );
-    setDadosFiltrados(filtrado);
-  }, [dataInicio, dataFim, filtroData]);
+  }, [filtroData, dataInicio, dataFim, dadosOriginais]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
@@ -334,7 +203,6 @@ const Grafico = ({ tipo }: GraficoProps) => {
       </div>
     </div>
   );
-  
 };
 
 export default Grafico;

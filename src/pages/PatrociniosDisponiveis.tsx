@@ -176,7 +176,7 @@ export function PatrociniosDisponiveis() {
   if (loadingStats) {
     return (
       <>
-        <Header />
+        <Header empresa={ null } loading={ loadingStats }/>
         <ToastContainer />
         <main style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
           <h1 style={{ fontSize: "24px", marginBottom: "20px", textAlign: "center" }}>
@@ -190,7 +190,7 @@ export function PatrociniosDisponiveis() {
 
   return (
     <>
-      <Header />
+      <Header empresa={ null } loading={ loadingStats }/>
       <ToastContainer />
       <main style={{ fontFamily: "Arial, sans-serif" }}>
         <h1 style={{ fontSize: "24px", marginTop: "40px", textAlign: "center", color: "black" }}>

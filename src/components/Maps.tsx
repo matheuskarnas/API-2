@@ -4,197 +4,205 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../services/supabaseClient";
+import { useRef, useState } from "react";
 
 interface Coordinates {
   lat: number;
   lng: number;
 }
 
-interface LocationData {
+export interface LocationData {
   coordenadas: Coordinates;
   lojasCount: number;
   comunidadesCount: number;
   localizacaoId: number;
 }
 
-const Maps = () => {
-  const { empresaUrl } = useParams();
-  const [locations, setLocations] = useState<LocationData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const mapStyle = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#bdbdbd"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dadada"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#c9c9c9"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  }
+];
+
+interface MapsProps {
+  locations: LocationData[];
+  loading: boolean;
+}
+
+const Maps = ({ locations, loading }: MapsProps) => {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
   const [estado, setEstado] = useState<string | null>(null);
   const [cidade, setCidade] = useState<string | null>(null);
-  const mapStyle= [
-    {
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#f5f5f5"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.icon",
-      "stylers": [
-        {
-          "visibility": "off"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#616161"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#f5f5f5"
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.land_parcel",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#bdbdbd"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#eeeeee"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#757575"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#e5e5e5"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#9e9e9e"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#ffffff"
-        }
-      ]
-    },
-    {
-      "featureType": "road.arterial",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#757575"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#dadada"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#616161"
-        }
-      ]
-    },
-    {
-      "featureType": "road.local",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#9e9e9e"
-        }
-      ]
-    },
-    {
-      "featureType": "transit.line",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#e5e5e5"
-        }
-      ]
-    },
-    {
-      "featureType": "transit.station",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#eeeeee"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#c9c9c9"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#9e9e9e"
-        }
-      ]
-    }
-  ]
+  const mapRef = useRef<google.maps.Map | null>(null);
 
-  useEffect(() => {
-    if (selectedLocation) {
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
+    language: "pt-BR",
+  });
+
+  const handleMarkerClick = (location: LocationData) => {
+    setSelectedLocation(location);
+    
+    if (window.google && window.google.maps) {
       const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: selectedLocation.coordenadas }, (results, status) => {
+      geocoder.geocode({ location: location.coordenadas }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
-          console.log(results);
           setEstado(
             results[0]?.address_components?.find(component =>
               component.types.includes("administrative_area_level_1")
@@ -203,170 +211,11 @@ const Maps = () => {
           const cidade = results
             .flatMap(result => result.address_components)
             .find(component => component.types.includes("locality"))?.long_name || null;
-
           setCidade(cidade);
         }
       });
     }
-  }, [selectedLocation as LocationData | null]);
-
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API_KEY,
-    language: "pt-BR",
-  });
-
-  const mapRef = useRef<google.maps.Map | null>(null);
-
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data: patrocinador, error: patError } = await supabase
-          .from("patrocinadores")
-          .select("id")
-          .eq("url_exclusiva", empresaUrl)
-          .single();
-
-        if (patError || !patrocinador) {
-          throw new Error(patError?.message || "Patrocinador não encontrado");
-        }
-
-        const { data: patrocinadorUsuarios, error: puError } = await supabase
-          .from("patrocinadores_usuarios")
-          .select("usuario_id")
-          .eq("patrocinador_id", patrocinador.id);
-
-        if (puError) throw puError;
-        if (!patrocinadorUsuarios || patrocinadorUsuarios.length === 0) {
-          console.warn("Nenhum usuário encontrado para este patrocinador");
-          setLocations([]); 
-          return;
-        }
-
-        const usuarioIds = patrocinadorUsuarios.map((pu) => pu.usuario_id);
-
-        const { data: lojas, error: lojasError } = await supabase
-          .from("lojas")
-          .select("localizacao_id")
-          .in("usuario_id", usuarioIds);
-
-        if (lojasError) throw lojasError;
-
-        const { data: usuariosComunidades, error: ucError } = await supabase
-          .from("usuarios_comunidades")
-          .select("comunidade_id, usuario_id")
-          .in("usuario_id", usuarioIds);
-
-        if (ucError) throw ucError;
-
-        const locationsMap: Record<
-          number,
-          {
-            coordenadas: Coordinates;
-            lojasCount: number;
-            comunidadesCount: number;
-          }
-        > = {};
-
-        const localizacaoIds = new Set<number>();
-
-        lojas?.forEach((loja) => {
-          if (loja.localizacao_id) {
-            localizacaoIds.add(loja.localizacao_id);
-          }
-        });
-
-        if (usuariosComunidades && usuariosComunidades.length > 0) {
-          const comunidadeIds = [
-            ...new Set(usuariosComunidades.map((uc) => uc.comunidade_id)),
-          ];
-
-          const { data: comunidades, error: comError } = await supabase
-            .from("comunidades")
-            .select("id, localizacao_id")
-            .in("id", comunidadeIds);
-
-          if (comError) throw comError;
-
-          comunidades?.forEach((com) => {
-            if (com.localizacao_id) {
-              localizacaoIds.add(com.localizacao_id);
-            }
-          });
-        }
-
-        const { data: localizacoes, error: locError } = await supabase
-          .from("localizacoes")
-          .select("id, coordenadas")
-          .in("id", Array.from(localizacaoIds));
-
-        if (locError) throw locError;
-
-        localizacoes?.forEach((loc) => {
-          locationsMap[loc.id] = {
-            coordenadas: loc.coordenadas,
-            lojasCount: 0,
-            comunidadesCount: 0,
-          };
-        });
-
-        lojas?.forEach((loja) => {
-          if (loja.localizacao_id && locationsMap[loja.localizacao_id]) {
-            locationsMap[loja.localizacao_id].lojasCount += 1;
-          }
-        });
-
-        if (usuariosComunidades && usuariosComunidades.length > 0) {
-          const comunidadeIds = usuariosComunidades.map(
-            (uc) => uc.comunidade_id
-          );
-
-          const { data: comunidades, error: comError } = await supabase
-            .from("comunidades")
-            .select("id, localizacao_id")
-            .in("id", comunidadeIds);
-
-          if (comError) throw comError;
-
-          comunidades?.forEach((com) => {
-            if (com.localizacao_id && locationsMap[com.localizacao_id]) {
-              const userCount = usuariosComunidades.filter(
-                (uc) => uc.comunidade_id === com.id
-              ).length;
-              locationsMap[com.localizacao_id].comunidadesCount += userCount;
-            }
-          });
-        }
-
-        const locationsData = Object.entries(locationsMap).map(
-          ([id, data]) => ({
-            ...data,
-            localizacaoId: Number(id),
-          })
-        );
-
-        setLocations(locationsData);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLocations();
-  }, [empresaUrl]);
-
-  useEffect(() => {
-    if (isLoaded && mapRef.current && locations.length > 0) {
-      const bounds = new window.google.maps.LatLngBounds();
-      locations.forEach((loc) => bounds.extend(loc.coordenadas));
-      mapRef.current.fitBounds(bounds);
-    }
-  }, [isLoaded, locations]);
+  };
 
   if (loading) {
     return (
@@ -376,30 +225,22 @@ const Maps = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="w-full sm:w-[95%] md:w-[90%] xl:w-[80%] flex justify-center items-center h-57 max-sm:h-55 text-red-500 p-4">
-        {error}
-      </div>
-    );
-  }
-
   if (locations.length === 0) {
     return (
       <div className="
-  w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
-  h-[150px]
-  md:h-[200px] w:[100%]
-">
+        w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
+        h-[150px]
+        md:h-[200px] w:[100%]
+      ">
         {isLoaded ? (
           <GoogleMap
-          mapContainerStyle={{ width: "100%", height: "100%" }}
-          center={{ lat: -23.55052, lng: -46.633308 }}
-          zoom={4}
-          options={{
-            styles: mapStyle
-          }}
-        />
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+            center={{ lat: -23.55052, lng: -46.633308 }}
+            zoom={4}
+            options={{
+              styles: mapStyle
+            }}
+          />
         ) : (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center">
@@ -413,10 +254,10 @@ const Maps = () => {
 
   return (
     <div className="
-  w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
-  h-[150px]
-  md:h-[200px] w:[100%]
-">
+      w-[90%] xl:max-w-[75%] mx-auto rounded-lg shadow-lg relative
+      h-[150px]
+      md:h-[200px] w:[100%]
+    ">
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -436,7 +277,7 @@ const Maps = () => {
             <Marker
               key={index}
               position={loc.coordenadas}
-              onClick={() => setSelectedLocation(loc)}
+              onClick={() => handleMarkerClick(loc)}
               icon={{
                 url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
                 scaledSize: new window.google.maps.Size(24, 24),
@@ -445,10 +286,10 @@ const Maps = () => {
           ))}
           {selectedLocation && (
             <InfoWindow
-            position={selectedLocation.coordenadas}
-            onCloseClick={() => setSelectedLocation(null)}
-          >
-            <div className="text-center p-4 rounded-lg min-w-[200px]">
+              position={selectedLocation.coordenadas}
+              onCloseClick={() => setSelectedLocation(null)}
+            >
+              <div className="text-center p-4 rounded-lg min-w-[200px]">
                 <button
                   aria-label="Fechar"
                   className="absolute top-0 right-0 w-8 h-8 bg-gray-400 text-black rounded flex items-center justify-center hover:bg-red-500 transition-colors cursor-pointer"

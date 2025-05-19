@@ -6,7 +6,6 @@ import Header from "../components/Header";
 interface Empresa {
   id: number;
   nome: string;
-  descricao: string;
   url_exclusiva: string;
   url_logo?: string;
 }
@@ -24,7 +23,7 @@ export function Home() {
       try {
         const { data, error } = await supabase
           .from("patrocinadores")
-          .select("id, nome, descricao, url_exclusiva, url_logo")
+          .select("*")
           .order("nome", { ascending: true });
 
         if (error) throw error;
@@ -42,7 +41,7 @@ export function Home() {
   if (loading) {
     return (
       <>
-        <Header />
+        <Header empresa={ null } loading={ false }/>
         <main className="p-5 font-sans">
           <h1 className="text-2xl font-bold mb-5 text-center">Nossos Patrocinadores</h1>
           <div className="flex flex-wrap gap-5 justify-center">
@@ -64,7 +63,7 @@ export function Home() {
 
   return (
     <>
-      <Header />
+      <Header empresa={ null } loading={ loading } />
       <main className="px-5 md:px-[10%]  font-sans">
         <h1 style={{ 
           fontSize: "24px", 

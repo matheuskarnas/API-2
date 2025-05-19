@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
+import { Link, useNavigate } from 'react-router-dom';
 import { SocialIcon } from './SocialIcon';
 
 interface EmpresaData {
   nome: string;
+  url_exclusiva: string;
   facebook?: string;
   instagram?: string;
   kawai?: string;
@@ -15,61 +14,24 @@ interface EmpresaData {
   twitter?: string;
 }
 
-export function Header() {
-  const { empresaUrl } = useParams();
-  const [empresa, setEmpresa] = useState<EmpresaData | null>(null);
-  const [loading, setLoading] = useState(true);
+interface HeaderProps {
+  empresa: EmpresaData | null;
+  loading: boolean;
+}
+
+export function Header({ empresa, loading }: HeaderProps) {
   const navigate = useNavigate();
-
-  const fallbackData: EmpresaData = {
-    nome: 'SHIP',
-    facebook: '#',
-    instagram: '#',
-    linkedin: '#'
-  };
-
-  useEffect(() => {
-    if (!empresaUrl) {
-      setEmpresa(null);
-      setLoading(false);
-      return;
-    }
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('patrocinadores')
-          .select('*')
-          .eq('url_exclusiva', empresaUrl)
-          .single();
-
-        if (!error && data) {
-          setEmpresa(data);
-        } else {
-          setEmpresa(fallbackData);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-        setEmpresa(fallbackData);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [empresaUrl]);
 
   return (
     <nav className="w-full bg-[#16254D] p-2 flex justify-between items-center h-[94px] md:h-[115px]">
       {loading ? (
         <div className="animate-pulse bg-[#16254D] rounded h-8 w-32"></div>
-      ) : empresaUrl ? (
+      ) : empresa?.url_exclusiva ? (
         <Link
           to={"/"}
           className="text-white text-[20px] md:text-[40px] font-bold whitespace-nowrap"
         >
-          {empresa?.nome || "Helpnei"}
+          {empresa?.nome || `Helpnei`}
         </Link>
       ) : (
         <button

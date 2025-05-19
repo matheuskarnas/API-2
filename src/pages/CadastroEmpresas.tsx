@@ -153,7 +153,7 @@ export function CadastroEmpresas() {
       justifyContent: 'center',
       alignItems: 'center',
     }}>
-      <Header />
+      <Header empresa={ null } loading={ false } />
       <ToastContainer />
       <div style={{
         width: '90%',

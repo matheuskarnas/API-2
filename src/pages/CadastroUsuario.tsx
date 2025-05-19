@@ -247,7 +247,7 @@ export function CadastroUsuario() {
 
   return (
     <>
-      <Header />
+      <Header empresa={ null } loading={ false }/>
       <ToastContainer />
       <div style={{
         display: 'flex',

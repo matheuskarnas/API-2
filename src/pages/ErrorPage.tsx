@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export function ErrorPage() {
   return (
     <>
-      <Header />
+      <Header empresa={ null } loading={ false } />
       <main>
         <section className = 'flex flex-col itens-center h-screen p-16'>
           <div className="flex flex-col items-center gap-6 text-center">
