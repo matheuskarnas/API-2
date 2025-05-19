@@ -96,8 +96,7 @@ export function EmpresaPage() {
         const { data: usuariosPatrocinados } = await supabase
           .from("patrocinadores_usuarios")
           .select("usuario_id, data_inicio")
-          .eq("patrocinador_id", dados.id)
-          .is("data_fim", null);
+          .eq("patrocinador_id", dados.id);
 
         const usuariosIds = usuariosPatrocinados?.map(u => u.usuario_id) || [];
         if (usuariosIds.length === 0) return;
