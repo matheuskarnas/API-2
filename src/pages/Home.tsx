@@ -10,21 +10,34 @@ interface Empresa {
   url_logo?: string;
 }
 
+const empresas_por_page = 25; 
+
 export function Home() {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const empresasFiltradas = empresas.filter(empresa =>
-    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); 
 
   useEffect(() => {
     const fetchEmpresas = async () => {
+      setLoading(true);
       try {
+        const { count } = await supabase
+          .from("patrocinadores")
+          .select("*", { count: "exact" });
+
+        const totalEmpresas = count || 0;
+        setTotalPages(Math.ceil(totalEmpresas / empresas_por_page));
+
+        const startIndex = (currentPage - 1) * empresas_por_page;
+        const endIndex = startIndex + empresas_por_page - 1;
+
         const { data, error } = await supabase
           .from("patrocinadores")
           .select("*")
-          .order("nome", { ascending: true });
+          .order("nome", { ascending: true })
+          .range(startIndex, endIndex);
 
         if (error) throw error;
         if (data) setEmpresas(data);
@@ -36,12 +49,28 @@ export function Home() {
     };
 
     fetchEmpresas();
-  }, []);
+  }, [currentPage]); 
+
+  const empresasFiltradas = empresas.filter(empresa =>
+    empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   if (loading) {
     return (
       <>
-        <Header empresa={ null } loading={ false }/>
+        <Header empresa={null} loading={false} />
         <main className="p-5 font-sans">
           <h1 className="text-2xl font-bold mb-5 text-center">Nossos Patrocinadores</h1>
           <div className="flex flex-wrap gap-5 justify-center">
@@ -60,20 +89,19 @@ export function Home() {
       </>
     );
   }
-
   return (
     <>
-      <Header empresa={ null } loading={ loading } />
-      <main className="px-5 md:px-[10%]  font-sans">
-        <h1 style={{ 
-          fontSize: "24px", 
+      <Header empresa={null} loading={loading} />
+      <main className="px-5 md:px-[10%] font-sans">
+        <h1 style={{
+          fontSize: "24px",
           marginTop: "40px",
           textAlign: "center",
           color: "black"
         }}>
           Empresas que estão fazendo a diferença!
         </h1>
-        <div className="flex justify-center mt-[30px]  W-full  ">
+        <div className="flex justify-center mt-[30px] W-full ">
           <input
             type="text"
             placeholder="Pesquisar Patrocinador"
@@ -82,56 +110,74 @@ export function Home() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
         {empresas.length === 0 ? (
           <p style={{ textAlign: "center", color: "#000" }}>
             Nenhum patrocinador cadastrado
           </p>
         ) : (
-          <div style={{ 
-            marginTop: "30px",
-            display: "flex", 
-            gap: "20px", 
-            flexWrap: "wrap",
-            justifyContent: "center"
-          }}>
-            {empresasFiltradas.map((empresa) => (
-              <div
-                key={empresa.id}
-                className="border border-gray-300 rounded-lg p-5 w-[200px] text-center shadow-md flex flex-col items-center"
-              >
-                {empresa.url_logo && (
-                  <img 
-                    src={empresa.url_logo} 
-                    alt={`Logo ${empresa.nome}`}
-                    style={{ 
-                      width: "80px", 
-                      height: "80px", 
-                      objectFit: "contain",
-                      marginBottom: "15px"
-                    }}
-                  />
-                )}
-                <h3 style={{ fontSize: "18px", marginBottom: "10px", color: '#000' }}>
-                  {empresa.nome}
-                </h3>
-                <Link
-                  to={`/empresa/${empresa.url_exclusiva}`}
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                    backgroundColor: "#007BFF",
-                    padding: "10px 15px",
-                    borderRadius: "4px",
-                    marginTop: "auto",
-                    width: "100%"
-                  }}
+          <>
+            <div style={{
+              marginTop: "30px",
+              display: "flex",
+              gap: "20px",
+              flexWrap: "wrap",
+              justifyContent: "center"
+            }}>
+              {empresasFiltradas.map((empresa) => (
+                <div
+                  key={empresa.id}
+                  className="border border-gray-300 rounded-lg p-5 w-[200px] text-center shadow-md flex flex-col items-center"
                 >
-                  Ver detalhes
-                </Link>
-              </div>
-            ))}
-          </div>
+                  {empresa.url_logo && (
+                    <img
+                      src={empresa.url_logo}
+                      alt={`Logo ${empresa.nome}`}
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        objectFit: "contain",
+                        marginBottom: "15px"
+                      }}
+                    />
+                  )}
+                  <h3 style={{ fontSize: "18px", marginBottom: "10px", color: '#000' }}>
+                    {empresa.nome}
+                  </h3>
+                  <Link
+                    to={`/empresa/${empresa.url_exclusiva}`}
+                    style={{
+                      textDecoration: "none",
+                      color: "white",
+                      backgroundColor: "#007BFF",
+                      padding: "10px 15px",
+                      borderRadius: "4px",
+                      marginTop: "auto",
+                      width: "100%"
+                    }}
+                  >
+                    Ver detalhes
+                  </Link>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center mt-5">
+              <button
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+              >
+                Anterior
+              </button>
+              <span>{`Página ${currentPage} de ${totalPages}`}</span>
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+              >
+                Próxima
+              </button>
+            </div>
+          </>
         )}
       </main>
     </>
