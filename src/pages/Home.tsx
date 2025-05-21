@@ -10,7 +10,7 @@ interface Empresa {
   url_logo?: string;
 }
 
-const empresas_por_page = 10;
+const empresas_por_page = 15;
 const max_paginas_view = 3;
 
 export function Home() {
@@ -186,9 +186,10 @@ export function Home() {
           </p>
         ) : (
           <>
-            <div className="mt-8 flex gap-5 flex-wrap justify-center">
-              {empresasPaginadas.map((empresa) => (
-                <div key={empresa.id}
+           <div className="mt-8 flex gap-5 flex-wrap justify-center
+                            max-w-6xl mx-auto">
+               {empresasPaginadas.map((empresa) => (
+                 <div key={empresa.id}
                   className="border border-gray-300 rounded-lg p-5 w-[200px] text-center shadow-md flex flex-col items-center">
                   {empresa.url_logo && (
                     <img
