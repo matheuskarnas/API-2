@@ -36,7 +36,7 @@ const schema = Yup.object().shape({
     .required("Campo obrigatório")
     .min(50, "A apresentação deve ter pelo menos 50 caracteres"),
 
-  twitter: Yup.string().url("URL inválida").notRequired(),
+  x: Yup.string().url("URL inválida").notRequired(),
   whatsapp: Yup.string().url("URL inválida").notRequired(),
   site: Yup.string().url("URL inválida").notRequired(),
   tiktok: Yup.string().url("URL inválida").notRequired(),
@@ -47,7 +47,7 @@ const schema = Yup.object().shape({
 });
 
 type SocialField =
-  | "twitter"
+  | "x"
   | "whatsapp"
   | "site"
   | "tiktok"
@@ -57,7 +57,7 @@ type SocialField =
   | "kawai";
 
 const socialFields: { icon: string; name: SocialField }[] = [
-  { icon: twitterIcon, name: "twitter" },
+  { icon: twitterIcon, name: "x" },
   { icon: whatsappIcon, name: "whatsapp" },
   { icon: globeIcon, name: "site" },
   { icon: tiktokIcon, name: "tiktok" },
@@ -285,6 +285,7 @@ export function CadastroEmpresas() {
             {...register("apresentacao")}
             rows={5}
             placeholder="Descreva sua empresa em detalhes (mínimo 50 caracteres)"
+            maxLength={400}
           />
           <p style={errorStyle}>{errors.apresentacao?.message}</p>
         </div>
