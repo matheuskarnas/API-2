@@ -15,11 +15,35 @@ import facebookIcon from "../../public/assets/facebook.png";
 import kawaiIcon from "../../public/assets/kawai.avif";
 import Header from "../components/Header";
 
+const rotasReservadas = [
+  "empresa",
+  "usuario",
+  "planos",
+  "cadastro",
+  "patrocinio",
+  "patrocinios-disponiveis",
+];
+
+const normalizarUrl = (texto: string) => {
+  return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")   
+      .replace(/-+/g, "-")             
+};
+
+
 const schema = Yup.object().shape({
   nome: Yup.string().required("Campo obrigatório"),
   url: Yup.string()
     .required("Campo obrigatório")
     .matches(/^[a-z0-9-]+$/, "A URL deve conter apenas letras minúsculas, números e hífens")
+    .test("url-reservada", "Esta URL é reservada pelo sistema", (value) => {
+      if (!value) return false;
+      return !rotasReservadas.includes(value.toLowerCase());
+    })
     .test("unique-url", "Esta URL já está em uso por outra empresa", async (value) => {
       if (!value) return false;
       const { data: existingCompany } = await supabase
@@ -106,9 +130,29 @@ export function CadastroEmpresas() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const empresaNome = watch("nome");
+  const [urlEditado, setUrlEditado] = useState(false);
+
+  useEffect(() => {
+    const nome = empresaNome?.trim();
+
+    if (!nome) {
+      setUrlEditado(false);
+      setValue("url", "", { shouldValidate: false });
+      return;
+    }
+    
+    if (!urlEditado) {
+      const urlAutomatica = normalizarUrl(nome);
+      setValue("url", urlAutomatica, { shouldValidate: true });
+    }
+  }, [empresaNome, setValue, urlEditado]);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -260,7 +304,13 @@ export function CadastroEmpresas() {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 style={{ ...inputStyle, borderRadius: '0 5px 5px 0', width: '100%' }}
-                {...register("url")}
+                {...register("url", {
+                  onChange: (e) => {
+                    const urlNormalizada = normalizarUrl(e.target.value);
+                    setUrlEditado(true);
+                    setValue("url", urlNormalizada, { shouldValidate: true });
+                  },
+                })}
                 placeholder="sua-empresa"
               />
             </div>
