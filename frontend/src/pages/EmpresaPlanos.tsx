@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface Plano {
   id: number;
@@ -7,10 +6,10 @@ interface Plano {
   preco: string;
   beneficios: string[];
   cor: string;
+  priceId: string;
 }
 
 export function EmpresaPlanos() {
-  const navigate = useNavigate();
   const [planos] = useState<Plano[]>([
     {
       id: 1,
@@ -21,6 +20,7 @@ export function EmpresaPlanos() {
         "Site exclusivo com os dados do impacto do seu patrocínio.",
       ],
       cor: "bg-yellow-700",
+      priceId: "price_1RRdaZGgNYbQYKnfStMtYJVi",
     },
     {
       id: 2,
@@ -31,6 +31,7 @@ export function EmpresaPlanos() {
         "Site exclusivo com os dados do impacto do seu patrocínio.",
       ],
       cor: "bg-gray-400",
+      priceId: "price_1RRdarGgNYbQYKnftS4BYbkm",
     },
     {
       id: 3,
@@ -41,6 +42,7 @@ export function EmpresaPlanos() {
         "Site exclusivo com os dados do impacto do seu patrocínio.",
       ],
       cor: "bg-yellow-400",
+      priceId: "price_1RRdbCGgNYbQYKnfuFec1xY3",
     },
   ]);
 
@@ -86,8 +88,14 @@ export function EmpresaPlanos() {
                   (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
-                onClick={() => {
-                  navigate("/empresa/cadastro", { state: { id: plano.id } });
+                onClick={async () => {
+                  const response = await fetch('http://localhost:4242/create-empresa-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ priceId: plano.priceId }),
+                  });
+                  const data = await response.json();
+                  window.location.href = data.url;
                 }}
               >
                 Assinar

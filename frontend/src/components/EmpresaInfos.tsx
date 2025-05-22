@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../services/supabaseClient";
 
 interface Empresa {
   url_logo: string;
@@ -8,36 +6,22 @@ interface Empresa {
   nome: string;
 }
 
-export function EmpresaInfos() {
-  const { empresaUrl } = useParams();
-  const [empresa, setEmpresa] = useState<Empresa>();
+interface EmpresaInfosProps {
+  empresa: Empresa;
+}
+
+export function EmpresaInfos({ empresa }: EmpresaInfosProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getEmpresa = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const { data, error } = await supabase
-          .from("patrocinadores")
-          .select("*")
-          .eq("url_exclusiva", empresaUrl)
-          .single();
-
-        if (error) throw error;
-        if (!data) throw new Error("Empresa não encontrada");
-
-        setEmpresa(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getEmpresa();
-  }, [empresaUrl]);
+    if (empresa) {
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    setError("Empresa não encontrada");
+  }, [empresa]);
 
   if (loading) {
     return (
