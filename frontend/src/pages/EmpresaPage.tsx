@@ -123,7 +123,6 @@ export function EmpresaPage() {
         });
 
         if (comunidadesUsuarios && comunidadesUsuarios.length > 0) {
-          const comunidadeIds = [...new Set(comunidadesUsuarios.map(uc => uc.comunidade_id))];
           comunidadesData?.forEach(com => {
             if (com.localizacao_id) {
               localizacaoIds.add(com.localizacao_id);
