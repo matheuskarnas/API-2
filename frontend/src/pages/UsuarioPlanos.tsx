@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface Plano {
   id: number;
@@ -7,10 +6,12 @@ interface Plano {
   preco: string;
   beneficios: string[];
   cor: string;
+  priceId: string;
+
+
 }
 
 export function UsuarioPlanos() {
-  const navigate = useNavigate();
   const [planos] = useState<Plano[]>([
     {
       id: 1,
@@ -24,6 +25,7 @@ export function UsuarioPlanos() {
         "Crie sua comunidade de clientes",
       ],
       cor: "bg-yellow-700",
+    priceId: "price_1RRdZDGgNYbQYKnfstMCa5Wt",
     },
     {
       id: 2,
@@ -37,6 +39,8 @@ export function UsuarioPlanos() {
         "Crie sua comunidade de clientes",
       ],
       cor: "bg-gray-400",
+      priceId: "price_1RRdZmGgNYbQYKnfPQcHFB4L",
+
     },
     {
       id: 3,
@@ -52,6 +56,7 @@ export function UsuarioPlanos() {
         "Suporte via WhatsApp para dúvidas",
       ],
       cor: "bg-yellow-400",
+      priceId: "price_1RRdaBGgNYbQYKnfrGoFhBAw",
     },
   ]);
 
@@ -97,8 +102,14 @@ export function UsuarioPlanos() {
                   (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
-                onClick={() => {
-                  navigate("/usuario/cadastro", { state: { id: plano.id } });
+                onClick={async () => {
+                  const response = await fetch('http://localhost:4242/create-usuario-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ priceId: plano.priceId }),
+                  });
+                  const data = await response.json();
+                  window.location.href = data.url;
                 }}
               >
                 Assinar
