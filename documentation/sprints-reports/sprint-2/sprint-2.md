@@ -27,9 +27,27 @@ Os requisitos abrangidos nesta sprint são:
 
 ## MVP
 
+### Home
+
 <div align="center">
 
-[![MVP]()
+[![MVP](https://img.youtube.com/vi/mDbiHK8ujrc/hqdefault.jpg)](https://www.youtube.com/watch?v=mDbiHK8ujrc)
+
+</div>
+
+### Fluxo Empresa
+
+<div align="center">
+
+[![MVP](https://img.youtube.com/vi/ojBnZlTaS-M/hqdefault.jpg)](https://www.youtube.com/watch?v=ojBnZlTaS-M)
+
+</div>
+
+### Fluxo Vendedor
+
+<div align="center">
+
+[![MVP](https://img.youtube.com/vi/lahZBH8zl_g/hqdefault.jpg)](https://www.youtube.com/watch?v=lahZBH8zl_g)
 
 </div>
 
