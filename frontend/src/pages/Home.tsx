@@ -170,7 +170,7 @@ export function Home() {
         </h1>
 
         <div className="flex justify-center items-center flex-wrap gap-4 mt-6 mb-8">
-          <Link to="" className="">
+          <Link to="" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
           </Link>
           <Link to="" className="">
           </Link>
