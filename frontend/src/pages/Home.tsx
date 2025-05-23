@@ -172,6 +172,8 @@ export function Home() {
         <div className="flex justify-center items-center flex-wrap gap-4 mt-6 mb-8">
           <Link to="">
           </Link>
+          <Link to="">
+          </Link>
         </div>
 
         <div className="flex justify-center mt-8 w-full">
