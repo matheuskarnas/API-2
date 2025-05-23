@@ -3,7 +3,6 @@ import Header from "../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { toast, ToastContainer } from 'react-toastify';
-import { Link } from "react-router-dom";
 
 interface Empresa {
   id: number;
@@ -131,7 +130,7 @@ export function PatrociniosDisponiveis() {
   const [loadingStats, setLoadingStats] = useState(true);
   const navigate = useNavigate();
 
-  const notify = (mensagem: String) => {
+  const notify = (mensagem: string) => {
     return new Promise<void>((resolve) => {
       toast.error(mensagem, {
         position: "top-center",
@@ -144,15 +143,15 @@ export function PatrociniosDisponiveis() {
     });
   };
 
-  // useEffect(() => {
-  //   const chackId = async () => {
-  //     if (!planoId) {
-  //       await notify('Você não possui um plano. Redirecinando para a página de planos...');
-  //       navigate('/usuario/planos');
-  //     }
-  //   }
-  //   chackId();
-  // }, [planoId, navigate]);
+  useEffect(() => {
+    const chackId = async () => {
+      if (!planoId) {
+        await notify('Você não possui um plano. Redirecinando para a página de planos...');
+        navigate('/usuario/planos');
+      }
+    }
+    chackId();
+  }, [planoId, navigate]);
 
   useEffect(() => {
     const fetchStatsForEmpresas = async () => {
