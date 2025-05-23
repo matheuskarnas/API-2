@@ -8,9 +8,9 @@ interface Plano {
   beneficios: string[];
   cor: string;
   priceid: string;
-
-
 }
+
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 export function UsuarioPlanos() {
   const [planos, setPlanos] = useState<Plano[]>([]);
@@ -75,7 +75,7 @@ export function UsuarioPlanos() {
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
                 onClick={async () => {
-                  const response = await fetch('http://localhost:3000/create-usuario-checkout-session', {
+                  const response = await fetch(`${BASE_URL}/create-usuario-checkout-session`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ priceId: plano.priceid }),
