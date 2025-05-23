@@ -172,7 +172,7 @@ export function Home() {
         <div className="flex justify-center items-center flex-wrap gap-4 mt-6 mb-8">
           <Link to="" className="">
           </Link>
-          <Link to="">
+          <Link to="" className="">
           </Link>
         </div>
 
