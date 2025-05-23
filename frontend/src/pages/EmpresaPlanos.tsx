@@ -89,7 +89,7 @@ export function EmpresaPlanos() {
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
                 onClick={async () => {
-                  const response = await fetch('https://api-2-backend.app/create-empresa-checkout-session', {
+                  const response = await fetch('https://api-2-backend.vercel.app/create-empresa-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ priceId: plano.priceId }),

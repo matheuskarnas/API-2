@@ -103,7 +103,7 @@ export function UsuarioPlanos() {
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
                 onClick={async () => {
-                  const response = await fetch('https://api-2-backend.app/create-usuario-checkout-session', {
+                  const response = await fetch('https://api-2-backend.vercel.app/create-usuario-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ priceId: plano.priceId }),
