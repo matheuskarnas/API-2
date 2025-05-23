@@ -1,57 +1,26 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const Stripe = require('stripe');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const empresaCheckout = require("./api/create-empresa-checkout-session");
+const usuarioCheckout = require("./api/create-usuario-checkout-session");
 
-app.get('/', (req, res) => {
-  res.send('Backend rodando');
+// Rota raiz
+app.get("/", (req, res) => {
+  res.send("Backend rodando");
 });
 
-app.post('/create-empresa-checkout-session', async (req, res) => {
-  const { priceId } = req.body;
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: process.env.SUCCESS_URL || 'http://localhost:5173/empresa/cadastro',
-      cancel_url: process.env.CANCEL_URL || 'http://localhost:5173/cancelado',
-    });
-    res.json({ url: session.url });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-app.post('/create-usuario-checkout-session', async (req, res) => {
-  const { priceId } = req.body;
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      success_url: process.env.SUCCESS_URL_USUARIO || 'http://localhost:5173/usuario/cadastro',
-      cancel_url: process.env.CANCEL_URL || 'http://localhost:5173/cancelado',
-    });
-    res.json({ url: session.url });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// Adapta handlers para Express
+app.post("/create-empresa-checkout-session", (req, res) => empresaCheckout(req, res));
+app.post("/create-usuario-checkout-session", (req, res) => usuarioCheckout(req, res));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
 
 module.exports = app;
