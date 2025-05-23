@@ -144,15 +144,15 @@ export function PatrociniosDisponiveis() {
     });
   };
 
-  useEffect(() => {
-    const chackId = async () => {
-      if (!planoId) {
-        await notify('Você não possui um plano. Redirecinando para a página de planos...');
-        navigate('/usuario/planos');
-      }
-    }
-    chackId();
-  }, [planoId, navigate]);
+  // useEffect(() => {
+  //   const chackId = async () => {
+  //     if (!planoId) {
+  //       await notify('Você não possui um plano. Redirecinando para a página de planos...');
+  //       navigate('/usuario/planos');
+  //     }
+  //   }
+  //   chackId();
+  // }, [planoId, navigate]);
 
   useEffect(() => {
     const fetchStatsForEmpresas = async () => {
@@ -197,8 +197,8 @@ export function PatrociniosDisponiveis() {
         <h1 style={{ fontSize: "24px", marginTop: "40px", textAlign: "center", color: "black" }}>
           Patrocínios Disponíveis
         </h1>
-        <div className="">
-          <Link to="" className="">
+        <div className="flex justify-center items-center mt-4">
+          <Link to="" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
             Dados Patrocínio
           </Link>
         </div>
