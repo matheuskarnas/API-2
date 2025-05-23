@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { supabase } from "../services/supabaseClient";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 import twitterIcon from "../../public/assets/x.png";
 import whatsappIcon from "../../public/assets/whatsapp.png";
@@ -94,8 +94,7 @@ const socialFields: { icon: string; name: SocialField }[] = [
 export function CadastroEmpresas() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const planoId = location.state?.id;
+  const planoId = localStorage.getItem('priceId');
 
   const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
@@ -161,7 +160,7 @@ export function CadastroEmpresas() {
       navigate('/empresa/patrocinio', { state: { success: true, data, id: planoId } });
     } catch (err) {
       console.error("Error during submission:", err);
-      alert("Ocorreu um erro ao cadastrar a empresa. Tente novamente.");
+      notify(`Ocorreu um erro ao cadastrar a empresa. Tente novamente. ${err}`, "error");
     } finally {
       setLoading(false);
     }

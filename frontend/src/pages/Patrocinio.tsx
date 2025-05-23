@@ -114,6 +114,7 @@ export function Patrocinio() {
         .from("patrocinadores")
         .insert([
           {
+            id: empresaData.url,
             nome: empresaData.nome,
             url_exclusiva: empresaData.url,
             url_logo: empresaData.logo,

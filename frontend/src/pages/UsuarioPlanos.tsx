@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "../services/supabaseClient";
 
 interface Plano {
   id: number;
@@ -6,59 +7,30 @@ interface Plano {
   preco: string;
   beneficios: string[];
   cor: string;
-  priceId: string;
+  priceid: string;
 
 
 }
 
 export function UsuarioPlanos() {
-  const [planos] = useState<Plano[]>([
-    {
-      id: 1,
-      titulo: "Iniciante",
-      preco: "R$0,00",
-      beneficios: [
-        "1 loja",
-        "30 produtos por loja marca personalizada",
-        "Meio de pagamento integrado*",
-        "Compartilhe produtos com 1 clique",
-        "Crie sua comunidade de clientes",
-      ],
-      cor: "bg-yellow-700",
-    priceId: "price_1RRdZDGgNYbQYKnfstMCa5Wt",
-    },
-    {
-      id: 2,
-      titulo: "Prata",
-      preco: "R$14,97",
-      beneficios: [
-        "3 lojas",
-        "30 produtos por loja marca personalizada",
-        "Meio de pagamento integrado*",
-        "Compartilhe produtos com 1 clique",
-        "Crie sua comunidade de clientes",
-      ],
-      cor: "bg-gray-400",
-      priceId: "price_1RRdZmGgNYbQYKnfPQcHFB4L",
+  const [planos, setPlanos] = useState<Plano[]>([]);
+  useEffect(() => {
+    const pegarPlanos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("planos_usuario")
+          .select("*");
 
-    },
-    {
-      id: 3,
-      titulo: "Ouro",
-      preco: "R$19,97",
-      beneficios: [
-        "10 lojas de afiliado ou marca própria",
-        "Produtos ilimitados",
-        "Compartilhe produtos com 1 clique",
-        "Crie sua comunidade de clientes",
-        "Notificações automáticas para seus clientes",
-        "Suporte para se tornar afiliado de marcas",
-        "Suporte via WhatsApp para dúvidas",
-      ],
-      cor: "bg-yellow-400",
-      priceId: "price_1RRdaBGgNYbQYKnfrGoFhBAw",
-    },
-  ]);
+        if (error || !data) throw new Error("Planos não encontrados");
+        setPlanos(data);
+        return data;
+      } catch (err) {
+        console.error("Falha ao pegar informações dos planos:", err);
+      }
+    };
+
+    pegarPlanos();
+  }, []);
 
   return (
     <>
@@ -75,7 +47,7 @@ export function UsuarioPlanos() {
               <div className={`${plano.cor} w-full text-center py-4 text-white font-bold text-xl`}>
                 {plano.titulo}
               </div>
-              <div className="text-3xl font-bold text-blue-600 my-4">{plano.preco}</div>
+              <div className="text-3xl font-bold text-blue-600 my-4">R${Number(plano.preco).toFixed(2)}</div>
               <ul className="px-6 flex-1 mb-4">
                 {plano.beneficios.map((beneficio, index) => (
                   <li key={index} className="mb-2 text-gray-700 text-sm text-center">
@@ -103,12 +75,13 @@ export function UsuarioPlanos() {
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
                 onClick={async () => {
-                  const response = await fetch('https://api-2-backend.vercel.app/create-usuario-checkout-session', {
+                  const response = await fetch('http://localhost:3000/create-usuario-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ priceId: plano.priceId }),
+                    body: JSON.stringify({ priceId: plano.priceid }),
                   });
                   const data = await response.json();
+                  localStorage.setItem('priceId', plano.priceid);
                   window.location.href = data.url;
                 }}
               >

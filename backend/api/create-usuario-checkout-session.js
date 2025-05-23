@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         },
       ],
       success_url: process.env.SUCCESS_USUARIO_URL || 'http://localhost:5173/usuario/cadastro',
-      cancel_url: process.env.CANCEL_URL,
+      cancel_url: process.env.CANCEL_USUARIO_URL || 'http://localhost:5173/usuario/planos',
     });
     res.json({ url: session.url });
   } catch (err) {

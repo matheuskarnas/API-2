@@ -17,8 +17,8 @@ module.exports = async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: process.env.SUCCESS_EMPRESA_URL || "http://localhost:5173/empresa/cadastro",
-      cancel_url: process.env.CANCEL_URL,
+      success_url: process.env.SUCCESS_EMPRESA_URL || 'http://localhost:5173/empresa/cadastro',
+      cancel_url: process.env.CANCEL_EMPRESA_URL || "http://localhost:5173/empresa/planos",
     });
     res.json({ url: session.url });
   } catch (err) {

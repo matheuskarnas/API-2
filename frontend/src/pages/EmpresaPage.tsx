@@ -216,12 +216,12 @@ export function EmpresaPage() {
   }, [dados]);
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden">
+    <div className="flex flex-col h-screen w-full">
       <div className="flex-none bg-[#16254D] min-[500px]:px-2 sticky top-0 z-10">
         <Header empresa={dados} loading={loading} />
       </div>
 
-      <div className="flex-1 flex flex-col justify-evenly gap-8 md:gap-28 overflow-hidden pt-8 pb-10">
+      <div className="flex-1 flex flex-col justify-evenly gap-8 md:gap-28 pt-8 pb-10">
         <div className="flex-none">
           <EmpresaInfos empresa={dados} />
         </div>

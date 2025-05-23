@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "../services/supabaseClient";
 
 interface Plano {
   id: number;
@@ -6,45 +7,32 @@ interface Plano {
   preco: string;
   beneficios: string[];
   cor: string;
-  priceId: string;
+  priceid: string;
 }
 
+
 export function EmpresaPlanos() {
-  const [planos] = useState<Plano[]>([
-    {
-      id: 1,
-      titulo: "Bronze",
-      preco: "R$75",
-      beneficios: [
-        "15 lojas patrocinadas.",
-        "Site exclusivo com os dados do impacto do seu patrocínio.",
-      ],
-      cor: "bg-yellow-700",
-      priceId: "price_1RRdaZGgNYbQYKnfStMtYJVi",
-    },
-    {
-      id: 2,
-      titulo: "Prata",
-      preco: "R$120",
-      beneficios: [
-        "25 lojas patrocinadas.",
-        "Site exclusivo com os dados do impacto do seu patrocínio.",
-      ],
-      cor: "bg-gray-400",
-      priceId: "price_1RRdarGgNYbQYKnftS4BYbkm",
-    },
-    {
-      id: 3,
-      titulo: "Ouro",
-      preco: "R$230",
-      beneficios: [
-        "50 lojas patrocinadas.",
-        "Site exclusivo com os dados do impacto do seu patrocínio.",
-      ],
-      cor: "bg-yellow-400",
-      priceId: "price_1RRdbCGgNYbQYKnfuFec1xY3",
-    },
-  ]);
+  const [planos, setPlanos] = useState<Plano[]>([]);
+    useEffect(() => {
+      localStorage.clear();
+      const pegarPlanos = async () => {
+        try {
+          const { data, error } = await supabase
+            .from("planos_patrocinador")
+            .select("*");
+  
+          if (error || !data) throw new Error("Planos não encontrados");
+          setPlanos(data);
+          console.log("-----------------",data);
+          return data;
+        } catch (err) {
+          console.error("Falha ao pegar informações dos planos:", err);
+        }
+      };
+  
+      pegarPlanos();
+    }, []);
+
 
   return (
     <>
@@ -61,7 +49,7 @@ export function EmpresaPlanos() {
               <div className={`${plano.cor} w-full text-center py-4 text-white font-bold text-xl`}>
                 {plano.titulo}
               </div>
-              <div className="text-3xl font-bold text-blue-600 my-4">{plano.preco}</div>
+              <div className="text-3xl font-bold text-blue-600 my-4">R${Number(plano.preco).toFixed(2)}</div>
               <ul className="px-6 flex-1 mb-4">
                 {plano.beneficios.map((beneficio, index) => (
                   <li key={index} className="mb-2 text-gray-700 text-sm text-center">
@@ -89,12 +77,13 @@ export function EmpresaPlanos() {
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
                 onClick={async () => {
-                  const response = await fetch('https://api-2-backend.vercel.app/create-empresa-checkout-session', {
+                  const response = await fetch('http://localhost:3000/create-empresa-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ priceId: plano.priceId }),
+                    body: JSON.stringify({ priceId: plano.priceid }),
                   });
                   const data = await response.json();
+                  localStorage.setItem('priceId', plano.priceid);
                   window.location.href = data.url;
                 }}
               >

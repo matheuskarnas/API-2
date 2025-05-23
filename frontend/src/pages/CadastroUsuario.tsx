@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import * as yup from "yup";
 import { supabase } from "../services/supabaseClient";
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 
 const schema = yup.object({
@@ -54,8 +54,7 @@ export function CadastroUsuario() {
   const [estados, setEstados] = useState([]);
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidades, setCidades] = useState([]);
-  const location = useLocation();
-  const planoId = location.state?.id;
+  const planoId = localStorage.getItem('priceId');
 
   const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
@@ -147,70 +146,65 @@ export function CadastroUsuario() {
 
       await notify('Cadastro realizado!', 'success');
 
-      if (planoId !== 1) {
-        navigate('/');
+      const nascimento = new Date(data.data_nascimento);
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const mes = hoje.getMonth() - nascimento.getMonth();
+      if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+      }
+
+      function obterFaixaEtaria(idade: number): string | null {
+        if (idade >= 18 && idade < 25) return '18-24';
+        if (idade >= 25 && idade < 35) return '25-34';
+        if (idade >= 36 && idade < 45) return '35-44';
+        if (idade >= 46 && idade < 55) return '45-54';
+        if (idade >= 55 && idade <= 64) return '55-64';
+        if (idade > 64) return '65+';
+        return null;
+      }
+
+      const faixaEtaria = obterFaixaEtaria(idade);
+      console.log('Faixa etária:', faixaEtaria);
+
+
+
+      const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
+        .from('perfis_patrocinio')
+        .select('*, patrocinador_id');
+
+      if (perfis_patrocinioError) {
+        console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
       } else {
+        console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
 
-        const nascimento = new Date(data.data_nascimento);
-        const hoje = new Date();
-        let idade = hoje.getFullYear() - nascimento.getFullYear();
-        const mes = hoje.getMonth() - nascimento.getMonth();
-        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
-          idade--;
-        }
+        const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
+          const estadoCompatível = perfil.estados.includes(data.estado);
+          const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
+          const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
+          const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
 
-        function obterFaixaEtaria(idade: number): string | null {
-          if (idade >= 18 && idade < 25) return '18-24';
-          if (idade >= 25 && idade < 35) return '25-34';
-          if (idade >= 36 && idade < 45) return '35-44';
-          if (idade >= 46 && idade < 55) return '45-54';
-          if (idade >= 55 && idade <= 64) return '55-64';
-          if (idade > 64) return '65+';
-          return null;
-        }
+          return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
+        });
 
-        const faixaEtaria = obterFaixaEtaria(idade);
-        console.log('Faixa etária:', faixaEtaria);
+        const idsEmpresasCompatíveis = empresasCompatíveis.map((perfil: any) => perfil.patrocinador_id)
+        console.log('IDs das empresas compatíveis:', idsEmpresasCompatíveis);
 
+        if (idsEmpresasCompatíveis.length > 0) {
+          const { data: empresasData, error: empresasError } = await supabase
+            .from('patrocinadores')
+            .select('*')
+            .in('id', idsEmpresasCompatíveis);
 
+          if (empresasError) {
+            console.error('Erro ao buscar detalhes das empresas:', empresasError);
 
-        const { data: perfis_patrocinio, error: perfis_patrocinioError } = await supabase
-          .from('perfis_patrocinio')
-          .select('*, patrocinador_id');
-
-        if (perfis_patrocinioError) {
-          console.error('Erro ao buscar perfis de patrocínio:', perfis_patrocinioError.message);
-        } else {
-          console.log('Perfis de patrocínio encontrados:', perfis_patrocinio);
-
-          const empresasCompatíveis = perfis_patrocinio.filter((perfil: any) => {
-            const estadoCompatível = perfil.estados.includes(data.estado);
-            const escolaridadeCompatível = perfil.escolaridades.includes(data.escolaridade);
-            const rendaCompatível = perfil.rendas_familiares.includes(data.renda_familiar);
-            const faixaEtariaCompatível = perfil.faixas_etarias.includes(obterFaixaEtaria(idade));
-
-            return estadoCompatível && escolaridadeCompatível && rendaCompatível && faixaEtariaCompatível;
-          });
-
-          const idsEmpresasCompatíveis = empresasCompatíveis.map((perfil: any) => perfil.patrocinador_id)
-          console.log('IDs das empresas compatíveis:', idsEmpresasCompatíveis);
-
-          if (idsEmpresasCompatíveis.length > 0) {
-            const { data: empresasData, error: empresasError } = await supabase
-              .from('patrocinadores')
-              .select('*')
-              .in('id', idsEmpresasCompatíveis);
-
-            if (empresasError) {
-              console.error('Erro ao buscar detalhes das empresas:', empresasError);
-
-            } else if (empresasData) {
-              console.log('Dados completos das empresas compatíveis:', empresasData);
-              navigate('/usuario/patrocinios-disponiveis', { state: { empresasData, id: planoId } });
-            }
-          } else {
-            navigate('/usuario/patrocinios-disponiveis', { state: { empresasData: [], id: planoId } });
+          } else if (empresasData) {
+            console.log('Dados completos das empresas compatíveis:', empresasData);
+            navigate('/usuario/patrocinios-disponiveis', { state: { empresasData, id: planoId } });
           }
+        } else {
+          navigate('/usuario/patrocinios-disponiveis', { state: { empresasData: [], id: planoId } });
         }
       }
 
@@ -247,7 +241,7 @@ export function CadastroUsuario() {
 
   return (
     <>
-      <Header empresa={ null } loading={ false }/>
+      <Header empresa={null} loading={false} />
       <ToastContainer />
       <div style={{
         display: 'flex',
