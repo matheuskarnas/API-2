@@ -130,7 +130,7 @@ export function PatrociniosDisponiveis() {
   const [loadingStats, setLoadingStats] = useState(true);
   const navigate = useNavigate();
 
-  const notify = (mensagem: String) => {
+  const notify = (mensagem: string) => {
     return new Promise<void>((resolve) => {
       toast.error(mensagem, {
         position: "top-center",

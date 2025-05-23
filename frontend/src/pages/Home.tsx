@@ -169,6 +169,17 @@ export function Home() {
           Empresas que estão fazendo a diferença!
         </h1>
 
+        <div className="flex justify-center items-center flex-wrap gap-4 mt-6 mb-8">
+          <Link to="/empresa/planos" 
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+            Planos para Empresas
+          </Link>
+          <Link to="/usuario/planos" 
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+            Planos para Vendedores
+          </Link>
+        </div>
+
         <div className="flex justify-center mt-8 w-full">
           <input
             type="text"
