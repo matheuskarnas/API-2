@@ -169,7 +169,7 @@ export function Home() {
           Empresas que estão fazendo a diferença!
         </h1>
 
-        <div className=""></div>
+        <div className="flex justify-center items-center flex-wrap gap-4 mt-6 mb-8"></div>
 
         <div className="flex justify-center mt-8 w-full">
           <input
