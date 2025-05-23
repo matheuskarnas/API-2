@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const stripe = Stripe(process.env.VITE_STRIPE_SECRET_KEY);
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.get('/', (req, res) => {
   res.send('Backend rodando');
@@ -25,8 +25,8 @@ app.post('/create-empresa-checkout-session', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: 'http://localhost:5173/empresa/cadastro',
-      cancel_url: 'http://localhost:5173/cancelado',
+      success_url: process.env.SUCCESS_URL || 'http://localhost:5173/empresa/cadastro',
+      cancel_url: process.env.CANCEL_URL || 'http://localhost:5173/cancelado',
     });
     res.json({ url: session.url });
   } catch (err) {
@@ -45,8 +45,8 @@ app.post('/create-usuario-checkout-session', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: 'http://localhost:5173/usuario/cadastro',
-      cancel_url: 'http://localhost:5173/cancelado',
+      success_url: process.env.SUCCESS_URL_USUARIO || 'http://localhost:5173/usuario/cadastro',
+      cancel_url: process.env.CANCEL_URL || 'http://localhost:5173/cancelado',
     });
     res.json({ url: session.url });
   } catch (err) {
@@ -54,4 +54,4 @@ app.post('/create-usuario-checkout-session', async (req, res) => {
   }
 });
 
-app.listen(4242, () => console.log('Backend rodando na porta 4242'));
+module.exports = app;
