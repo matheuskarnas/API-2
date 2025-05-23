@@ -9,7 +9,7 @@ app.use(express.json());
 
 const stripe = Stripe(process.env.VITE_STRIPE_SECRET_KEY);
 
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Backend rodando');
 });
 
