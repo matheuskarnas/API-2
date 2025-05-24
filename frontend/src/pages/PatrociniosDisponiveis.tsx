@@ -3,7 +3,6 @@ import Header from "../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { toast, ToastContainer } from 'react-toastify';
-import { Link } from "react-router-dom";
 
 interface Empresa {
   id: number;
