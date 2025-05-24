@@ -127,7 +127,7 @@ export function PatrociniosDisponiveis() {
   const [empresas, setEmpresas] = useState<EmpresaComStats[]>(
     location.state?.empresasData || []
   );
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loadingStats, setLoadingStats] = useState(true);
   const navigate = useNavigate();
 
@@ -144,11 +144,13 @@ export function PatrociniosDisponiveis() {
     });
   };
 
+  // A função handleDadosPatrocinios foi removida pois não é mais necessária
+
   useEffect(() => {
     const chackId = async () => {
       if (!planoId) {
-        await notify('Você não possui um plano. Redirecinando para a página de planos...');
-        navigate('/usuario/planos');
+        await notify("Você não possui um plano. Redirecinando para a página de planos...");
+        navigate("/usuario/planos");
       }
     }
     chackId();
@@ -167,14 +169,17 @@ export function PatrociniosDisponiveis() {
       setLoadingStats(false);
     };
 
-    fetchStatsForEmpresas();
-  }, []);
+    // Verifica se há dados iniciais antes de buscar stats
+    if (empresas.length > 0) {
+        fetchStatsForEmpresas();
+    }
+  }, []); // A dependência vazia ainda pode ser um problema se location.state.empresasData mudar dinamicamente
 
   const empresasFiltradas = empresas.filter(empresa =>
     empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loadingStats) {
+  if (loadingStats && empresas.length > 0) { // Adicionado verificação para evitar loading infinito se não houver empresas
     return (
       <>
         <Header empresa={ null } loading={ loadingStats }/>
@@ -272,7 +277,9 @@ export function PatrociniosDisponiveis() {
                   Pegar Patrocinio
                 </button>
                 <button 
-                  className="bg-green-600 hover:bg-green-700 text-white mt-2 py-3 px-6 rounded-sm shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                  className="bg-green-600 hover:bg-green-700 text-white mt-2 py-3 px-6 rounded-sm shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                  onClick={() => navigate(`/empresa/${empresa.url_exclusiva}`)} 
+                >
                   Dados de patrocínio
                 </button> 
               </div>
