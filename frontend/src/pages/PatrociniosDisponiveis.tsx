@@ -143,8 +143,6 @@ export function PatrociniosDisponiveis() {
     });
   };
 
-  // A função handleDadosPatrocinios foi removida pois não é mais necessária
-
   useEffect(() => {
     const chackId = async () => {
       if (!planoId) {
@@ -168,17 +166,16 @@ export function PatrociniosDisponiveis() {
       setLoadingStats(false);
     };
 
-    // Verifica se há dados iniciais antes de buscar stats
     if (empresas.length > 0) {
         fetchStatsForEmpresas();
     }
-  }, []); // A dependência vazia ainda pode ser um problema se location.state.empresasData mudar dinamicamente
+  }, []);
 
   const empresasFiltradas = empresas.filter(empresa =>
     empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loadingStats && empresas.length > 0) { // Adicionado verificação para evitar loading infinito se não houver empresas
+  if (loadingStats && empresas.length > 0) {
     return (
       <>
         <Header empresa={ null } loading={ loadingStats }/>
