@@ -14,30 +14,31 @@ const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 export function EmpresaPlanos() {
   const [planos, setPlanos] = useState<Plano[]>([]);
-    useEffect(() => {
-      localStorage.clear();
-      const pegarPlanos = async () => {
-        try {
-          const { data, error } = await supabase
-            .from("planos_patrocinador")
-            .select("*");
-  
-          if (error || !data) throw new Error("Planos não encontrados");
-          setPlanos(data);
-          console.log("-----------------",data);
-          return data;
-        } catch (err) {
-          console.error("Falha ao pegar informações dos planos:", err);
-        }
-      };
-  
-      pegarPlanos();
-    }, []);
+  useEffect(() => {
+    localStorage.clear();
+    const pegarPlanos = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("planos_patrocinador")
+          .select("*");
+
+        if (error || !data) throw new Error("Planos não encontrados");
+        setPlanos(data);
+      } catch (err) {
+        console.error("Falha ao pegar informações dos planos:", err);
+      }
+    };
+
+    pegarPlanos();
+  }, []);
 
 
   return (
     <>
       <main className="px-5 md:px-[10%] font-sans min-h-screen bg-blue-900 flex flex-col items-center py-12">
+        <div className="hidden">
+          bg-yellow-400 bg-yellow-700 bg-gray-400
+        </div>
         <h1 className="text-white text-2xl font-bold mb-12 text-center">
           Escolha o Plano Ideal
         </h1>
@@ -77,7 +78,7 @@ export function EmpresaPlanos() {
                   (e.target as HTMLButtonElement).style.backgroundColor = "transparent";
                   (e.target as HTMLButtonElement).style.color = "#007BFF";
                 }}
-                onClick={async () => {                 
+                onClick={async () => {
                   const response = await fetch(`${BASE_URL}/create-empresa-checkout-session`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

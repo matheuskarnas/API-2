@@ -23,7 +23,6 @@ export function UsuarioPlanos() {
 
         if (error || !data) throw new Error("Planos não encontrados");
         setPlanos(data);
-        return data;
       } catch (err) {
         console.error("Falha ao pegar informações dos planos:", err);
       }
@@ -35,6 +34,9 @@ export function UsuarioPlanos() {
   return (
     <>
       <main className="px-5 md:px-[10%] font-sans min-h-screen bg-blue-900 flex flex-col items-center py-12">
+        <div className="hidden">
+          bg-yellow-400 bg-yellow-700 bg-gray-400
+        </div>
         <h1 className="text-white text-2xl font-bold mb-12 text-center">
           Escolha o Plano Ideal para Você
         </h1>
