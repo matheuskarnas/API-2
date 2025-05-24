@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { toast, ToastContainer } from 'react-toastify';
+import { Link } from "react-router-dom";
 
 interface Empresa {
   id: number;
@@ -270,6 +271,10 @@ export function PatrociniosDisponiveis() {
                 >
                   Pegar Patrocinio
                 </button>
+                <button 
+                  className="bg-green-600 hover:bg-green-700 text-white mt-2 py-3 px-6 rounded-sm shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                  Dados de patrocínio
+                </button> 
               </div>
             ))}
           </div>
