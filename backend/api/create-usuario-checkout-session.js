@@ -17,8 +17,8 @@ module.exports = async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: url + "/empresa/cadastro",
-      cancel_url: url + "/empresa/planos",
+      success_url: url + "/usuario/cadastro",
+      cancel_url: url + "/usuario/planos",
     });
     res.json({ url: session.url });
   } catch (err) {
