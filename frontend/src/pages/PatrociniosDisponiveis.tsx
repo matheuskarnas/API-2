@@ -274,7 +274,7 @@ export function PatrociniosDisponiveis() {
                 </button>
                 <button 
                   className="bg-green-600 hover:bg-green-700 text-white mt-2 py-3 px-6 rounded-sm shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-                  onClick={() => navigate(`/empresa/${empresa.url_exclusiva}`)} 
+                  onClick={() => window.open(`${window.location.origin}/empresa/${empresa.url_exclusiva}`, '_blank', 'noopener,noreferrer')} 
                 >
                   Dados de patrocínio
                 </button> 
