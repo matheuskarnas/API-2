@@ -14,6 +14,8 @@ const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 export function UsuarioPlanos() {
   const [planos, setPlanos] = useState<Plano[]>([]);
+  const url = window.location.origin;
+
   useEffect(() => {
     const pegarPlanos = async () => {
       try {
@@ -80,7 +82,7 @@ export function UsuarioPlanos() {
                   const response = await fetch(`${BASE_URL}/create-usuario-checkout-session`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ priceId: plano.priceid }),
+                    body: JSON.stringify({ priceId: plano.priceid, url: url }),
                   });
                   const data = await response.json();
                   localStorage.setItem('priceId', plano.priceid);
