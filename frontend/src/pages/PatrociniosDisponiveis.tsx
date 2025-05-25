@@ -126,7 +126,7 @@ export function PatrociniosDisponiveis() {
   const [empresas, setEmpresas] = useState<EmpresaComStats[]>(
     location.state?.empresasData || []
   );
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loadingStats, setLoadingStats] = useState(true);
   const navigate = useNavigate();
 
@@ -146,8 +146,8 @@ export function PatrociniosDisponiveis() {
   useEffect(() => {
     const chackId = async () => {
       if (!planoId) {
-        await notify('Você não possui um plano. Redirecinando para a página de planos...');
-        navigate('/usuario/planos');
+        await notify("Você não possui um plano. Redirecinando para a página de planos...");
+        navigate("/usuario/planos");
       }
     }
     chackId();
@@ -166,14 +166,16 @@ export function PatrociniosDisponiveis() {
       setLoadingStats(false);
     };
 
-    fetchStatsForEmpresas();
+    if (empresas.length > 0) {
+        fetchStatsForEmpresas();
+    }
   }, []);
 
   const empresasFiltradas = empresas.filter(empresa =>
     empresa.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loadingStats) {
+  if (loadingStats && empresas.length > 0) {
     return (
       <>
         <Header empresa={ null } loading={ loadingStats }/>
@@ -270,6 +272,12 @@ export function PatrociniosDisponiveis() {
                 >
                   Pegar Patrocinio
                 </button>
+                <button 
+                  className="bg-green-600 hover:bg-green-700 text-white mt-2 py-3 px-6 rounded-sm shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                  onClick={() => window.open(`${window.location.origin}/empresa/${empresa.url_exclusiva}`, '_blank', 'noopener,noreferrer')} 
+                >
+                  Dados de patrocínio
+                </button> 
               </div>
             ))}
           </div>
