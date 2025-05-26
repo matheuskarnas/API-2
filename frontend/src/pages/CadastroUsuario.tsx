@@ -54,7 +54,7 @@ export function CadastroUsuario() {
   const [estados, setEstados] = useState([]);
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidades, setCidades] = useState([]);
-  const planoId = localStorage.getItem('priceId');
+  let planoId = '';
 
   const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
@@ -93,13 +93,15 @@ export function CadastroUsuario() {
 
   useEffect(() => {
     const chackId = async () => {
-      if (!planoId) {
+      const plano = localStorage.getItem('priceId');
+      if (!plano) {
         await notify('Você não possui um plano. Redirecinando para a página de planos...', 'error');
         navigate('/usuario/planos');
       }
+      planoId = plano ?? '';
     }
     chackId();
-  }, [planoId, navigate]);
+  }, [navigate]);
 
   const {
     register,
