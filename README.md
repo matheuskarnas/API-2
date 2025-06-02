@@ -39,7 +39,7 @@ Em resumo, o projeto visa:
 | :----: | :---------------------: | :----------- | :------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------: |
 |   01   | 10/03/2025 a 30/03/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-1/sprint-1.md) | [ver MVP](https://www.youtube.com/watch?v=G04f3AHD46E) |
 |   02   | 07/04/2025 a 27/04/2025 | ✔️ Concluída | [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-2/sprint-2.md) |                      [ver MVP](https://www.youtube.com/watch?v=mDbiHK8ujrc&list=PLOIAehj9FoFyKjtV8Jpx-KXWgdg8LDj8X&ab_channel=MatheusCastillo)                       |
-|   03   | 05/05/2025 a 25/05/2025 | Em breve     |                                                                                                                      |
+|   03   | 05/05/2025 a 25/05/2025 | ✔️ Concluída    |   [ver relatório](https://github.com/matheuskarnas/API-2/blob/main/documentation/sprints-reports/sprint-3/sprint-3.md)                                                                                                                   | [ver MVP](https://www.youtube.com/watch?v=3SjlSWCpYtY&list=PLOIAehj9FoFwSXCfvBOvOMfWK3J9v5-LA&ab_channel=MatheusCastillo)
 
 # Backlog do Produto
 
@@ -152,27 +152,22 @@ Em resumo, o projeto visa:
             <td style="border: 1px solid #ddd;">21</td>
             <td style="border: 1px solid #ddd;">2</td>
         </tr>        
+        <tr>
+            <td style="border: 1px solid #ddd;">RNF4</td>
+            <td style="border: 1px solid #ddd;">Eu como um novo usuário quero ter uma documentação para apreender a usar o site.</td>
+            <td style="border: 1px solid #ddd;">Média</td>
+            <td style="border: 1px solid #ddd;">21</td>
+            <td style="border: 1px solid #ddd;">3</td>
+        </tr>            
+        <tr>
+            <td style="border: 1px solid #ddd;">RF7</td>
+            <td style="border: 1px solid #ddd;">Eu como um usuário quero ter uma forma de assinar um plano.</td>
+            <td style="border: 1px solid #ddd;">Média</td>
+            <td style="border: 1px solid #ddd;">40</td>
+            <td style="border: 1px solid #ddd;">3</td>
+        </tr>        
     </tbody>
 </table>
-
-# 🛠️ Tecnologias
-
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-  <img src="https://img.shields.io/badge/Figma-CED4DA?style=for-the-badge&logo=figma&logoColor=DC143C" alt="Figma" /> 
-  <img src="https://img.shields.io/badge/TypeScript-CED4DA?style=for-the-badge&logo=typescript&logoColor=007ACC" alt="Typescript" />
-  <img src="https://img.shields.io/badge/HTML5-CED4DA?style=for-the-badge&logo=html5&logoColor=E34F26" alt="HTML" /> 
-  <img src="https://img.shields.io/badge/CSS3-CED4DA?style=for-the-badge&logo=css3&logoColor=1572B6" alt="CSS" /> 	
-  <img src="https://img.shields.io/badge/React-CED4DA?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /> 
-  <img src="https://img.shields.io/badge/GitHub-CED4DA?style=for-the-badge&logo=github&logoColor=20232A" alt="GitHub" /> 
-  <img src="https://img.shields.io/badge/Google%20Maps-CED4DA?style=for-the-badge&logo=google-maps&logoColor=0D96F6" alt="Google Docs" />
-  <img src="https://img.shields.io/badge/supabase-CED4DA?style=for-the-badge&logo=supabase" alt="Supabase" />
-  <img src="https://img.shields.io/badge/vite-CED4DA?style=for-the-badge&logo=vite" alt="vite" />
-  <img src="https://img.shields.io/badge/tailwindcss-CED4DA?style=for-the-badge&logo=tailwindcss" alt="tailwindcss" />
-  <img src="https://img.shields.io/badge/vercel-CED4DA?style=for-the-badge&logo=vercel&logoColor=000" alt="vercel" />
-  <img src="https://img.shields.io/badge/recharts-CED4DA?style=for-the-badge&logo=recharts&logoColor=000" alt="recharts" />
-  <img src="https://img.shields.io/badge/toastify-CED4DA?style=for-the-badge&logo=toastify&logoColor=000" alt="toastify" />
-  <img src="https://img.shields.io/badge/yup-CED4DA?style=for-the-badge&logo=yup&logoColor=000" alt="Yup" />
-</div>
 
 # Requisitos
 
@@ -209,6 +204,10 @@ Em resumo, o projeto visa:
             <td style="border: 1px solid #ddd;">Um dashboard para ter dados sobre o patrocínio.</td>
         </tr>
          <tr>
+            <td style="border: 1px solid #ddd;">RF7</td>
+            <td style="border: 1px solid #ddd;">Ter um metodo de pagamento.</td>
+        </tr>
+         <tr>
             <td style="border: 1px solid #ddd;">RNF1</td>
             <td style="border: 1px solid #ddd;">Usar ReactJS e TypeScript.</td>
          <tr>
@@ -226,6 +225,27 @@ Em resumo, o projeto visa:
         </tr> 
     </tbody>
 </table>
+
+# 🛠️ Tecnologias
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+  <img src="https://img.shields.io/badge/Figma-CED4DA?style=for-the-badge&logo=figma&logoColor=DC143C" alt="Figma" /> 
+  <img src="https://img.shields.io/badge/TypeScript-CED4DA?style=for-the-badge&logo=typescript&logoColor=007ACC" alt="Typescript" />
+  <img src="https://img.shields.io/badge/HTML5-CED4DA?style=for-the-badge&logo=html5&logoColor=E34F26" alt="HTML" /> 
+  <img src="https://img.shields.io/badge/CSS3-CED4DA?style=for-the-badge&logo=css3&logoColor=1572B6" alt="CSS" /> 	
+  <img src="https://img.shields.io/badge/React-CED4DA?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /> 
+  <img src="https://img.shields.io/badge/GitHub-CED4DA?style=for-the-badge&logo=github&logoColor=20232A" alt="GitHub" /> 
+  <img src="https://img.shields.io/badge/Google%20Maps-CED4DA?style=for-the-badge&logo=google-maps&logoColor=0D96F6" alt="Google Docs" />
+  <img src="https://img.shields.io/badge/supabase-CED4DA?style=for-the-badge&logo=supabase" alt="Supabase" />
+  <img src="https://img.shields.io/badge/vite-CED4DA?style=for-the-badge&logo=vite" alt="vite" />
+  <img src="https://img.shields.io/badge/tailwindcss-CED4DA?style=for-the-badge&logo=tailwindcss" alt="tailwindcss" />
+  <img src="https://img.shields.io/badge/vercel-CED4DA?style=for-the-badge&logo=vercel&logoColor=000" alt="vercel" />
+  <img src="https://img.shields.io/badge/recharts-CED4DA?style=for-the-badge&logo=recharts&logoColor=000" alt="recharts" />
+  <img src="https://img.shields.io/badge/toastify-CED4DA?style=for-the-badge&logo=toastify&logoColor=000" alt="toastify" />
+  <img src="https://img.shields.io/badge/yup-CED4DA?style=for-the-badge&logo=yup&logoColor=000" alt="Yup" />
+  <img src="https://img.shields.io/badge/stripe-CED4DA?style=for-the-badge&logo=stripe&logoColor=635BFF" alt="Stripe" />
+</div>
+
 
 # Como baixar e rodar um projeto React com Vite localmente
 
@@ -333,11 +353,11 @@ npm run preview
 
 | Foto | Função | Nome | LinkedIn & GitHub |
 | :--: | :-----: | :--: | :---------------: |
-| <img src="https://avatars.githubusercontent.com/PedHr" width=50px> | Scrum Master | Pedro Rosa | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)]() [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/PedHr) |
+| <img src="https://avatars.githubusercontent.com/PedHr" width=50px> | Scrum Master | Pedro Rosa | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-rosa-b66b70224/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/PedHr) |
 | <img src="https://avatars.githubusercontent.com/matheuskarnas" width=50px> | Product Owner | Matheus Karnas | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/matheuskarnas/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/matheuskarnas) |
-| <img src="https://avatars.githubusercontent.com/LucasMSCarmo" width=50px> | Scrum Team | Lucas Martins | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)]() [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/LucasMSCarmo) |
+| <img src="https://avatars.githubusercontent.com/LucasMSCarmo" width=50px> | Scrum Team | Lucas Martins | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-martins-2104aa172/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/LucasMSCarmo) |
 | <img src="https://avatars.githubusercontent.com/LucasAraujo1016" width=50px> | Scrum Team | Lucas Araujo | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-araujo-448115329/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/LucasAraujo1016) |
-| <img src="https://avatars.githubusercontent.com/LittleRob120" width=50px> | Scrum Team | Gabriel Robert | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)]() [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/LittleRob120) |
-| <img src="https://avatars.githubusercontent.com/ThOMaZMe11o" width=50px> | Scrum Team | Thomaz Feitosa | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)]() [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/ThOMaZMe11o) |
-| <img src="https://avatars.githubusercontent.com/lucasguerra12" width=50px> | Scrum Team | Lucas Guerra | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)]() [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasguerra12) |
+| <img src="https://avatars.githubusercontent.com/LittleRob120" width=50px> | Scrum Team | Gabriel Robert | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/gabriel-robert-123ba7258/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/LittleRob120) |
+| <img src="https://avatars.githubusercontent.com/ThOMaZMe11o" width=50px> | Scrum Team | Thomaz Feitosa | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/thomazfeitosa/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/ThOMaZMe11o) |
+| <img src="https://avatars.githubusercontent.com/lucasguerra12" width=50px> | Scrum Team | Lucas Guerra | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-guerra000/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasguerra12) |
 | <img src="https://avatars.githubusercontent.com/ViniciusLimaCabraleSouza" width=50px> | Scrum Team | Vinicius Lima | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/vinicius-lima-cabral-e-souza-7794b3287/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/ViniciusLimaCabraleSouza) |
