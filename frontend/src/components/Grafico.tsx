@@ -34,46 +34,32 @@ const Grafico = ({ value }: GraficoProps) => {
 
         if (errPat || !patrocinador) throw new Error("Patrocinador não encontrado");
 
-        const { data: usuariosPatrocinados, error: errUsuarios } = await supabase
-          .from("patrocinadores_usuarios")
-          .select("usuario_id")
-          .eq("patrocinador_id", patrocinador.id);
-
-        if (errUsuarios) throw errUsuarios;
-
-        const usuariosIds = usuariosPatrocinados?.map((u) => u.usuario_id) || [];
-
-        if (usuariosIds.length === 0) {
-          setDadosOriginais([]);
-          setDadosFiltrados([]);
-          return;
-        }
-
         const dados = Object.entries(value)
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([data, valor]) => ({ data, valor }));
+
+        if (dados.length === 0) {
+            setDadosOriginais([]);
+            setDadosFiltrados([]);
+            return;
+        }
 
         setDadosOriginais(dados);
         setDadosFiltrados(acumularDados(dados));
       } catch (err) {
         setError((err as Error).message);
+        setDadosOriginais([]);
+        setDadosFiltrados([]);
       } finally {
         setLoading(false);
       }
     };
 
     buscarDados();
-  }, [empresaUrl]);
+  }, [empresaUrl, value]);
 
   const acumularDados = (dados: { data: string; valor: number }[]) => {
-    return dados.reduce((acc, { data, valor }, index) => {
-      const acumulado = index === 0 ? valor : valor + acc[index - 1].valor;
-      acc.push({ data, valor: acumulado });
-      return acc;
-    }, [] as { data: string; valor: number }[]);
-  };
-
-  const acumularDadosFiltrados = (dados: { data: string; valor: number }[]) => {
+    if (!dados || dados.length === 0) return [];
     return dados.reduce((acc, { data, valor }, index) => {
       const acumulado = index === 0 ? valor : valor + acc[index - 1].valor;
       acc.push({ data, valor: acumulado });
@@ -82,41 +68,49 @@ const Grafico = ({ value }: GraficoProps) => {
   };
 
   useEffect(() => {
-    if (!dadosOriginais.length) return;
-
-    let inicio = dataInicio;
-    let fim = dataFim;
-
-    if (filtroData === "semana") {
-      inicio = formatDate(startOfWeek(new Date(), { weekStartsOn: 1 }));
-      fim = formatDate(endOfWeek(new Date(), { weekStartsOn: 1 }));
-    } else if (filtroData === "mes") {
-      inicio = formatDate(startOfMonth(new Date()));
-      fim = formatDate(endOfMonth(new Date()));
-    } else if (filtroData === "ano") {
-      inicio = formatDate(startOfYear(new Date()));
-      fim = formatDate(endOfYear(new Date()));
+    if (!dadosOriginais.length && !filtroData) {
+        setDadosFiltrados([]);
+        return;
     }
 
-    if (filtroData === "customizado") {
+    let inicioCalculado = dataInicio;
+    let fimCalculado = dataFim;
+    let aplicarFiltroGeral = true;
+
+    if (filtroData === "semana") {
+      inicioCalculado = formatDate(startOfWeek(new Date(), { weekStartsOn: 1 }));
+      fimCalculado = formatDate(endOfWeek(new Date(), { weekStartsOn: 1 }));
+    } else if (filtroData === "mes") {
+      inicioCalculado = formatDate(startOfMonth(new Date()));
+      fimCalculado = formatDate(endOfMonth(new Date()));
+    } else if (filtroData === "ano") {
+      inicioCalculado = formatDate(startOfYear(new Date()));
+      fimCalculado = formatDate(endOfYear(new Date()));
+    } else if (filtroData === "customizado") {
       if (!dataInicio || !dataFim) {
         setDadosFiltrados(acumularDados(dadosOriginais));
         return;
       }
-    } else if (!filtroData) {
+      
+      inicioCalculado = dataInicio;
+      fimCalculado = dataFim;
+    } else {
       setDadosFiltrados(acumularDados(dadosOriginais));
-      return;
+      aplicarFiltroGeral = false;
     }
 
-    const filtrado = dadosOriginais.filter(
-      (item) => item.data >= inicio && item.data <= fim
-    );
+    if(aplicarFiltroGeral) {
+        const filtrado = dadosOriginais.filter(
+            (item) => item.data >= inicioCalculado && item.data <= fimCalculado
+        );
+        setDadosFiltrados(acumularDados(filtrado));
+    }
 
-    const dadosAcumuladosFiltrados = acumularDadosFiltrados(filtrado);
-    
-    setDadosFiltrados(dadosAcumuladosFiltrados);
-    setDataInicio(inicio);
-    setDataFim(fim);
+    if (filtroData && filtroData !== "customizado" && filtroData !== "") {
+        setDataInicio(inicioCalculado);
+        setDataFim(fimCalculado);
+    }
+
   }, [filtroData, dataInicio, dataFim, dadosOriginais]);
 
   return (
@@ -126,7 +120,11 @@ const Grafico = ({ value }: GraficoProps) => {
           {["semana", "mes", "ano", "customizado"].map((tipo) => (
             <button
               key={tipo}
-              onClick={() => setFiltroData(tipo)}
+              onClick={() => {
+                setFiltroData(tipo);
+                if (tipo !== "customizado") {
+                }
+              }}
               className={`px-4 py-2 rounded-md border ${
                 filtroData === tipo
                   ? "bg-blue-500 text-white border-blue-500"
@@ -139,9 +137,11 @@ const Grafico = ({ value }: GraficoProps) => {
               {tipo === "customizado" && "Customizado"}
             </button>
           ))}
-  
+    
           <button
-            onClick={() => setFiltroData("")}
+            onClick={() => {
+                setFiltroData("");
+            }}
             className={`px-4 py-2 rounded-md border ${
               filtroData === ""
                 ? "bg-blue-500 text-white border-blue-500"
@@ -151,7 +151,7 @@ const Grafico = ({ value }: GraficoProps) => {
             Todos
           </button>
         </div>
-  
+    
         {filtroData === "customizado" && (
           <div className="flex justify-center items-center gap-2 w-full max-w-[600px] px-4">
             <label className="bg-gray-200 p-2 rounded-md text-black/50 sm:w-auto">
@@ -159,7 +159,7 @@ const Grafico = ({ value }: GraficoProps) => {
                 type="date"
                 value={dataInicio}
                 onChange={(event) => setDataInicio(event.target.value)}
-                className="w-30 sm:w-full focus:outline-none"
+                className="w-30 sm:w-full focus:outline-none bg-transparent"
               />
             </label>
             <label className="bg-gray-200 p-2 rounded-md text-black/50 sm:w-auto">
@@ -167,7 +167,7 @@ const Grafico = ({ value }: GraficoProps) => {
                 type="date"
                 value={dataFim}
                 onChange={(event) => setDataFim(event.target.value)}
-                className="w-30 sm:w-full focus:outline-none"
+                className="w-30 sm:w-full focus:outline-none bg-transparent"
               />
             </label>
           </div>
@@ -180,6 +180,8 @@ const Grafico = ({ value }: GraficoProps) => {
             <p>Carregando...</p>
           ) : error ? (
             <p className="text-red-500">{error}</p>
+          ) : dadosFiltrados.length === 0 ? (
+            <p>Nenhum dado chegou nesse período</p>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
@@ -195,6 +197,7 @@ const Grafico = ({ value }: GraficoProps) => {
                   dataKey="valor"
                   stroke="#8884d8"
                   activeDot={{ r: 8 }}
+                  name="Valor Acumulado"
                 />
               </LineChart>
             </ResponsiveContainer>

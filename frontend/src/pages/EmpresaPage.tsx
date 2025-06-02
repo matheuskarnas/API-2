@@ -83,13 +83,13 @@ export function EmpresaPage() {
 
       try {
         setLoading(true);
-        
+
         setStats({
           usuarios: {},
           lojas: {},
           comunidades: {},
           cidades: {},
-          familiasImpactadas: {}
+          familiasImpactadas: {},
         });
         setLocations([]);
 
@@ -98,34 +98,58 @@ export function EmpresaPage() {
           .select("usuario_id, data_inicio")
           .eq("patrocinador_id", dados.id);
 
-        const usuariosIds = usuariosPatrocinados?.map(u => u.usuario_id) || [];
+        const usuariosIds = usuariosPatrocinados?.map((u) => u.usuario_id) || [];
         if (usuariosIds.length === 0) return;
 
         const [
           { data: lojasData },
           { data: comunidadesUsuarios },
           { data: amizadesData },
-          { data: comunidadesData }
+          { data: comunidadesData },
         ] = await Promise.all([
-          supabase.from("lojas").select("id,usuario_id,data_criacao,localizacao_id").in("usuario_id", usuariosIds),
-          supabase.from("usuarios_comunidades").select("comunidade_id,usuario_id,data_ingresso").in("usuario_id", usuariosIds),
-          supabase.from("amizades").select("usuario_id,amigo_id,data_criacao").in("usuario_id", usuariosIds),
-          supabase.from("comunidades").select("id,data_criacao,localizacao_id")
+          supabase
+            .from("lojas")
+            .select("id,usuario_id,data_criacao,localizacao_id")
+            .in("usuario_id", usuariosIds),
+          supabase
+            .from("usuarios_comunidades")
+            .select("comunidade_id,usuario_id,data_ingresso")
+            .in("usuario_id", usuariosIds),
+          supabase
+            .from("amizades")
+            .select("usuario_id,amigo_id,data_criacao")
+            .in("usuario_id", usuariosIds),
+          supabase.from("comunidades").select("id,data_criacao,localizacao_id"),
         ]);
 
         const locationsMap: Record<number, LocationData> = {};
         const localizacaoIds = new Set<number>();
+        const localizacaoDatas: Record<number, string> = {}; // Store earliest date for each location
 
-        lojasData?.forEach(loja => {
+        lojasData?.forEach((loja) => {
           if (loja.localizacao_id) {
             localizacaoIds.add(loja.localizacao_id);
+            const dataCriacao = formatarData(loja.data_criacao);
+            if (
+              !localizacaoDatas[loja.localizacao_id] ||
+              dataCriacao < localizacaoDatas[loja.localizacao_id]
+            ) {
+              localizacaoDatas[loja.localizacao_id] = dataCriacao;
+            }
           }
         });
 
         if (comunidadesUsuarios && comunidadesUsuarios.length > 0) {
-          comunidadesData?.forEach(com => {
+          comunidadesData?.forEach((com) => {
             if (com.localizacao_id) {
               localizacaoIds.add(com.localizacao_id);
+              const dataCriacao = formatarData(com.data_criacao);
+              if (
+                !localizacaoDatas[com.localizacao_id] ||
+                dataCriacao < localizacaoDatas[com.localizacao_id]
+              ) {
+                localizacaoDatas[com.localizacao_id] = dataCriacao;
+              }
             }
           });
         }
@@ -137,26 +161,26 @@ export function EmpresaPage() {
             .in("id", Array.from(localizacaoIds));
 
           if (!locError && localizacoes) {
-            localizacoes.forEach(loc => {
+            localizacoes.forEach((loc) => {
               locationsMap[loc.id] = {
                 coordenadas: loc.coordenadas,
                 lojasCount: 0,
                 comunidadesCount: 0,
-                localizacaoId: loc.id
+                localizacaoId: loc.id,
               };
             });
 
-            lojasData?.forEach(loja => {
+            lojasData?.forEach((loja) => {
               if (loja.localizacao_id && locationsMap[loja.localizacao_id]) {
                 locationsMap[loja.localizacao_id].lojasCount += 1;
               }
             });
 
             if (comunidadesUsuarios && comunidadesUsuarios.length > 0) {
-              comunidadesData?.forEach(com => {
+              comunidadesData?.forEach((com) => {
                 if (com.localizacao_id && locationsMap[com.localizacao_id]) {
                   const userCount = comunidadesUsuarios.filter(
-                    uc => uc.comunidade_id === com.id
+                    (uc) => uc.comunidade_id === com.id
                   ).length;
                   locationsMap[com.localizacao_id].comunidadesCount += userCount;
                 }
@@ -169,42 +193,58 @@ export function EmpresaPage() {
 
         const familiasPorData: Record<string, number> = {};
 
-        usuariosPatrocinados?.forEach(u => {
+        usuariosPatrocinados?.forEach((u) => {
           const data = formatarData(u.data_inicio);
           familiasPorData[data] = (familiasPorData[data] || 0) + 1;
         });
 
-        amizadesData?.forEach(a => {
+        amizadesData?.forEach((a) => {
           const data = formatarData(a.data_criacao);
           familiasPorData[data] = (familiasPorData[data] || 0) + 1;
         });
 
-        const comunidadesUnicas = [...new Set(comunidadesUsuarios?.map(c => c.comunidade_id) || [])];
-        
+        const comunidadesUnicas = [
+          ...new Set(comunidadesUsuarios?.map((c) => c.comunidade_id) || []),
+        ];
+
         for (const comunidadeId of comunidadesUnicas) {
           const { count: totalMembros } = await supabase
             .from("usuarios_comunidades")
             .select("*", { count: "exact", head: true })
             .eq("comunidade_id", comunidadeId);
 
-          const usuariosNestaComunidade = comunidadesUsuarios?.filter(
-            c => c.comunidade_id === comunidadeId
-          ) || [];
+          const usuariosNestaComunidade =
+            comunidadesUsuarios?.filter((c) => c.comunidade_id === comunidadeId) ||
+            [];
 
-          usuariosNestaComunidade.forEach(c => {
+          usuariosNestaComunidade.forEach((c) => {
             const data = formatarData(c.data_ingresso);
             familiasPorData[data] = (familiasPorData[data] || 0) + (totalMembros || 0);
           });
         }
 
-        setStats({
-          usuarios: agruparPorData((usuariosPatrocinados ?? []).map(u => ({ data: formatarData(u.data_inicio) }))),
-          lojas: agruparPorData((lojasData ?? []).map(l => ({ data: formatarData(l.data_criacao) }))),
-          comunidades: agruparPorData((comunidadesUsuarios ?? []).map(c => ({ data: formatarData(c.data_ingresso) }))),
-          cidades: { [formatarData(new Date().toString())]: localizacaoIds.size },
-          familiasImpactadas: familiasPorData
+        const cidadesPorData: Record<string, number> = {};
+        Object.entries(localizacaoDatas).forEach(([id, date]) => {
+          cidadesPorData[date] = (cidadesPorData[date] || 0) + 1;
         });
 
+        setStats({
+          usuarios: agruparPorData(
+            (usuariosPatrocinados ?? []).map((u) => ({
+              data: formatarData(u.data_inicio),
+            }))
+          ),
+          lojas: agruparPorData(
+            (lojasData ?? []).map((l) => ({ data: formatarData(l.data_criacao) }))
+          ),
+          comunidades: agruparPorData(
+            (comunidadesUsuarios ?? []).map((c) => ({
+              data: formatarData(c.data_ingresso),
+            }))
+          ),
+          cidades: cidadesPorData,
+          familiasImpactadas: familiasPorData,
+        });
       } catch (err) {
         console.error("Erro ao buscar estatísticas:", err);
       } finally {

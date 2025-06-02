@@ -26,12 +26,12 @@ const rotasReservadas = [
 
 const normalizarUrl = (texto: string) => {
   return texto
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "")   
-      .replace(/-+/g, "-")             
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
 };
 
 
@@ -94,7 +94,7 @@ const socialFields: { icon: string; name: SocialField }[] = [
 export function CadastroEmpresas() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  let planoId = '';
+  const [planoId, setPlanoId] = useState<string>("");
 
   const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
@@ -122,7 +122,7 @@ export function CadastroEmpresas() {
         await notify('Você não possui um plano. Redirecinando para a página de planos...', 'error');
         navigate('/usuario/planos');
       }
-      planoId = plano ?? '';
+      setPlanoId(plano ?? '');
     }
     chackId();
   }, [navigate]);
@@ -148,7 +148,7 @@ export function CadastroEmpresas() {
       setValue("url", "", { shouldValidate: false });
       return;
     }
-    
+
     if (!urlEditado) {
       const urlAutomatica = normalizarUrl(nome);
       setValue("url", urlAutomatica, { shouldValidate: true });
@@ -198,7 +198,7 @@ export function CadastroEmpresas() {
       justifyContent: 'center',
       alignItems: 'center',
     }}>
-      <Header empresa={ null } loading={ false } />
+      <Header empresa={null} loading={false} />
       <ToastContainer />
       <div style={{
         width: '90%',

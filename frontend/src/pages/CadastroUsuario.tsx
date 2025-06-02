@@ -54,7 +54,6 @@ export function CadastroUsuario() {
   const [estados, setEstados] = useState([]);
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidades, setCidades] = useState([]);
-  let planoId = '';
 
   const notify = (mensagem: string, tipo: 'success' | 'error') => {
     return new Promise<void>((resolve) => {
@@ -91,18 +90,6 @@ export function CadastroUsuario() {
     }
   }, [estadoSelecionado]);
 
-  useEffect(() => {
-    const chackId = async () => {
-      const plano = localStorage.getItem('priceId');
-      if (!plano) {
-        await notify('Você não possui um plano. Redirecinando para a página de planos...', 'error');
-        navigate('/usuario/planos');
-      }
-      planoId = plano ?? '';
-    }
-    chackId();
-  }, [navigate]);
-
   const {
     register,
     handleSubmit,
@@ -132,7 +119,7 @@ export function CadastroUsuario() {
           complemento: data.complemento,
           renda_familiar: data.renda_familiar,
           escolaridade: data.escolaridade,
-          plano_id: planoId,
+          plano_id: 'price_1RRdZDGgNYbQYKnfstMCa5Wt',
         }])
 
       if (supabaseError) {
@@ -203,10 +190,10 @@ export function CadastroUsuario() {
 
           } else if (empresasData) {
             console.log('Dados completos das empresas compatíveis:', empresasData);
-            navigate('/usuario/patrocinios-disponiveis', { state: { empresasData, id: planoId } });
+            navigate('/usuario/patrocinios-disponiveis', { state: { empresasData, id: 'price_1RRdZDGgNYbQYKnfstMCa5Wt' } });
           }
         } else {
-          navigate('/usuario/patrocinios-disponiveis', { state: { empresasData: [], id: planoId } });
+          navigate('/usuario/patrocinios-disponiveis', { state: { empresasData: [], id: 'price_1RRdZDGgNYbQYKnfstMCa5Wt' } });
         }
       }
 

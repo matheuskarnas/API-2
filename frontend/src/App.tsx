@@ -8,7 +8,6 @@ import { CadastroUsuario } from './pages/CadastroUsuario';
 import { CadastroEmpresas } from './pages/CadastroEmpresas';
 import { Patrocinio } from './pages/Patrocinio';
 import { PatrociniosDisponiveis } from "./pages/PatrociniosDisponiveis";
-import { UsuarioPlanos } from "./pages/UsuarioPlanos";
 import { EmpresaPlanos } from './pages/EmpresaPlanos';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -25,7 +24,6 @@ function App() {
           <Route path="/empresa/planos" element={<EmpresaPlanos />} />
           <Route path="/empresa/cadastro" element={<CadastroEmpresas/>} />
           <Route path="/empresa/patrocinio" element={<Patrocinio/>} />
-          <Route path="/usuario/planos" element={<UsuarioPlanos/>} />
           <Route path="/usuario/cadastro" element={<CadastroUsuario/>} />
           <Route path="/usuario/patrocinios-disponiveis" element={<PatrociniosDisponiveis/>} />
           <Route path="*" element={<ErrorPage />} />

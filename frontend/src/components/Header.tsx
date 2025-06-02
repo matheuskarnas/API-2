@@ -35,7 +35,7 @@ export function Header({ empresa, loading }: HeaderProps) {
         </Link>
       ) : (
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => { navigate('/') }}
           className="text-white text-[20px] md:text-[40px] font-bold whitespace-nowrap"
         >
           {empresa?.nome || "Helpnei"}
@@ -50,59 +50,59 @@ export function Header({ empresa, loading }: HeaderProps) {
         ) : (
           <>
             {empresa?.facebook && (
-              <SocialIcon 
-                alt="Facebook" 
-                img="facebook.png" 
-                ref={empresa.facebook} 
+              <SocialIcon
+                alt="Facebook"
+                img="facebook.png"
+                ref={empresa.facebook}
               />
             )}
             {empresa?.instagram && (
-              <SocialIcon 
-                alt="Instagram" 
-                img="instagram.webp" 
-                ref={empresa.instagram} 
+              <SocialIcon
+                alt="Instagram"
+                img="instagram.webp"
+                ref={empresa.instagram}
               />
             )}
             {empresa?.kawai && (
-              <SocialIcon 
-                alt="Kawai" 
-                img="kawai.avif" 
-                ref={empresa.kawai} 
+              <SocialIcon
+                alt="Kawai"
+                img="kawai.avif"
+                ref={empresa.kawai}
               />
             )}
             {empresa?.linkedin && (
-              <SocialIcon 
-                alt="LinkedIn" 
-                img="linkedin.png" 
-                ref={empresa.linkedin} 
+              <SocialIcon
+                alt="LinkedIn"
+                img="linkedin.png"
+                ref={empresa.linkedin}
               />
             )}
             {empresa?.url_site && (
-              <SocialIcon 
-                alt="Site Oficial" 
-                img="web.png" 
-                ref={empresa.url_site} 
+              <SocialIcon
+                alt="Site Oficial"
+                img="web.png"
+                ref={empresa.url_site}
               />
             )}
             {empresa?.tiktok && (
-              <SocialIcon 
-                alt="TikTok" 
-                img="tiktok.webp" 
-                ref={empresa.tiktok} 
+              <SocialIcon
+                alt="TikTok"
+                img="tiktok.webp"
+                ref={empresa.tiktok}
               />
             )}
             {empresa?.whatsapp && (
-              <SocialIcon 
-                alt="WhatsApp" 
-                img="whatsapp.png" 
-                ref={empresa.whatsapp} 
+              <SocialIcon
+                alt="WhatsApp"
+                img="whatsapp.png"
+                ref={empresa.whatsapp}
               />
             )}
             {empresa?.twitter && (
-              <SocialIcon 
-                alt="Twitter (X)" 
-                img="x.png" 
-                ref={empresa.twitter} 
+              <SocialIcon
+                alt="Twitter (X)"
+                img="x.png"
+                ref={empresa.twitter}
               />
             )}
           </>
