@@ -224,7 +224,7 @@ export function EmpresaPage() {
         }
 
         const cidadesPorData: Record<string, number> = {};
-        Object.entries(localizacaoDatas).forEach(([id, date]) => {
+        Object.entries(localizacaoDatas).forEach(([date]) => {
           cidadesPorData[date] = (cidadesPorData[date] || 0) + 1;
         });
 
